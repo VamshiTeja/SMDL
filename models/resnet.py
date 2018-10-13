@@ -79,7 +79,7 @@ class Bottleneck(nn.Module):
 
 class ResNet_Cifar(nn.Module):
 
-    def __init__(self, block, layers, num_classes=10):
+    def __init__(self, block, layers, num_classes=100):
         super(ResNet_Cifar, self).__init__()
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
