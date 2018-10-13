@@ -81,10 +81,10 @@ class Bottleneck(nn.Module):
         return out
 
 
-class ResNet_CIFAR(nn.Module):
+class ResNet(nn.Module):
 
     def __init__(self, block, layers, num_classes=100):
-        super(ResNet_CIFAR, self).__init__()
+        super(ResNet, self).__init__()
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(16)
@@ -135,18 +135,18 @@ class ResNet_CIFAR(nn.Module):
         return x
 
 
-def resnet20_cifar(**kwargs):
-    model = ResNet_CIFAR(BasicBlock, [3, 3, 3], **kwargs)
+def resnet20(**kwargs):
+    model = ResNet(BasicBlock, [3, 3, 3], **kwargs)
     return model
 
 
-def resnet32_cifar(**kwargs):
-    model = ResNet_CIFAR(BasicBlock, [5, 5, 5], **kwargs)
+def resnet32(**kwargs):
+    model = ResNet(BasicBlock, [5, 5, 5], **kwargs)
     return model
 
 
 if __name__ == '__main__':
-    net = resnet32_cifar()
+    net = resnet32()
     y = net(torch.autograd.Variable(torch.randn(1, 3, 32, 32)))
     print(net)
     print(y.size())
