@@ -1,3 +1,7 @@
+"""
+Adapted from https://github.com/junyuseu/pytorch-cifar-models/blob/master/models/resnet_cifar.py
+"""
+
 import torch
 import torch.nn as nn
 import math
@@ -77,10 +81,10 @@ class Bottleneck(nn.Module):
         return out
 
 
-class ResNet_Cifar(nn.Module):
+class ResNet_CIFAR(nn.Module):
 
     def __init__(self, block, layers, num_classes=100):
-        super(ResNet_Cifar, self).__init__()
+        super(ResNet_CIFAR, self).__init__()
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(16)
@@ -132,12 +136,12 @@ class ResNet_Cifar(nn.Module):
 
 
 def resnet20_cifar(**kwargs):
-    model = ResNet_Cifar(BasicBlock, [3, 3, 3], **kwargs)
+    model = ResNet_CIFAR(BasicBlock, [3, 3, 3], **kwargs)
     return model
 
 
 def resnet32_cifar(**kwargs):
-    model = ResNet_Cifar(BasicBlock, [5, 5, 5], **kwargs)
+    model = ResNet_CIFAR(BasicBlock, [5, 5, 5], **kwargs)
     return model
 
 
