@@ -45,7 +45,7 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
             test_transforms = transforms.Compose([transforms.ToTensor(),
                                                   transforms.Normalize(mean=[0.507, 0.487, 0.441],
                                                                         std=[0.267, 0.256, 0.276])])
-            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=False, transform=train_transforms,
+            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True, transform=train_transforms,
                                            class_list=cumm_class_set)
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms,
                                           class_list=cumm_class_set)
