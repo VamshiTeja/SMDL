@@ -153,10 +153,10 @@ def adjust_lr(epoch, optimizer, base_lr):
 
 def main():
     parser = argparse.ArgumentParser(description="SMILe: SubModular Incremental Learning")
-    parser.add_argument("--repeat-rounds", default=1, type=int, help="The number of rounds the whole experiment needs"
+    parser.add_argument("--repeat-rounds", default=2, type=int, help="The number of rounds the whole experiment needs"
                                                                      " to be performed.")
     parser.add_argument("--class-per-episode", default=100, type=int, help="Number of classes introduced per episode.")
-    parser.add_argument("--epochs", default=70, type=int, help="Number of epochs each episode needs to be trained.")
+    parser.add_argument("--epochs", default=200, type=int, help="Number of epochs each episode needs to be trained.")
     parser.add_argument("--batch-size", default=500, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--batch-size-test", default=500, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
