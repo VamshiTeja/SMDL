@@ -23,6 +23,8 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
                                 weight_decay=args.weight_decay)
 
     print 'Training starting.'
+    train_start_time = time.time()
+
     # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
     for round_count in range(args.repeat_rounds):
         # Each episode contains a set of classes that are trained at once.
@@ -45,7 +47,7 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
             test_transforms = transforms.Compose([transforms.ToTensor(),
                                                   transforms.Normalize(mean=[0.507, 0.487, 0.441],
                                                                         std=[0.267, 0.256, 0.276])])
-            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True, transform=train_transforms,
+            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=False, transform=train_transforms,
                                            class_list=cumm_class_set)
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms,
                                           class_list=cumm_class_set)
@@ -55,16 +57,25 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
             test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size_test, shuffle=False,
                                                       num_workers=2)
 
+            train_accs = []
+            test_accs = []
             # Repeat for each epoch
             for epoch_count in range(args.epochs):
                 adjust_lr(epoch_count, optimizer, args.learning_rate)
 
                 start_time = time.time()
-                train(train_loader, model, criterion, optimizer, epoch_count, args.epochs, episode_count, num_episodes,
+
+                train_acc = train(train_loader, model, criterion, optimizer, epoch_count, args.epochs, episode_count, num_episodes,
                       round_count, args.repeat_rounds)
-                test(test_loader, model, epoch_count, args.epochs, episode_count, num_episodes,
+                test_acc = test(test_loader, model, epoch_count, args.epochs, episode_count, num_episodes,
                       round_count, args.repeat_rounds)
-                print 'Time per epoch: {0:.4f}s \n\n'.format(time.time()-start_time)
+
+                train_accs.append(train_acc)
+                test_accs.append(test_acc)
+                print 'Time per epoch: {0:.4f} s \n'.format(time.time() - start_time)
+            plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
+
+    print 'Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60)
 
 
 def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch, episode_count, max_episodes,
@@ -101,6 +112,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch, epi
                                                                                 episode_count + 1, max_episodes,
                                                                                 epoch_count + 1, max_epoch,
                                                                                 loss=losses, accuracy=top1)
+    return top1.avg
 
 
 def test(test_loader, model, epoch_count, max_epoch, episode_count, max_episodes, round_count, max_rounds, logging_freq=10, detailed_logging=False):
@@ -124,6 +136,7 @@ def test(test_loader, model, epoch_count, max_epoch, episode_count, max_episodes
                                                                             episode_count + 1, max_episodes,
                                                                             epoch_count + 1, max_epoch,
                                                                             accuracy=top1)
+    return top1.avg
 
 
 def adjust_lr(epoch, optimizer, base_lr):
@@ -144,12 +157,12 @@ def main():
                                                                      " to be performed.")
     parser.add_argument("--class-per-episode", default=100, type=int, help="Number of classes introduced per episode.")
     parser.add_argument("--epochs", default=70, type=int, help="Number of epochs each episode needs to be trained.")
-    parser.add_argument("--batch-size", default=1000, type=int, help="Size of each batch of datapoints for SGD.")
-    parser.add_argument("--batch-size-test", default=1000, type=int, help="Size of each batch of datapoints for SGD.")
+    parser.add_argument("--batch-size", default=500, type=int, help="Size of each batch of datapoints for SGD.")
+    parser.add_argument("--batch-size-test", default=500, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, help="momentum parameter")
     parser.add_argument("--weight-decay", default=1e-4, type=float, help="weight decay")
-    parser.add_argument("--gpu-ids", default='4,5,6,7', type=str, help="GPUs to be used for training.")
+    parser.add_argument("--gpu-ids", default='6,7', type=str, help="GPUs to be used for training.")
     parser.add_argument("--seed", default=99, type=int, help="The seed for randomness.")
 
     args = parser.parse_args()
