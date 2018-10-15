@@ -33,9 +33,9 @@ def plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
     try:
         x = np.arange(1, len(train_accs)+1)
         plt.plot(x, train_accs, 'r', x, test_accs, 'g')
-        plt.savefig('./results/round_' + str(round_count) +'_episode_' + str(episode_count) + "_train_test_accuracy.png")
+        plt.savefig('./results/multi_gpu_small_batch_round_' + str(round_count) +'_episode_' + str(episode_count) + "_train_test_accuracy.png")
     except:
-        print 'Exception occured while plotting the accuracies. Ignoring.'
+        print 'Exception occurred while plotting the accuracies. Ignoring.'
 
 
 if __name__ == "__main__":
