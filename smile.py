@@ -156,12 +156,12 @@ def adjust_lr(epoch, optimizer, base_lr):
 def weights_init(m):
     classname = m.__class__.__name__
     if classname.find('Conv') != -1:
-        nn.init.xavier_uniform(m.weight.data)
+        nn.init.xavier_uniform_(m.weight.data)
     elif classname.find('BatchNorm') != -1:
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
     elif classname.find('Linear') != -1:
-        nn.init.xavier_uniform(m.weight.data)
+        nn.init.xavier_uniform_(m.weight.data)
         if m.bias is not None:
             m.bias.data.fill_(0.0)
 
