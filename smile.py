@@ -16,12 +16,6 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
         # Create the class-id list
         classes = np.arange(num_classes)
 
-    model = resnet32()
-    model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
-    criterion = torch.nn.CrossEntropyLoss().cuda()
-    optimizer = torch.optim.SGD(model.parameters(), args.learning_rate, momentum=args.momentum,
-                                weight_decay=args.weight_decay)
-
     print 'Training starting.'
     train_start_time = time.time()
 
@@ -34,6 +28,14 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
 
         # Shuffle the class order for each episode.
         np.random.shuffle(classes)
+
+        # Initialize the model
+        model = resnet32()
+        model.apply(weights_init)
+        model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
+        criterion = torch.nn.CrossEntropyLoss().cuda()
+        optimizer = torch.optim.SGD(model.parameters(), args.learning_rate, momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
 
         for episode_count in np.arange(num_episodes):
             ep_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
@@ -151,6 +153,19 @@ def adjust_lr(epoch, optimizer, base_lr):
         param_grp['lr'] = lr
 
 
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.xavier_uniform(m.weight.data)
+    elif classname.find('BatchNorm') != -1:
+        m.weight.data.normal_(1.0, 0.02)
+        m.bias.data.fill_(0)
+    elif classname.find('Linear') != -1:
+        nn.init.xavier_uniform(m.weight.data)
+        if m.bias is not None:
+            m.bias.data.fill_(0.0)
+
+
 def main():
     parser = argparse.ArgumentParser(description="SMILe: SubModular Incremental Learning")
     parser.add_argument("--repeat-rounds", default=2, type=int, help="The number of rounds the whole experiment needs"
@@ -162,7 +177,7 @@ def main():
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, help="momentum parameter")
     parser.add_argument("--weight-decay", default=1e-4, type=float, help="weight decay")
-    parser.add_argument("--gpu-ids", default='6,7', type=str, help="GPUs to be used for training.")
+    parser.add_argument("--gpu-ids", default='7', type=str, help="GPUs to be used for training.")
     parser.add_argument("--seed", default=99, type=int, help="The seed for randomness.")
 
     args = parser.parse_args()
