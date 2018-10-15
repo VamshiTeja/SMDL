@@ -73,7 +73,7 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
 
                 train_accs.append(train_acc)
                 test_accs.append(test_acc)
-                print 'Time per epoch: {0:.4f} s \n'.format(time.time() - start_time)
+                print 'Time per epoch: {0:.4f}s \n'.format(time.time() - start_time)
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
 
     print 'Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60)
@@ -167,11 +167,11 @@ def weights_init(m):
 
 def main():
     parser = argparse.ArgumentParser(description="SMILe: SubModular Incremental Learning")
-    parser.add_argument("--repeat-rounds", default=2, type=int, help="The number of rounds the whole experiment needs"
+    parser.add_argument("--repeat-rounds", default=1, type=int, help="The number of rounds the whole experiment needs"
                                                                      " to be performed.")
     parser.add_argument("--class-per-episode", default=100, type=int, help="Number of classes introduced per episode.")
     parser.add_argument("--epochs", default=200, type=int, help="Number of epochs each episode needs to be trained.")
-    parser.add_argument("--batch-size", default=64, type=int, help="Size of each batch of datapoints for SGD.")
+    parser.add_argument("--batch-size", default=512, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--batch-size-test", default=100, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, help="momentum parameter")
