@@ -1,4 +1,4 @@
-import argparse, time
+import argparse, time, os
 import numpy as np
 
 import torch
@@ -171,7 +171,7 @@ def main():
                                                                      " to be performed.")
     parser.add_argument("--class-per-episode", default=100, type=int, help="Number of classes introduced per episode.")
     parser.add_argument("--epochs", default=200, type=int, help="Number of epochs each episode needs to be trained.")
-    parser.add_argument("--batch-size", default=512, type=int, help="Size of each batch of datapoints for SGD.")
+    parser.add_argument("--batch-size", default=256, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--batch-size-test", default=100, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, help="momentum parameter")
@@ -181,12 +181,19 @@ def main():
 
     args = parser.parse_args()
 
+    if not os.path.exists('result'):
+        os.makedirs('result')
+
+    if not os.path.exists('log'):
+        os.makedirs('log')
+
     gpu_list = args.gpu_ids.split(',')
     gpus = [int(iter) for iter in gpu_list]
     torch.cuda.set_device(gpus[0])
     torch.backends.cudnn.benchmark = True
 
-    np.random.seed(args.seed)
+    if args.seed != 0:
+        np.random.seed(args.seed)
 
     learn_incrementally(args, gpus)
 
