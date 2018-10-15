@@ -41,14 +41,13 @@ def learn_incrementally(args, gpus, datatset='CIFAR'):
             ep_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
             cumm_class_set = classes[0: (episode_count+1)*class_per_episode]  # All classes upto and including this episode
 
+            norm = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
             train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
                                                    transforms.RandomHorizontalFlip(),
-                                                   transforms.ToTensor(),
-                                                   transforms.Normalize(mean=[0.507, 0.487, 0.441],
-                                                                        std=[0.267, 0.256, 0.276])])
-            test_transforms = transforms.Compose([transforms.ToTensor(),
-                                                  transforms.Normalize(mean=[0.507, 0.487, 0.441],
-                                                                        std=[0.267, 0.256, 0.276])])
+                                                   transforms.ToTensor(), norm
+                                                   ])
+            test_transforms = transforms.Compose([transforms.ToTensor(), norm])
+
             train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=False, transform=train_transforms,
                                            class_list=cumm_class_set)
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms,
@@ -172,7 +171,7 @@ def main():
                                                                      " to be performed.")
     parser.add_argument("--class-per-episode", default=100, type=int, help="Number of classes introduced per episode.")
     parser.add_argument("--epochs", default=200, type=int, help="Number of epochs each episode needs to be trained.")
-    parser.add_argument("--batch-size", default=128, type=int, help="Size of each batch of datapoints for SGD.")
+    parser.add_argument("--batch-size", default=64, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--batch-size-test", default=100, type=int, help="Size of each batch of datapoints for SGD.")
     parser.add_argument("--learning-rate", default=0.1, type=float, help="Initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, help="momentum parameter")
