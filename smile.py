@@ -1,4 +1,4 @@
-import argparse, time
+import argparse, time, os
 import numpy as np
 
 import torch
@@ -181,12 +181,18 @@ def main():
 
     args = parser.parse_args()
 
+    if not os.path.exists('result'):
+        os.makedirs('result')
+    if not os.path.exists('log'):
+        os.makedirs('log')
+
     gpu_list = args.gpu_ids.split(',')
     gpus = [int(iter) for iter in gpu_list]
     torch.cuda.set_device(gpus[0])
     torch.backends.cudnn.benchmark = True
 
-    np.random.seed(args.seed)
+    if args.seed != 0:
+        np.random.seed(args.seed)
 
     learn_incrementally(args, gpus)
 
