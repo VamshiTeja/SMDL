@@ -8,7 +8,7 @@ seed: 99
 repeat_rounds: 1
 class_per_episode: 50
 
-epochs: 1
+epochs: 100
 
 batch_size: 512
 batch_size_test: 100
