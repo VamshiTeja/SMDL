@@ -4,6 +4,7 @@ Adapted from https://github.com/junyuseu/pytorch-cifar-models/blob/master/models
 
 import torch
 import torch.nn as nn
+from lib.pytorch_utils import CustomLinearModule
 import math
 
 
@@ -93,7 +94,7 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 32, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 64, layers[2], stride=2)
         self.avgpool = nn.AvgPool2d(8, stride=1)
-        self.fc = nn.Linear(64 * block.expansion, num_classes)
+        self.fc = CustomLinearModule(64 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

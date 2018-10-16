@@ -4,6 +4,7 @@ from easydict import EasyDict as edict
 root = edict()
 cfg = root
 
+root.run_label = 'smile'
 root.gpu_ids = '7'
 
 root.seed = 99
@@ -19,6 +20,9 @@ root.batch_size_test = 100
 root.learning_rate = 0.1
 root.momentum = 0.9
 root.weight_decay = 1e-4
+
+root.timestamp = 'placeholder'  # Will be updated at runtime
+root.output_dir = 'placeholder'
 
 
 def _merge_a_into_b(a, b):

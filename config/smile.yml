@@ -1,13 +1,14 @@
 # Configuration File
 
-gpu_ids: '6,7'
+run_label: 'smile'
+gpu_ids: '7'
 
 seed: 99
 
 repeat_rounds: 1
-class_per_episode: 100
+class_per_episode: 50
 
-epochs: 2
+epochs: 1
 
 batch_size: 512
 batch_size_test: 100

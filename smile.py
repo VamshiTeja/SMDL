@@ -6,9 +6,8 @@ from torch.autograd import Variable
 
 from models import *
 from datasets import cifar
-from helper.utils import *
-from helper.config import cfg, cfg_from_file
-
+from lib.utils import *
+from lib.config import cfg, cfg_from_file
 
 def learn_incrementally(gpus, datatset='CIFAR'):
     num_classes, classes = 0, None
@@ -17,7 +16,6 @@ def learn_incrementally(gpus, datatset='CIFAR'):
         # Create the class-id list
         classes = np.arange(num_classes)
 
-    log('\n Training starting.')
     train_start_time = time.time()
 
     # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
@@ -31,17 +29,38 @@ def learn_incrementally(gpus, datatset='CIFAR'):
         np.random.shuffle(classes)
 
         # Initialize the model
-        model = resnet32()
+        model = resnet32(num_classes=cfg.class_per_episode)
         model.apply(weights_init)
         model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
-        criterion = torch.nn.CrossEntropyLoss().cuda()
         optimizer = torch.optim.SGD(model.parameters(), cfg.learning_rate, momentum=cfg.momentum,
                                     weight_decay=cfg.weight_decay)
+
+        criterion = torch.nn.CrossEntropyLoss().cuda()
+
+        log(model)
 
         for episode_count in np.arange(num_episodes):
             ep_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
             cumm_class_set = classes[0: (episode_count+1)*class_per_episode]  # All classes upto and including this episode
 
+            # Getting the model ready for the next episode
+            if episode_count != 0:
+                model = resnet32(num_classes=len(cumm_class_set))
+                model.apply(weights_init) # Initializing the model
+                model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
+
+                # load the weights from the previous episode
+                output_dir = cfg.output_dir + '/models'
+                saved_model_file = 'round_' + str(round_count + 1) + '_episode_' + str(episode_count) \
+                                   + '_classes_' + str(len(cumm_class_set) - class_per_episode) + '.pth'
+                source_state_dict = torch.load(output_dir + '/' + saved_model_file)
+                model.load_state_dict(source_state_dict)
+                log('Loaded model from: ' + output_dir + '/' + saved_model_file)
+
+                optimizer = torch.optim.SGD(model.parameters(), cfg.learning_rate, momentum=cfg.momentum,
+                                            weight_decay=cfg.weight_decay)
+
+            # Loading the Dataset
             norm = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
             train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
                                                    transforms.RandomHorizontalFlip(),
@@ -67,20 +86,24 @@ def learn_incrementally(gpus, datatset='CIFAR'):
 
                 start_time = time.time()
 
-                train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs, episode_count, num_episodes,
+                train_acc = train(train_loader, model, criterion, optimizer, cumm_class_set, epoch_count, cfg.epochs, episode_count, num_episodes,
                       round_count, cfg.repeat_rounds)
-                test_acc = test(test_loader, model, epoch_count, cfg.epochs, episode_count, num_episodes,
+                test_acc = test(test_loader, model, cumm_class_set, epoch_count, cfg.epochs, episode_count, num_episodes,
                       round_count, cfg.repeat_rounds)
 
                 train_accs.append(train_acc)
                 test_accs.append(test_acc)
                 log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
+            output_dir = cfg.output_dir + '/models'
+            filename = 'round_' + str(round_count+1) + '_episode_' + str(episode_count+1) + '_classes_' + str(len(cumm_class_set)) + '.pth'
+            save_model(model, output_dir+'/'+filename)
+            log('Model saved to '+ output_dir+'/'+filename)
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
 
-def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch, episode_count, max_episodes,
+def train(train_loader, model, criterion, optimizer, cumm_class_set, epoch_count, max_epoch, episode_count, max_episodes,
           round_count, max_rounds, logging_freq=10, detailed_logging=False):
     losses = Metrics()
     top1 = Metrics()
@@ -88,6 +111,9 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch, epi
     model.train()
 
     for i, (input, target) in enumerate(train_loader):
+
+        # Changing the labels to be the index of the acutal class labels. CrossEntropyLoss's implementation requires this.
+        target = torch.tensor([list(cumm_class_set).index(t) for t in target.numpy()])
         input, target = input.cuda(), target.cuda()
 
         output = model(Variable(input))
@@ -117,11 +143,13 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch, epi
     return top1.avg
 
 
-def test(test_loader, model, epoch_count, max_epoch, episode_count, max_episodes, round_count, max_rounds, logging_freq=10, detailed_logging=False):
+def test(test_loader, model, cumm_class_set, epoch_count, max_epoch, episode_count, max_episodes, round_count, max_rounds, logging_freq=10, detailed_logging=False):
     top1 = Metrics()
     model.eval()
 
     for i, (input, target) in enumerate(test_loader):
+        # Changing the labels to be the index of the acutal class labels. CrossEntropyLoss's implementation requires this.
+        target = torch.tensor([list(cumm_class_set).index(t) for t in target.numpy()])
         input, target = input.cuda(), target.cuda()
         output = model(Variable(input))
         acc = compute_accuracy(output.data, target)[0]
@@ -165,6 +193,8 @@ def weights_init(m):
         if m.bias is not None:
             m.bias.data.fill_(0.0)
 
+def save_model(model, location):
+    torch.save(model.state_dict(), location)
 
 def main():
     parser = argparse.ArgumentParser(description="SMILe: SubModular Incremental Learning")
@@ -175,13 +205,22 @@ def main():
     if args.cfg_file is not None:
         cfg_from_file(args.cfg_file)
 
-    if not os.path.exists('result'):
-        os.makedirs('result')
+    if not os.path.exists('output'):
+        os.makedirs('output')
     if not os.path.exists('logs'):
         os.makedirs('logs')
 
-    logging.basicConfig(filename='./logs/smile_' + time.strftime("%m%d_%H%M%S") + '.log', level=logging.DEBUG,
+    timestamp = time.strftime("%m%d_%H%M%S")
+    logging.basicConfig(filename='./logs/smile_' + timestamp + '.log', level=logging.DEBUG,
                         format='%(levelname)s:\t%(message)s')
+    cfg.timestamp = timestamp
+
+    output_dir = './output/'+cfg.run_label+'_'+cfg.timestamp
+    cfg.output_dir = output_dir
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        os.makedirs(output_dir + '/models')
+
     log(pprint.pformat(cfg))
 
     gpu_list = cfg.gpu_ids.split(',')
