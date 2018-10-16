@@ -1,6 +1,12 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
+
+from lib.config import cfg
+
 
 class Metrics:
     def __init__(self):
@@ -34,10 +40,32 @@ def compute_accuracy(output, target, topk=(1,)):
 def plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count):
     try:
         x = np.arange(1, len(train_accs)+1)
-        plt.plot(x, train_accs, 'r', x, test_accs, 'g')
-        plt.savefig('./results/round_' + str(round_count) +'_episode_' + str(episode_count) + "_train_test_accuracy.png")
-    except:
+        plt.plot(x, train_accs, 'r', label='Train Accuracy')
+        plt.plot(x, test_accs, 'g', label='Test Accuracy')
+        plt.legend()
+        plt.savefig(cfg.output_dir + '/plots/round_' + str(round_count) +'_episode_' + str(episode_count) + "_train_test_accuracy.png")
+        plt.close()
+    except Exception as error:
         log('Exception occurred while plotting the accuracies. Ignoring.', log_level=logging.ERROR)
+        log(error, log_level=logging.ERROR)
+
+
+def plot_per_episode_accuracies(test_accs, round_count, num_classes):
+    try:
+        x = np.arange(0, num_classes+1)
+        y = np.full_like(x, -10)
+        step = num_classes / len(test_accs)
+        for i in range(1, len(test_accs)+1):
+            y[i * step] = test_accs[i-1]
+        plt.scatter(x, y, color="blue", s=30, label="Test accuracy per episode")
+        # plt.legend()
+        plt.axis([0, num_classes + 10, 0, 100])
+        plt.title('Accuracy in Round ' + str(round_count))
+        plt.savefig(cfg.output_dir + '/plots/round_' + str(round_count) + "_episode_accuracy.png")
+        plt.close()
+    except Exception as error:
+        log('Exception occurred while plotting the accuracies. Ignoring.', log_level=logging.ERROR)
+        log(error, log_level=logging.ERROR)
 
 
 def log(message, print_to_console=True, log_level=logging.DEBUG):
@@ -56,3 +84,6 @@ def log(message, print_to_console=True, log_level=logging.DEBUG):
 
     if print_to_console:
         print message
+
+if __name__ == '__main__':
+    plot_per_episode_accuracies([50,30], 1, 100)

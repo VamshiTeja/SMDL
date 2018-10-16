@@ -38,7 +38,7 @@ def learn_incrementally(gpus, datatset='CIFAR'):
         criterion = torch.nn.CrossEntropyLoss().cuda()
 
         log(model)
-
+        test_acc_per_episode = []
         for episode_count in np.arange(num_episodes):
             ep_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
             cumm_class_set = classes[0: (episode_count+1)*class_per_episode]  # All classes upto and including this episode
@@ -94,11 +94,15 @@ def learn_incrementally(gpus, datatset='CIFAR'):
                 train_accs.append(train_acc)
                 test_accs.append(test_acc)
                 log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
+
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
             output_dir = cfg.output_dir + '/models'
             filename = 'round_' + str(round_count+1) + '_episode_' + str(episode_count+1) + '_classes_' + str(len(cumm_class_set)) + '.pth'
             save_model(model, output_dir+'/'+filename)
             log('Model saved to '+ output_dir+'/'+filename)
+
+            test_acc_per_episode.append(test_acc)
+        plot_per_episode_accuracies(test_acc_per_episode, round_count, num_classes)
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
@@ -171,8 +175,10 @@ def test(test_loader, model, cumm_class_set, epoch_count, max_epoch, episode_cou
 
 def adjust_lr(epoch, optimizer, base_lr):
     # TODO: Set it according to iCaRL
-    if epoch < 80:
+    if epoch < 50:
         lr = base_lr
+    elif epoch < 75:
+        lr = base_lr * 0.5
     elif epoch < 120:
         lr = base_lr * 0.1
     else:
@@ -220,6 +226,7 @@ def main():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         os.makedirs(output_dir + '/models')
+        os.makedirs(output_dir + '/plots')
 
     log(pprint.pformat(cfg))
 
