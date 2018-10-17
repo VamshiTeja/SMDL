@@ -5,7 +5,7 @@ seed: 99
 
 # Incremental Learning Configurations
 repeat_rounds: 1
-class_per_episode: 20
+class_per_episode: 2
 
 # Training Configurations
 epochs: 100
