@@ -18,7 +18,6 @@ else:
 import torch.utils.data as data
 from data_utils import download_url, check_integrity
 
-
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
 
@@ -34,8 +33,6 @@ class CIFAR10(data.Dataset):
         download (bool, optional): If true, downloads the dataset from the internet and
             puts it in root directory. If dataset is already downloaded, it is not
             downloaded again.
-        class_list (list): Contains the list of class IDs out of which the dataset should
-            be constructed.
 
     """
     base_folder = 'cifar-10-batches-py'
@@ -59,13 +56,12 @@ class CIFAR10(data.Dataset):
     }
 
     def __init__(self, root, train=True,
-                 transform=None, target_transform=None,
-                 download=False, class_list=[]):
+                 transform=None, target_transform=None, download=False, exemplar_manager=None,
+                 cumm_class_set=[], new_class_set=[], old_class_set=[]):
         self.root = os.path.expanduser(root)
         self.transform = transform
         self.target_transform = target_transform
         self.train = train  # training set or test set
-        self.class_list = class_list
 
         if download:
             self.download()
@@ -96,21 +92,64 @@ class CIFAR10(data.Dataset):
                 else:
                     self.targets.extend(entry['fine_labels'])
 
-        # Trimming the data-points to only those images in the corresponding class.
-        self.data = np.array(self.data)
-        self.targets = np.array(self.targets)
-        mask = np.array([label in class_list for label in self.targets])
+        # Exemplar management
+        if train:
+            data, targets = np.array(self.data), np.array(self.targets)
 
-        filtered_data_points = self.data[0][mask]
-        self.data = []
-        self.data.append(filtered_data_points)
-        self.targets = self.targets[mask]
+            self.data = []
+            self.targets = []
+
+            # Adding images from the new class
+            mask = np.array([label in new_class_set for label in targets])
+            filtered_data_points = data[0][mask]
+            filtered_targets = targets[mask]
+            self.data.append(filtered_data_points)
+            self.targets.extend(filtered_targets)
+
+            # exemplars = exemplar_manager.get_exemplars()
+            # for seen_class in old_class_set:
+            #     imgs = exemplars[seen_class]
+            #     self.data.append(imgs)
+            #     self.targets.extend(np.full(imgs.shape[0], seen_class))
+
+            self.data = np.array(self.data)
+            self.targets = np.array(self.targets)
+
+        else:   # Load testing data
+            self.data = np.array(self.data)
+            self.targets = np.array(self.targets)
+            mask = np.array([label in cumm_class_set for label in self.targets])
+
+            filtered_data_points = self.data[0][mask]
+            self.data = []
+            self.data.append(filtered_data_points)
+            self.targets = self.targets[mask]
 
         # Reshaping to the standard image dimensions.
         self.data = np.vstack(self.data).reshape(-1, 3, 32, 32)
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
 
+        # Adding images from the previously seen class
+        if train:
+            exemplars = exemplar_manager.get_exemplars()
+            for seen_class in old_class_set:
+                imgs = exemplars[seen_class]
+
+                data_list = list(self.data)
+                data_list.extend(imgs)
+                self.data = np.array(data_list)
+
+                target_list = list(self.targets)
+                target_list.extend(np.full(imgs.shape[0], seen_class))
+                self.targets = np.array(target_list)
+
         self._load_meta()
+
+    def get_images(self, classlist):
+        mask = np.array([label in classlist for label in self.targets])
+        data = self.data[mask]
+        targets = self.targets[mask]
+        return data, targets
 
     def _load_meta(self):
         path = os.path.join(self.root, self.base_folder, self.meta['filename'])
@@ -206,10 +245,3 @@ class CIFAR100(CIFAR10):
         'key': 'fine_label_names',
         'md5': '7973b15100ade9c7d40fb424638fde48',
     }
-
-
-if __name__ == "__main__":
-    classes = np.arange(100)
-    np.random.shuffle(classes)
-    class_list = classes[:2]
-    dataset = CIFAR100(root='/home/joseph/il/initial_cifar_burnin/dataset', train=True, class_list=class_list)

@@ -85,5 +85,6 @@ def log(message, print_to_console=True, log_level=logging.DEBUG):
     if print_to_console:
         print message
 
+
 if __name__ == '__main__':
     plot_per_episode_accuracies([50,30], 1, 100)

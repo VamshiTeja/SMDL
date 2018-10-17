@@ -24,6 +24,12 @@ root.weight_decay = 1e-4
 root.timestamp = 'placeholder'  # Will be updated at runtime
 root.output_dir = 'placeholder'
 
+# Dataset Details
+root.dataset = edict()
+root.dataset.name = 'CIFAR'
+root.dataset.total_num_classes = 100
+root.dataset.memory_budget = 2000
+
 
 def _merge_a_into_b(a, b):
     """

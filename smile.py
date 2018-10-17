@@ -8,15 +8,14 @@ from models import *
 from datasets import cifar
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
+from lib.exemplar import ExemplarManager
 
-def learn_incrementally(gpus, datatset='CIFAR'):
-    num_classes, classes = 0, None
-    if datatset == 'CIFAR':
-        num_classes = 100
-        # Create the class-id list
-        classes = np.arange(num_classes)
-
+def learn_incrementally(gpus):
     train_start_time = time.time()
+    num_classes = cfg.dataset.total_num_classes
+
+    # Create the class-id list
+    classes = np.arange(num_classes)
 
     # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
     for round_count in range(cfg.repeat_rounds):
@@ -37,10 +36,14 @@ def learn_incrementally(gpus, datatset='CIFAR'):
 
         criterion = torch.nn.CrossEntropyLoss().cuda()
 
+        # ExemplarManager for storing and managing exemplars
+        exMan = ExemplarManager()
+
         log(model)
         test_acc_per_episode = []
         for episode_count in np.arange(num_episodes):
-            ep_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
+            new_class_set = classes[episode_count*class_per_episode: (episode_count+1)*class_per_episode]  # New class in this episode
+            old_class_set = classes[0: episode_count*class_per_episode] # All the classes that are already seen
             cumm_class_set = classes[0: (episode_count+1)*class_per_episode]  # All classes upto and including this episode
 
             # Getting the model ready for the next episode
@@ -69,9 +72,11 @@ def learn_incrementally(gpus, datatset='CIFAR'):
             test_transforms = transforms.Compose([transforms.ToTensor(), norm])
 
             train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=False, transform=train_transforms,
-                                           class_list=cumm_class_set)
+                                           cumm_class_set=cumm_class_set, new_class_set=new_class_set,
+                                           old_class_set=old_class_set, exemplar_manager=exMan)
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms,
-                                          class_list=cumm_class_set)
+                                          cumm_class_set=cumm_class_set, new_class_set=new_class_set,
+                                           old_class_set=old_class_set)
 
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
                                                        num_workers=2)
@@ -95,13 +100,18 @@ def learn_incrementally(gpus, datatset='CIFAR'):
                 test_accs.append(test_acc)
                 log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
+
+            # Exemplar Selection
+            exMan.add_exemplars(model, train_dataset, new_class_set)
+
+            # Saving model and metrics
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
             output_dir = cfg.output_dir + '/models'
             filename = 'round_' + str(round_count+1) + '_episode_' + str(episode_count+1) + '_classes_' + str(len(cumm_class_set)) + '.pth'
             save_model(model, output_dir+'/'+filename)
             log('Model saved to '+ output_dir+'/'+filename)
-
             test_acc_per_episode.append(test_acc)
+
         plot_per_episode_accuracies(test_acc_per_episode, round_count, num_classes)
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
@@ -211,6 +221,8 @@ def main():
     if args.cfg_file is not None:
         cfg_from_file(args.cfg_file)
 
+    if not os.path.exists('datasets'):
+        os.makedirs('datasets')
     if not os.path.exists('output'):
         os.makedirs('output')
 
