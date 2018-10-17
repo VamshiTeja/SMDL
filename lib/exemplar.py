@@ -16,13 +16,6 @@ class ExemplarManager:
             exemplars (dictionary)
         """
         return self.exemplars
-        #
-        # images = []
-        # targets = []
-        # for cls, imgs in self.exemplars.items():
-        #     images.extend(imgs)
-        #     targets.extend(np.full(imgs.shape[0], cls))
-        # return images, targets
 
     def add_exemplars(self, model, dataset, class_list):
         """
