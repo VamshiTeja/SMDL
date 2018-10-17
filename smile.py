@@ -213,20 +213,20 @@ def main():
 
     if not os.path.exists('output'):
         os.makedirs('output')
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
 
     timestamp = time.strftime("%m%d_%H%M%S")
-    logging.basicConfig(filename='./logs/smile_' + timestamp + '.log', level=logging.DEBUG,
-                        format='%(levelname)s:\t%(message)s')
     cfg.timestamp = timestamp
 
-    output_dir = './output/'+cfg.run_label+'_'+cfg.timestamp
+    output_dir = './output/' + cfg.run_label + '_' + cfg.timestamp
     cfg.output_dir = output_dir
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         os.makedirs(output_dir + '/models')
         os.makedirs(output_dir + '/plots')
+        os.makedirs(output_dir + '/logs')
+
+    logging.basicConfig(filename=output_dir + '/logs/smile_' + timestamp + '.log', level=logging.DEBUG,
+                        format='%(levelname)s:\t%(message)s')
 
     log(pprint.pformat(cfg))
 
