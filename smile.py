@@ -18,6 +18,7 @@ def learn_incrementally(gpus):
     classes = np.arange(num_classes)
 
     # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
+    accuracies = []
     for round_count in range(cfg.repeat_rounds):
         # Each episode contains a set of classes that are trained at once.
         # Different episodes contains different classes and classes in all episodes is equal to the total classes.
@@ -113,7 +114,10 @@ def learn_incrementally(gpus):
             test_acc_per_episode.append(test_acc)
 
         plot_per_episode_accuracies(test_acc_per_episode, round_count, num_classes)
+        accuracies.append(test_acc_per_episode)
 
+    plot_accuracies(accuracies, num_classes)
+    save_accuracies(accuracies, cfg.output_dir + '/accuracies/' + cfg.run_label)
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
 
@@ -236,6 +240,7 @@ def main():
         os.makedirs(output_dir + '/models')
         os.makedirs(output_dir + '/plots')
         os.makedirs(output_dir + '/logs')
+        os.makedirs(output_dir + '/accuracies')
 
     logging.basicConfig(filename=output_dir + '/logs/smile_' + timestamp + '.log', level=logging.DEBUG,
                         format='%(levelname)s:\t%(message)s')

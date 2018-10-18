@@ -1,11 +1,17 @@
 # General Configutaions
 run_label: 'smile'
-gpu_ids: '6'
-seed: 99
+gpu_ids: '4'
+seed: 0 # '0' means no manual seeding
 
 # Incremental Learning Configurations
-repeat_rounds: 1
-class_per_episode: 2
+repeat_rounds: 3
+class_per_episode: 20
+
+# Dataset Configurations
+dataset:
+    name: 'CIFAR'
+    total_num_classes: 100
+    memory_budget: 2000   # Upper limit on the number of images that can be retained as exemplars
 
 # Training Configurations
 epochs: 100
@@ -16,9 +22,3 @@ batch_size_test: 100
 learning_rate: 0.1
 momentum: 0.9
 weight_decay: 0.0001
-
-# Dataset Configurations
-dataset:
-    name: 'CIFAR'
-    total_num_classes: 100
-    memory_budget: 2000   # Upper limit on the number of images that can be retained as exemplars

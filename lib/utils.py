@@ -3,7 +3,11 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 import numpy as np
-import logging
+import logging, sys
+if sys.version_info[0] == 2:
+    import cPickle as pickle
+else:
+    import pickle
 
 from lib.config import cfg
 
@@ -68,6 +72,28 @@ def plot_per_episode_accuracies(test_accs, round_count, num_classes):
         log(error, log_level=logging.ERROR)
 
 
+def plot_accuracies(test_accs, num_classes, color='blue', file_name_prefix='', title=None):
+    step = num_classes / len(test_accs[0])
+    x = range(step, num_classes+1, step)
+
+    mean = np.mean(test_accs, axis=0)
+    sd = np.std(test_accs, axis=0)
+
+    y = mean
+    err = sd
+    plt.errorbar(x, y, yerr=err, color=color)
+    plt.axis([0, num_classes+5, 0, 100+5])
+
+    if title is not None:
+        plt.title(title)
+    if file_name_prefix != '':
+        file_name_prefix = file_name_prefix + '_'
+    plt.xlabel('Number of classes')
+    plt.ylabel('Accuracy')
+    plt.savefig(cfg.output_dir + '/plots/' + file_name_prefix + 'accuracy.png')
+    plt.close()
+
+
 def log(message, print_to_console=True, log_level=logging.DEBUG):
     if log_level == logging.INFO:
         logging.info(message)
@@ -86,5 +112,12 @@ def log(message, print_to_console=True, log_level=logging.DEBUG):
         print message
 
 
+def save_accuracies(accuracy, file_name_prefix):
+    file_name = file_name_prefix + '_accuracy.pkl'
+    with open(file_name, 'w') as f:
+        pickle.dump(accuracy, f)
+
+
 if __name__ == '__main__':
-    plot_per_episode_accuracies([50,30], 1, 100)
+    plot_accuracies([[80, 75, 32, 14], [90, 70, 20, 18], [60, 70, 30, 9]], 100, title='This is a title')
+    save_accuracies([[9]], 'file')
