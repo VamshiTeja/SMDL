@@ -6,7 +6,8 @@ seed: 0 # '0' means no manual seeding
 # Incremental Learning Configurations
 repeat_rounds: 3
 class_per_episode: 20
-use_all_exemplars: True # All the available images from each class will be used in each episode. 'memory_budget' will be ignored.
+use_all_exemplars: False # All the available images from each class will be used in each episode, if set to True.
+                         # 'memory_budget' will be ignored.
 
 # Dataset Configurations
 dataset:
