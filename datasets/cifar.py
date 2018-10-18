@@ -17,6 +17,7 @@ else:
 
 import torch.utils.data as data
 from data_utils import download_url, check_integrity
+from lib.config import cfg
 
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
@@ -94,26 +95,30 @@ class CIFAR10(data.Dataset):
 
         # Exemplar management
         if train:
-            data, targets = np.array(self.data), np.array(self.targets)
+            if not cfg.use_all_exemplars:
+                data, targets = np.array(self.data), np.array(self.targets)
 
-            self.data = []
-            self.targets = []
+                self.data = []
+                self.targets = []
 
-            # Adding images from the new class
-            mask = np.array([label in new_class_set for label in targets])
-            filtered_data_points = data[0][mask]
-            filtered_targets = targets[mask]
-            self.data.append(filtered_data_points)
-            self.targets.extend(filtered_targets)
+                # Adding images from the new class
+                mask = np.array([label in new_class_set for label in targets])
+                filtered_data_points = data[0][mask]
+                filtered_targets = targets[mask]
+                self.data.append(filtered_data_points)
+                self.targets.extend(filtered_targets)
 
-            # exemplars = exemplar_manager.get_exemplars()
-            # for seen_class in old_class_set:
-            #     imgs = exemplars[seen_class]
-            #     self.data.append(imgs)
-            #     self.targets.extend(np.full(imgs.shape[0], seen_class))
+                self.data = np.array(self.data)
+                self.targets = np.array(self.targets)
+            else:   # Load all the data of the corresponding classes available in the dataset
+                self.data = np.array(self.data)
+                self.targets = np.array(self.targets)
+                mask = np.array([label in cumm_class_set for label in self.targets])
 
-            self.data = np.array(self.data)
-            self.targets = np.array(self.targets)
+                filtered_data_points = self.data[0][mask]
+                self.data = []
+                self.data.append(filtered_data_points)
+                self.targets = self.targets[mask]
 
         else:   # Load testing data
             self.data = np.array(self.data)
@@ -130,7 +135,7 @@ class CIFAR10(data.Dataset):
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
 
         # Adding images from the previously seen class
-        if train:
+        if train and not cfg.use_all_exemplars:
             exemplars = exemplar_manager.get_exemplars()
             for seen_class in old_class_set:
                 imgs = exemplars[seen_class]

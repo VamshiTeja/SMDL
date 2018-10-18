@@ -103,7 +103,8 @@ def learn_incrementally(gpus):
 
 
             # Exemplar Selection
-            exMan.add_exemplars(model, train_dataset, new_class_set)
+            if not cfg.use_all_exemplars:
+                exMan.add_exemplars(model, train_dataset, new_class_set)
 
             # Saving model and metrics
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)

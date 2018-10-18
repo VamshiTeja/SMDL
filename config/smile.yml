@@ -1,11 +1,12 @@
 # General Configutaions
 run_label: 'smile'
-gpu_ids: '4'
+gpu_ids: '5'
 seed: 0 # '0' means no manual seeding
 
 # Incremental Learning Configurations
 repeat_rounds: 3
 class_per_episode: 20
+use_all_exemplars: True # All the available images from each class will be used in each episode. 'memory_budget' will be ignored.
 
 # Dataset Configurations
 dataset:

@@ -11,6 +11,7 @@ root.seed = 99
 
 root.repeat_rounds = 1
 root.class_per_episode = 100
+root.use_all_exemplars = False
 
 root.epochs = 2
 
