@@ -12,6 +12,7 @@ root.seed = 99
 root.repeat_rounds = 1
 root.class_per_episode = 100
 root.use_all_exemplars = False
+root.sampling_strategy = 'random'   # Can be either: 'random', 'submodular'
 
 root.epochs = 2
 

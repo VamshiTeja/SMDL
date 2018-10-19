@@ -1,5 +1,5 @@
 """
-Adapted from https://github.com/junyuseu/pytorch-cifar-models/blob/master/models/resnet_cifar.py
+Adapted from https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
 """
 
 import torch
@@ -130,10 +130,10 @@ class ResNet(nn.Module):
         x = self.layer3(x)
 
         x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
+        penultimate_acts = x.view(x.size(0), -1)
+        x = self.fc(penultimate_acts)
 
-        return x
+        return x, penultimate_acts
 
 
 def resnet20(**kwargs):

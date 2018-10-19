@@ -80,9 +80,9 @@ def learn_incrementally(gpus):
                                            old_class_set=old_class_set)
 
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
-                                                       num_workers=2)
+                                                       num_workers=10)
             test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
-                                                      num_workers=2)
+                                                      num_workers=10)
 
             train_accs = []
             test_accs = []
@@ -104,7 +104,7 @@ def learn_incrementally(gpus):
 
             # Exemplar Selection
             if not cfg.use_all_exemplars:
-                exMan.add_exemplars(model, train_dataset, new_class_set)
+                exMan.add_exemplars(model, test_transforms, train_dataset, new_class_set)
 
             # Saving model and metrics
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
@@ -135,7 +135,7 @@ def train(train_loader, model, criterion, optimizer, cumm_class_set, epoch_count
         target = torch.tensor([list(cumm_class_set).index(t) for t in target.numpy()])
         input, target = input.cuda(), target.cuda()
 
-        output = model(Variable(input))
+        output, _ = model(Variable(input))
         loss = criterion(output, Variable(target))
 
         acc = compute_accuracy(output.data, target)[0]
@@ -170,7 +170,7 @@ def test(test_loader, model, cumm_class_set, epoch_count, max_epoch, episode_cou
         # Changing the labels to be the index of the acutal class labels. CrossEntropyLoss's implementation requires this.
         target = torch.tensor([list(cumm_class_set).index(t) for t in target.numpy()])
         input, target = input.cuda(), target.cuda()
-        output = model(Variable(input))
+        output, _ = model(Variable(input))
         acc = compute_accuracy(output.data, target)[0]
         top1.update(acc.item(), input.size(0))
 
