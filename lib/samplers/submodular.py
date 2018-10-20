@@ -4,7 +4,7 @@ import time
 import torch
 
 from sampler import Sampler
-
+from lib.utils import log
 
 class SubmodularSampler(Sampler):
     def __init__(self, model, transforms, set, subset_size):
@@ -21,7 +21,6 @@ class SubmodularSampler(Sampler):
         final_score = []
 
         end = len(set) if dynamic_set_size else self.subset_size
-        print end
 
         for i in range(0, end):
             now = time.time()
@@ -45,14 +44,14 @@ class SubmodularSampler(Sampler):
             index_set = np.delete(index_set, best_item_index, axis=0)
 
             final_score.append(scores[best_item_index] - alpha_3*len(subset))
-            print 'Time for processing {0}/{1} exemplar is {1}'.format(i, end, time.time()-now)
+            log('Time for processing {0}/{1} exemplar is {2}'.format(i, end, time.time()-now))
 
         if dynamic_set_size:
             subset = subset[0:np.argmax(final_score)]
         else:
             subset = subset[0:self.subset_size]
 
-        print np.array(subset).shape
+        log(np.array(subset).shape)
         return np.array(subset)
 
     def _compute_score(self, subset_indices, alpha_1, alpha_2):
