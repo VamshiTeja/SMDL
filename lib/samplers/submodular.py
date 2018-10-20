@@ -45,7 +45,7 @@ class SubmodularSampler(Sampler):
             index_set = np.delete(index_set, best_item_index, axis=0)
 
             final_score.append(scores[best_item_index] - alpha_3*len(subset))
-            print 'Time for processing {0}th exemplar is {1}'.format(i, time.time()-now)
+            print 'Time for processing {0}/{1} exemplar is {1}'.format(i, end, time.time()-now)
 
         if dynamic_set_size:
             subset = subset[0:np.argmax(final_score)]
