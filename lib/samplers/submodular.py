@@ -1,5 +1,9 @@
-from sampler import Sampler
 import numpy as np
+import multiprocessing
+import time
+import torch
+
+from sampler import Sampler
 
 
 class SubmodularSampler(Sampler):
@@ -11,24 +15,37 @@ class SubmodularSampler(Sampler):
 
     def _select_subset_items(self, alpha_1=1, alpha_2=1, alpha_3=1, dynamic_set_size=False):
         set = self.set.copy()
+        index_set = range(0, len(set))  # It contains the indices of each image of the set.
         subset = []
+        subset_indices = []     # Subset of indices. Keeping track to improve computational performance.
         final_score = []
 
         end = len(set) if dynamic_set_size else self.subset_size
+        print end
+
         for i in range(0, end):
+            now = time.time()
             scores = []
-            for item in set:
+            for iter, item in enumerate(set):
                 temp_subset = list(subset)
+                temp_subset_indices = list(subset_indices)
+
                 temp_subset.append(item)
-                score = self._compute_score(temp_subset, alpha_1, alpha_2, alpha_3)
+                temp_subset_indices.append(index_set[iter])
+
+                score = self._compute_score(temp_subset_indices, alpha_1, alpha_2)
                 scores.append(score)
             best_item_index = np.argmax(scores)
             best_item = set[best_item_index]
 
             subset.append(best_item)
-            set = np.delete(set, best_item_index, axis=0)
+            subset_indices.append(index_set[best_item_index])
 
-            final_score.append(scores[best_item_index] - alpha_1*len(subset))
+            set = np.delete(set, best_item_index, axis=0)
+            index_set = np.delete(index_set, best_item_index, axis=0)
+
+            final_score.append(scores[best_item_index] - alpha_3*len(subset))
+            print 'Time for processing {0}th exemplar is {1}'.format(i, time.time()-now)
 
         if dynamic_set_size:
             subset = subset[0:np.argmax(final_score)]
@@ -38,7 +55,7 @@ class SubmodularSampler(Sampler):
         print np.array(subset).shape
         return np.array(subset)
 
-    def _compute_score(self, subset, alpha_1, alpha_2, alpha_3):
+    def _compute_score(self, subset_indices, alpha_1, alpha_2):
         """
         Compute the score for the subset.
         The score is a combination of:
@@ -48,17 +65,26 @@ class SubmodularSampler(Sampler):
         :param subset:
         :param alpha_1:
         :param alpha_2:
-        :param alpha_3:
         :return: The score of the subset.
         """
         score = 0
-        subset = np.array(subset)
-        # for item in subset:
-        #     for index_in_set, img in enumerate(self.set):
-        #         # if (img == item).all():
-        #         #     break
-        #         pass
-        #
-        #     # Diversity Score
+        for index in subset_indices:
+            # Diversity Score
+            p_act = self.penultimate_activations[index]
+            all_acts = self.penultimate_activations
+            d_score = np.sum(np.linalg.norm(all_acts - p_act, axis=1))
 
+            # Uncertainity Score
+            f_acts = torch.tensor(self.final_activations[index])
+            p_log_p = self.sigmoid_module(f_acts) * self.log_sigmoid_module(f_acts)
+            u_score = (-1.0 * p_log_p.sum()).numpy()
+
+            # Redundancy Score
+            r_score = 0
+            if len(subset_indices) > 1:
+                subset_penultimate_acts = [self.penultimate_activations[i] for i in subset_indices]
+                dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
+                r_score = np.min(dist[dist != 0])
+
+            score += d_score + alpha_1*u_score + alpha_2*r_score
         return score

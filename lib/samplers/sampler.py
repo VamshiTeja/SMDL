@@ -11,6 +11,8 @@ class Sampler(object):
         self.final_activations = []
         self.penultimate_activations = []
         self._get_activations(model,transforms)
+        self.sigmoid_module = torch.nn.Sigmoid()
+        self.log_sigmoid_module = torch.nn.LogSigmoid()
 
     def _get_activations(self, model, transforms):
         dataset = CustomDataset(self.set, transforms)
