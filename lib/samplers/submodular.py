@@ -1,10 +1,11 @@
 import numpy as np
-import multiprocessing
 import time
 import torch
+import torch.nn.functional as F
 
 from sampler import Sampler
 from lib.utils import log
+
 
 class SubmodularSampler(Sampler):
     def __init__(self, model, transforms, set, subset_size):
@@ -75,7 +76,7 @@ class SubmodularSampler(Sampler):
 
             # Uncertainity Score
             f_acts = torch.tensor(self.final_activations[index])
-            p_log_p = self.sigmoid_module(f_acts) * self.log_sigmoid_module(f_acts)
+            p_log_p = F.softmax(f_acts, dim=0) * F.log_softmax(f_acts, dim=0)
             u_score = (-1.0 * p_log_p.sum()).numpy()
 
             # Redundancy Score

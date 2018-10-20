@@ -37,7 +37,8 @@ class ExemplarManager:
 
         # Add new exemplars
         data, targets = dataset.get_images(class_list)
-        for cls in class_list:
+        for i, cls in enumerate(class_list):
+            log('Generating exemplar set for {0}/{1} new classes.'.format(i, len(class_list)))
             imgs = data[targets == cls]
             sub_set = self._create_subset(model, transforms, imgs, budget_per_class, policy=cfg.sampling_strategy)
             self.exemplars[cls] = sub_set

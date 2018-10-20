@@ -102,10 +102,6 @@ def learn_incrementally(gpus):
                 log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
 
-            # Exemplar Selection
-            if not cfg.use_all_exemplars:
-                exMan.add_exemplars(model, test_transforms, train_dataset, new_class_set)
-
             # Saving model and metrics
             plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count)
             output_dir = cfg.output_dir + '/models'
@@ -114,8 +110,13 @@ def learn_incrementally(gpus):
             log('Model saved to '+ output_dir+'/'+filename)
             test_acc_per_episode.append(test_acc)
 
+            # Exemplar Selection
+            if not cfg.use_all_exemplars:
+                exMan.add_exemplars(model, test_transforms, train_dataset, new_class_set)
+
         plot_per_episode_accuracies(test_acc_per_episode, round_count, num_classes)
         accuracies.append(test_acc_per_episode)
+        save_accuracies(accuracies, cfg.output_dir + '/accuracies/'+cfg.run_label+'_round_' + str(round_count))
 
     plot_accuracies(accuracies, num_classes)
     save_accuracies(accuracies, cfg.output_dir + '/accuracies/' + cfg.run_label)

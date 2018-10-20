@@ -1,7 +1,6 @@
 import torch
 from datasets.custom_dataset import CustomDataset
 
-import numpy as np
 
 class Sampler(object):
     def __init__(self, model, transforms, set, subset_size):
@@ -11,8 +10,6 @@ class Sampler(object):
         self.final_activations = []
         self.penultimate_activations = []
         self._get_activations(model,transforms)
-        self.sigmoid_module = torch.nn.Sigmoid()
-        self.log_sigmoid_module = torch.nn.LogSigmoid()
 
     def _get_activations(self, model, transforms):
         dataset = CustomDataset(self.set, transforms)
