@@ -15,7 +15,8 @@ def plot_accuracies():
     :return: None
     """
     accuracy_infos = [['/home/joseph/il/smile/output/smile_1018_120912/accuracies/smile_accuracy.pkl', 'Using randomly selected exemplar set', 'green'],
-                      ['/home/joseph/il/smile/output/smile_all_data_1018_122812/accuracies/smile_all_data_accuracy.pkl', 'Using all the data', 'blue']]
+                      ['/home/joseph/il/smile/output/smile_all_data_1018_122812/accuracies/smile_all_data_accuracy.pkl', 'Using all the data', 'blue'],
+                      ['/home/joseph/il/smile/output/submodular_smile_1_round_1020_105605/accuracies/submodular_smile_1_round_accuracy.pkl', 'Submodular subset selection', 'violet']]
 
     save_location = './'
     title = ''

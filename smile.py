@@ -72,7 +72,7 @@ def learn_incrementally(gpus):
                                                    ])
             test_transforms = transforms.Compose([transforms.ToTensor(), norm])
 
-            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=False, transform=train_transforms,
+            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True, transform=train_transforms,
                                            cumm_class_set=cumm_class_set, new_class_set=new_class_set,
                                            old_class_set=old_class_set, exemplar_manager=exMan)
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms,
