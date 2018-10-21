@@ -4,10 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import logging, sys
-if sys.version_info[0] == 2:
-    import cPickle as pickle
-else:
-    import pickle
+import cPickle as pickle
 
 from lib.config import cfg
 

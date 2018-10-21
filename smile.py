@@ -1,4 +1,5 @@
 import argparse, time, os, logging, pprint
+import cPickle as pickle
 
 import torch
 import torchvision.transforms as transforms
@@ -14,8 +15,11 @@ def learn_incrementally(gpus):
     train_start_time = time.time()
     num_classes = cfg.dataset.total_num_classes
 
-    # Create the class-id list
-    classes = np.arange(num_classes)
+    # Loading class labels (if present)
+    file_list = None
+    if os.path.exists('./run_sandbox/class_list.pkl'):
+        with open('./run_sandbox/class_list.pkl', 'rb') as f:
+            file_list = pickle.load(f)
 
     # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
     accuracies = []
@@ -25,8 +29,14 @@ def learn_incrementally(gpus):
         class_per_episode = cfg.class_per_episode
         num_episodes = num_classes / class_per_episode
 
-        # Shuffle the class order for each episode.
-        np.random.shuffle(classes)
+        # Shuffle the class order for each episode or load the shuffled class order
+        if cfg.load_class_list_from_file and file_list is not None:
+            classes = file_list[round_count]
+            print 'loaded classes'
+            print classes
+        else:
+            classes = np.arange(num_classes)
+            np.random.shuffle(classes)
 
         # Initialize the model
         model = resnet32(num_classes=cfg.class_per_episode)
