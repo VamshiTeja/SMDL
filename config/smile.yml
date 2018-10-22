@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'smile'
+run_label: 'herding_smile'
 gpu_ids: '6'
 seed: 0                            # '0' means no manual seeding
 
@@ -22,6 +22,7 @@ epochs: 100
 
 batch_size: 512
 batch_size_test: 100
+
 learning_rate: 0.1
 momentum: 0.9
 weight_decay: 0.0001
