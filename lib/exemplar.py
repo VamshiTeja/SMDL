@@ -3,7 +3,7 @@ import numpy as np
 from lib.config import cfg
 from lib.utils import log
 from lib.samplers.submodular import SubmodularSampler
-
+from lib.samplers.herding import HerdingSampler
 
 class ExemplarManager:
     def __init__(self):
@@ -57,6 +57,9 @@ class ExemplarManager:
             subset = set[subset_index]
         elif policy == 'submodular':
             sampler = SubmodularSampler(model, transforms, set, subset_size)
+            subset = sampler.get_subset()
+        elif policy == 'herding':
+            sampler = HerdingSampler(model, transforms, set, subset_size)
             subset = sampler.get_subset()
         else:
             raise ValueError('Recieved a wrong sampling policy: ' + policy)

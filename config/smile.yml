@@ -8,7 +8,7 @@ repeat_rounds: 3
 class_per_episode: 20
 use_all_exemplars: False           # All the available images from each class will be used in each episode, if set to True.
                                    # 'memory_budget' will be ignored.
-sampling_strategy: 'submodular'    # Can be either: 'random', 'submodular'
+sampling_strategy: 'herding'    # Can be either: 'random', 'submodular', 'herding'
 load_class_list_from_file: True    # Expects the class list for each of the 'rounds' as a pickle file in '/outputs' folder.
 
 # Dataset Configurations
