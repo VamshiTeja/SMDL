@@ -38,13 +38,13 @@ def compute_accuracy(output, target, topk=(1,)):
     return result
 
 
-def plot_per_epoch_accuracies(train_accs, test_accs, episode_count, round_count):
+def plot_per_epoch_accuracies(train_accs, test_accs, round_count):
     try:
         x = np.arange(1, len(train_accs)+1)
         plt.plot(x, train_accs, 'r', label='Train Accuracy')
         plt.plot(x, test_accs, 'g', label='Test Accuracy')
         plt.legend()
-        plt.savefig(cfg.output_dir + '/plots/round_' + str(round_count) +'_episode_' + str(episode_count) + "_train_test_accuracy.png")
+        plt.savefig(cfg.output_dir + '/plots/round_' + str(round_count) + "_train_test_accuracy.png")
         plt.close()
     except Exception as error:
         log('Exception occurred while plotting the accuracies. Ignoring.', log_level=logging.ERROR)

@@ -3,8 +3,7 @@ Adapted from PyTorch's official CIFAR handler
 https://github.com/pytorch/vision/blob/master/torchvision/datasets/cifar.py
 """
 
-# Construct a dataset out a selected set of classes.
-
+from __future__ import print_function
 from PIL import Image
 import os
 import os.path
@@ -17,7 +16,7 @@ else:
 
 import torch.utils.data as data
 from data_utils import download_url, check_integrity
-from lib.config import cfg
+
 
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
@@ -47,6 +46,7 @@ class CIFAR10(data.Dataset):
         ['data_batch_4', '634d18415352ddfa80567beed471001a'],
         ['data_batch_5', '482c414d41f54cd18b22e5b47cb7c3cb'],
     ]
+
     test_list = [
         ['test_batch', '40351d587109b95175f43aff81a1287e'],
     ]
@@ -57,8 +57,8 @@ class CIFAR10(data.Dataset):
     }
 
     def __init__(self, root, train=True,
-                 transform=None, target_transform=None, download=False, exemplar_manager=None,
-                 cumm_class_set=[], new_class_set=[], old_class_set=[]):
+                 transform=None, target_transform=None,
+                 download=False):
         self.root = os.path.expanduser(root)
         self.transform = transform
         self.target_transform = target_transform
@@ -93,68 +93,10 @@ class CIFAR10(data.Dataset):
                 else:
                     self.targets.extend(entry['fine_labels'])
 
-        # Exemplar management
-        if train:
-            if not cfg.use_all_exemplars:
-                data, targets = np.array(self.data), np.array(self.targets)
-
-                self.data = []
-                self.targets = []
-
-                # Adding images from the new class
-                mask = np.array([label in new_class_set for label in targets])
-                filtered_data_points = data[0][mask]
-                filtered_targets = targets[mask]
-                self.data.append(filtered_data_points)
-                self.targets.extend(filtered_targets)
-
-                self.data = np.array(self.data)
-                self.targets = np.array(self.targets)
-            else:   # Load all the data of the corresponding classes available in the dataset
-                self.data = np.array(self.data)
-                self.targets = np.array(self.targets)
-                mask = np.array([label in cumm_class_set for label in self.targets])
-
-                filtered_data_points = self.data[0][mask]
-                self.data = []
-                self.data.append(filtered_data_points)
-                self.targets = self.targets[mask]
-
-        else:   # Load testing data
-            self.data = np.array(self.data)
-            self.targets = np.array(self.targets)
-            mask = np.array([label in cumm_class_set for label in self.targets])
-
-            filtered_data_points = self.data[0][mask]
-            self.data = []
-            self.data.append(filtered_data_points)
-            self.targets = self.targets[mask]
-
-        # Reshaping to the standard image dimensions.
         self.data = np.vstack(self.data).reshape(-1, 3, 32, 32)
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
 
-        # Adding images from the previously seen class
-        if train and not cfg.use_all_exemplars:
-            exemplars = exemplar_manager.get_exemplars()
-            for seen_class in old_class_set:
-                imgs = exemplars[seen_class]
-
-                data_list = list(self.data)
-                data_list.extend(imgs)
-                self.data = np.array(data_list)
-
-                target_list = list(self.targets)
-                target_list.extend(np.full(imgs.shape[0], seen_class))
-                self.targets = np.array(target_list)
-
         self._load_meta()
-
-    def get_images(self, classlist):
-        mask = np.array([label in classlist for label in self.targets])
-        data = self.data[mask]
-        targets = self.targets[mask]
-        return data, targets
 
     def _load_meta(self):
         path = os.path.join(self.root, self.base_folder, self.meta['filename'])
@@ -207,7 +149,7 @@ class CIFAR10(data.Dataset):
         import tarfile
 
         if self._check_integrity():
-            print 'Files already downloaded and verified'
+            print('Files already downloaded and verified')
             return
 
         download_url(self.url, self.root, self.filename, self.tgz_md5)

@@ -1,10 +1,9 @@
 """
-Adapted from https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
+Adapted from https://github.com/junyuseu/pytorch-cifar-models/blob/master/models/resnet_cifar.py
 """
 
 import torch
 import torch.nn as nn
-from lib.pytorch_utils import CustomLinearModule
 import math
 
 
@@ -94,7 +93,7 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 32, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 64, layers[2], stride=2)
         self.avgpool = nn.AvgPool2d(8, stride=1)
-        self.fc = CustomLinearModule(64 * block.expansion, num_classes)
+        self.fc = nn.Linear(64 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -130,10 +129,10 @@ class ResNet(nn.Module):
         x = self.layer3(x)
 
         x = self.avgpool(x)
-        penultimate_acts = x.view(x.size(0), -1)
-        x = self.fc(penultimate_acts)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
 
-        return x, penultimate_acts
+        return x
 
 
 def resnet20(**kwargs):
