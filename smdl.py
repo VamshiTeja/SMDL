@@ -141,14 +141,20 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
 
 def adjust_lr(epoch, optimizer, base_lr):
-    if epoch < 50:
+    if epoch < 40:
         lr = base_lr
-    elif epoch < 75:
-        lr = base_lr * 0.5
-    elif epoch < 120:
+    elif epoch < 50:
         lr = base_lr * 0.1
-    else:
+    elif epoch < 60:
         lr = base_lr * 0.01
+    elif epoch < 70:
+        lr = base_lr * 0.001
+    elif epoch < 80:
+        lr = base_lr * 0.0001
+    elif epoch < 90:
+        lr = base_lr * 0.00001
+    else:
+        lr = base_lr * 0.00001
     for param_grp in optimizer.param_groups:
         param_grp['lr'] = lr
 
