@@ -1,5 +1,4 @@
 import argparse, time, os, logging, pprint
-import cPickle as pickle
 
 import torch
 import torchvision.transforms as transforms
@@ -9,7 +8,6 @@ from models import *
 from datasets import cifar
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
-from lib.exemplar import ExemplarManager
 
 
 def submodular_training(gpus):
@@ -110,11 +108,10 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                                                                              epoch_count+1, max_epoch, i, len(train_loader),
                                                                              loss=losses, accuracy=top1))
 
-    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3}[{4:3d}/{5}] ' \
+    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
           '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
           '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
-                                                                                epoch_count + 1, max_epoch, i,
-                                                                                len(train_loader),
+                                                                                epoch_count + 1, max_epoch,
                                                                                 loss=losses, accuracy=top1))
     return top1.avg
 
@@ -135,16 +132,15 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
                                                                                       epoch_count + 1, max_epoch, i,
                                                                                       len(test_loader), accuracy=top1))
 
-    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3}[{4:3d}/{5}] ' \
+    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
         '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
-                                                                              epoch_count + 1, max_epoch, i,
-                                                                              len(test_loader), accuracy=top1))
+                                                                              epoch_count + 1, max_epoch,
+                                                                              accuracy=top1))
 
     return top1.avg
 
 
 def adjust_lr(epoch, optimizer, base_lr):
-    # TODO: Set it according to iCaRL
     if epoch < 50:
         lr = base_lr
     elif epoch < 75:

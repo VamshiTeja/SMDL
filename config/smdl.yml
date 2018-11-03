@@ -15,7 +15,7 @@ dataset:
 # Training Configurations
 epochs: 100
 
-batch_size: 512
+batch_size: 256
 batch_size_test: 100
 
 learning_rate: 0.1
