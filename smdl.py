@@ -8,6 +8,7 @@ from models import *
 from datasets import cifar
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
+from lib.samplers.torch_adapters import *
 
 
 def submodular_training(gpus):
@@ -40,7 +41,8 @@ def submodular_training(gpus):
         train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True, transform=train_transforms)
         test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms)
 
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
+        sampler = SubmodularSampler(train_dataset)
+        train_loader = torch.utils.data.DataLoader(train_dataset, sampler = sampler, batch_size=cfg.batch_size, shuffle=True,
                                                    num_workers=10)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
                                                   num_workers=10)
