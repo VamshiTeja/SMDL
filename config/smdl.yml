@@ -1,7 +1,7 @@
 # General Configutaions
 run_label: 'smdl'
-gpu_ids: '0'
-seed: 0                            # '0' means no manual seeding
+gpu_ids: '3'
+seed: 99                            # '0' means no manual seeding
 
 # Incremental Learning Configurations
 repeat_rounds: 1
