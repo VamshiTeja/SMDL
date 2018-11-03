@@ -41,9 +41,9 @@ def submodular_training(gpus):
         train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True, transform=train_transforms)
         test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms)
 
-        sampler = SubmodularSampler(train_dataset)
-        train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
-                                                   num_workers=10)
+        if not cfg.use_submobular_batch_selection:
+            train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
+                                                       num_workers=10)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
                                                   num_workers=10)
 
@@ -56,6 +56,14 @@ def submodular_training(gpus):
             adjust_lr(epoch_count, optimizer, cfg.learning_rate)
 
             start_time = time.time()
+
+            # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
+            if cfg.use_submobular_batch_selection:
+                t_stamp = time.time()
+                sampler = SubmodularSampler(model, train_dataset)
+                log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
+                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
+                                                           num_workers=10)
 
             train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
                               round_count, cfg.repeat_rounds)

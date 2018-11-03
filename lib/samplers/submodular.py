@@ -7,9 +7,9 @@ from sampler import Sampler
 from lib.utils import log
 
 
-class SubmodularSampler(Sampler):
-    def __init__(self, model, transforms, set, subset_size):
-        super(SubmodularSampler, self).__init__(model, transforms, set, subset_size)
+class SubModSampler(Sampler):
+    def __init__(self, model, dataset):
+        super(SubModSampler, self).__init__(model, dataset)
 
     def get_subset(self):
         return self._select_subset_items()
@@ -67,9 +67,9 @@ class SubmodularSampler(Sampler):
             log('Time for processing {0}/{1} exemplar is {2}'.format(i, end, time.time()-now))
 
         if dynamic_set_size:
-            subset = subset[0:np.argmax(final_score)]
+            subset = subset_indices[0:np.argmax(final_score)]
         else:
-            subset = subset[0:self.subset_size]
+            subset = subset_indices[0:self.subset_size]
 
         log(np.array(subset).shape)
         return np.array(subset)
