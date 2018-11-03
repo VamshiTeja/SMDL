@@ -14,7 +14,7 @@ class SubmodularSampler(Sampler):
 
     def __iter__(self):
         # return iter(self.sm_sampler.get_subset())
-        return iter(range(len(self.data_source)))
+        return iter(range(len(self.data_source)))       # Just a sequential sampler for smoking.
 
     def __len__(self):
         len(self.data_source)
