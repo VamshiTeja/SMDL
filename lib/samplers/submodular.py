@@ -33,7 +33,7 @@ class SubModSampler(Sampler):
 
             # Compute d_score for the whole subset. Then add the d_score of just the
             # new item to compute the total d_score.
-            d_score = self._compute_d_score(list(subset_indices))
+            #d_score = self._compute_d_score(list(subset_indices))
 
             # Same logic for u_score
             u_score = self._compute_u_score(list(subset_indices))
@@ -49,13 +49,13 @@ class SubModSampler(Sampler):
                 #temp_subset.append(item)
                 temp_subset_indices.append(index_set[iter])
 
-                d_score += self._compute_d_score(list([index_set[iter]]))
+                #d_score += self._compute_d_score(list([index_set[iter]]))
                 u_score += self._compute_u_score(list([index_set[iter]]))
                 #md_score += self.compute_md_score((list([index_set[iter]])), class_mean)
                 r_score = self._compute_r_score(list(temp_subset_indices))
 
                 #score = d_score + u_score + r_score + md_score
-                score = r_score + u_score + d_score
+                score = r_score + u_score
                 scores.append(score)
 
             best_item_index = np.argmax(scores)
@@ -80,7 +80,7 @@ class SubModSampler(Sampler):
 
     def _compute_d_score(self, subset_indices, alpha=1.):
         """
-        Computes the Diversity Score: The new point should be distant from all the elements in the class.
+        Computes the Diversity Score: The new point should be distant from all the elements in the subset.
         :param subset_indices:
         :param alpha:
         :return: d_score

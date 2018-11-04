@@ -15,7 +15,6 @@ def submodular_training(gpus):
     train_start_time = time.time()
     num_classes = cfg.dataset.total_num_classes
 
-    # Each round is one iteration of the whole experiment. This is done to measure the robustness of the network.
     accuracies = []
     for round_count in range(cfg.repeat_rounds):
 
@@ -62,9 +61,9 @@ def submodular_training(gpus):
                 t_stamp = time.time()
                 #sampler = SubModSampler(model,train_dataset,cfg.batch_size)
                 sampler = SubmodularSampler(model, train_dataset,cfg.batch_size)
-                batch_sampler = BatchSampler(sampler,cfg.batch_size,drop_last=True)
+                batch_sampler = BatchSampler(sampler, cfg.batch_size, drop_last=True)
                 log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
-                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
+                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size = cfg.batch_size,
                                                            num_workers=10)
 
             train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
@@ -135,8 +134,8 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
-        output,_ = model(Variable(input))
-        acc = compute_accuracy(output, target)[0]
+        output = model(Variable(input))
+        acc = compute_accuracy(output.data, target)[0]
         top1.update(acc.item(), input.size(0))
 
         if i % logging_freq == 0 and detailed_logging:
