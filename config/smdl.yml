@@ -1,6 +1,6 @@
 # General Configutaions
 run_label: 'smdl'
-gpu_ids: '3'
+gpu_ids: '0'
 seed: 99                            # '0' means no manual seeding
 
 # Incremental Learning Configurations
@@ -10,12 +10,11 @@ repeat_rounds: 1
 dataset:
     name: 'CIFAR'
     total_num_classes: 100
-    memory_budget: 2000            # Upper limit on the number of images that can be retained as exemplars
 
 # Training Configurations
-epochs: 100
+epochs: 30
 
-batch_size: 256
+batch_size: 2
 batch_size_test: 100
 
 learning_rate: 0.1

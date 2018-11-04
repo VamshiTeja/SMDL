@@ -130,9 +130,10 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
+        penultimate = x
         x = self.fc(x)
 
-        return x
+        return x, penultimate
 
 
 def resnet20(**kwargs):
@@ -147,6 +148,6 @@ def resnet32(**kwargs):
 
 if __name__ == '__main__':
     net = resnet32()
-    y = net(torch.autograd.Variable(torch.randn(1, 3, 32, 32)))
+    y,x = net(torch.autograd.Variable(torch.randn(1, 3, 32, 32)))
     print(net)
     print(y.size())

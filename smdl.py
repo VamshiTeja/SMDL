@@ -60,7 +60,9 @@ def submodular_training(gpus):
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
             if cfg.use_submobular_batch_selection:
                 t_stamp = time.time()
-                sampler = SubmodularSampler(model, train_dataset)
+                #sampler = SubModSampler(model,train_dataset,cfg.batch_size)
+                sampler = SubmodularSampler(model, train_dataset,cfg.batch_size)
+                batch_sampler = BatchSampler(sampler,cfg.batch_size,drop_last=True)
                 log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
                 train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
                                                            num_workers=10)
@@ -99,11 +101,12 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
 
     for i, (input, target) in enumerate(train_loader):
         input, target = input.cuda(), target.cuda()
-
-        output = model(Variable(input))
+        print type(target)
+        output, _ = model(Variable(input))
+        #print type(output)
         loss = criterion(output, Variable(target))
 
-        acc = compute_accuracy(output.data, target)[0]
+        acc = compute_accuracy(output, target)[0]
         losses.update(loss.data.item(), input.size(0))
         top1.update(acc.item(), input.size(0))
 
@@ -132,8 +135,8 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
-        output = model(Variable(input))
-        acc = compute_accuracy(output.data, target)[0]
+        output,_ = model(Variable(input))
+        acc = compute_accuracy(output, target)[0]
         top1.update(acc.item(), input.size(0))
 
         if i % logging_freq == 0 and detailed_logging:

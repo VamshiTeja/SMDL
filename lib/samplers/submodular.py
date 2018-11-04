@@ -2,26 +2,28 @@ import numpy as np
 import time
 import torch
 import torch.nn.functional as F
-
+from tqdm import  tqdm
 from sampler import Sampler
 from lib.utils import log
 
 
 class SubModSampler(Sampler):
-    def __init__(self, model, dataset):
+    def __init__(self, model, dataset, batch_size):
         super(SubModSampler, self).__init__(model, dataset)
+        self.subset_size = batch_size
 
     def get_subset(self):
         return self._select_subset_items()
 
     def _select_subset_items(self, alpha_1=1, alpha_2=1, alpha_3=1, dynamic_set_size=False):
-        set = self.set.copy()
+        set = self.dataset
+        #print((set))
         index_set = range(0, len(set))  # It contains the indices of each image of the set.
         subset = []
         subset_indices = []     # Subset of indices. Keeping track to improve computational performance.
         final_score = []
 
-        class_mean = np.mean(self.penultimate_activations, axis=0)
+        #class_mean = np.mean(self.penultimate_activations, axis=0)
 
         end = len(set) if dynamic_set_size else self.subset_size
 
@@ -37,30 +39,32 @@ class SubModSampler(Sampler):
             u_score = self._compute_u_score(list(subset_indices))
 
             # Same logic for md_score
-            md_score = self.compute_md_score(list(subset_indices), class_mean)
+            #md_score = self.compute_md_score(list(subset_indices), class_mean)
 
-            for iter, item in enumerate(set):
-                temp_subset = list(subset)
+            for iter, item in tqdm(enumerate(index_set)):
+                #print item
+                #temp_subset = list(subset)
                 temp_subset_indices = list(subset_indices)
 
-                temp_subset.append(item)
+                #temp_subset.append(item)
                 temp_subset_indices.append(index_set[iter])
 
                 d_score += self._compute_d_score(list([index_set[iter]]))
                 u_score += self._compute_u_score(list([index_set[iter]]))
-                md_score += self.compute_md_score((list([index_set[iter]])), class_mean)
+                #md_score += self.compute_md_score((list([index_set[iter]])), class_mean)
                 r_score = self._compute_r_score(list(temp_subset_indices))
 
-                score = d_score + u_score + r_score + md_score
+                #score = d_score + u_score + r_score + md_score
+                score = r_score + u_score + d_score
                 scores.append(score)
 
             best_item_index = np.argmax(scores)
-            best_item = set[best_item_index]
+            best_item = set[index_set[best_item_index]]
 
             subset.append(best_item)
             subset_indices.append(index_set[best_item_index])
 
-            set = np.delete(set, best_item_index, axis=0)
+            #set = np.delete(set, best_item, axis=0)
             index_set = np.delete(index_set, best_item_index, axis=0)
 
             final_score.append(scores[best_item_index] - alpha_3*len(subset))
