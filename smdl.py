@@ -135,7 +135,7 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
         output = model(Variable(input))
-        acc = compute_accuracy(output.data, target)[0]
+        acc = compute_accuracy(output, target)[0]
         top1.update(acc.item(), input.size(0))
 
         if i % logging_freq == 0 and detailed_logging:
