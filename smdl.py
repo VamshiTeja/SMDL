@@ -60,7 +60,7 @@ def submodular_training(gpus):
             if cfg.use_submobular_batch_selection:
                 t_stamp = time.time()
                 #sampler = SubModSampler(model,train_dataset,cfg.batch_size)
-                sampler = SubmodularSampler(model, train_dataset,cfg.batch_size)
+                sampler = SubmodularSampler(model, train_dataset, cfg.batch_size)
                 batch_sampler = BatchSampler(sampler, cfg.batch_size, drop_last=True)
                 log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
                 train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size = cfg.batch_size,
@@ -100,7 +100,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
 
     for i, (input, target) in enumerate(train_loader):
         input, target = input.cuda(), target.cuda()
-        print type(target)
+        #print type(target)
         output, _ = model(Variable(input))
         #print type(output)
         loss = criterion(output, Variable(target))
@@ -134,18 +134,18 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
-        output = model(Variable(input))
+        output,_ = model(Variable(input))
         acc = compute_accuracy(output, target)[0]
         top1.update(acc.item(), input.size(0))
 
         if i % logging_freq == 0 and detailed_logging:
             log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3}[{4:3d}/{5}] ' \
-                '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
+                '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
                                                                                       epoch_count + 1, max_epoch, i,
                                                                                       len(test_loader), accuracy=top1))
 
     log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
-        '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
+        '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
                                                                               epoch_count + 1, max_epoch,
                                                                               accuracy=top1))
 
