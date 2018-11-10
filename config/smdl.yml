@@ -1,6 +1,6 @@
 # General Configutaions
-run_label: 'smdl'
-gpu_ids: '3'
+run_label: 'smdl_batchsize_50'
+gpu_ids: '0'
 seed: 99                            # '0' means no manual seeding
 
 # Incremental Learning Configurations
@@ -14,11 +14,11 @@ dataset:
 # Training Configurations
 epochs: 40
 
-batch_size: 256
+batch_size: 50
 batch_size_test: 100
 
 learning_rate: 0.1
 momentum: 0.9
 weight_decay: 0.0001
 
-use_submobular_batch_selection: False
+use_submobular_batch_selection: True

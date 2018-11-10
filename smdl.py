@@ -7,7 +7,7 @@ from models import *
 from datasets import cifar
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
-from lib.samplers.torch_adapters import *
+from lib.samplers.submodular_batch_sampler import  SubmodularBatchSampler
 
 
 def submodular_training(gpus):
@@ -41,9 +41,9 @@ def submodular_training(gpus):
 
         if not cfg.use_submobular_batch_selection:
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
-                                                       num_workers=10)
+                                                       num_workers=0)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
-                                                  num_workers=10)
+                                                  num_workers=0)
 
         train_accs = []
         test_accs = []
@@ -57,12 +57,9 @@ def submodular_training(gpus):
 
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
             if cfg.use_submobular_batch_selection:
-                t_stamp = time.time()
-                sampler = SubmodularSampler(model, train_dataset, cfg.batch_size)
-                # batch_sampler = BatchSampler(sampler, cfg.batch_size, drop_last=True)
-                log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
-                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
-                                                           num_workers=10)
+                submodular_batch_sampler = SubmodularBatchSampler(model, train_dataset, cfg.batch_size)
+                train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
+                                                           num_workers=0)
 
             train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
                               round_count, cfg.repeat_rounds)
