@@ -151,11 +151,11 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 def adjust_lr(epoch, optimizer, base_lr):
     if epoch < 20:
         lr = base_lr
-    elif epoch < 30:
-        lr = base_lr * 0.1
     elif epoch < 40:
-        lr = base_lr * 0.01
+        lr = base_lr * 0.1
     elif epoch < 50:
+        lr = base_lr * 0.01
+    elif epoch < 60:
         lr = base_lr * 0.001
     elif epoch < 80:
         lr = base_lr * 0.0001
