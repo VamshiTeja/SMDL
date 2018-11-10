@@ -65,7 +65,7 @@ class SubModSampler(Sampler):
 
         indices = subset_indices[0:self.batch_size]
 
-        log(np.array(indices).shape)
+        log('Indices: {0}'.format(indices))
         return np.array(indices)
 
     def _compute_d_score(self, subset_indices, alpha=1.):

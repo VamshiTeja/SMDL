@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'random_smdl_batchsize_50'
+run_label: 'e2e_smdl'
 gpu_ids: '3'
 seed: 99                            # '0' means no manual seeding
 
