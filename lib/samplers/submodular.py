@@ -19,10 +19,10 @@ class SubModSampler(Sampler):
     def _get_subset_indices(self, alpha_1=1, alpha_2=1, alpha_3=1):
         set = self.dataset
         if self.index_set is None:
-            index_set = range(0, len(set))  # It contains the indices of each image of the set.
+            self.index_set = range(0, len(set))  # It contains the indices of each image of the set.
         subset_indices = []     # Subset of indices. Keeping track to improve computational performance.
 
-        # class_mean = np.mean(self.penultimate_activations, axis=0)
+        class_mean = np.mean(self.penultimate_activations, axis=0)
 
         end = self.batch_size
 
@@ -35,38 +35,38 @@ class SubModSampler(Sampler):
             #d_score = self._compute_d_score(list(subset_indices))
 
             # Same logic for u_score
-            u_score = self._compute_u_score(list(subset_indices))
+            # u_score = self._compute_u_score(list(subset_indices))
 
             # Same logic for md_score
-            #md_score = self.compute_md_score(list(subset_indices), class_mean)
+            md_score = self.compute_md_score(list(subset_indices), class_mean)
 
-            # for iter, item in tqdm(enumerate(index_set)):
-            for iter, item in enumerate(index_set):
+            # for iter, item in tqdm(enumerate(self.index_set)):
+            for iter, item in enumerate(self.index_set):
                 #temp_subset = list(subset)
                 temp_subset_indices = list(subset_indices)
 
                 #temp_subset.append(item)
-                temp_subset_indices.append(index_set[iter])
+                temp_subset_indices.append(self.index_set[iter])
 
-                #d_score += self._compute_d_score(list([index_set[iter]]))
-                u_score += self._compute_u_score(list([index_set[iter]]))
-                #md_score += self.compute_md_score((list([index_set[iter]])), class_mean)
+                #d_score += self._compute_d_score(list([self.index_set[iter]]))
+                # u_score += self._compute_u_score(list([self.index_set[iter]]))
+                md_score += self.compute_md_score((list([self.index_set[iter]])), class_mean)
                 # r_score = self._compute_r_score(list(temp_subset_indices))
 
                 #score = d_score + u_score + r_score + md_score
-                score = u_score
+                score = md_score
                 scores.append(score)
 
             best_item_index = np.argmax(scores)
-            subset_indices.append(index_set[best_item_index])
-            index_set = np.delete(index_set, best_item_index, axis=0)
+            subset_indices.append(self.index_set[best_item_index])
+            self.index_set = np.delete(self.index_set, best_item_index, axis=0)
 
             log('Processed: {0}/{1} exemplars. Time taken is {2} sec.'.format(i, end, time.time()-now))
 
         indices = subset_indices[0:self.batch_size]
 
         log('Indices: {0}'.format(indices))
-        return np.array(indices)
+        return indices
 
     def _compute_d_score(self, subset_indices, alpha=1.):
         """

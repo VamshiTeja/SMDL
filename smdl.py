@@ -87,7 +87,7 @@ def submodular_training(gpus):
 
 
 def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
-          round_count, max_rounds, logging_freq=10, detailed_logging=False):
+          round_count, max_rounds, logging_freq=10, detailed_logging=True):
     losses = Metrics()
     top1 = Metrics()
 
@@ -107,7 +107,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
         optimizer.step()
 
         if i % logging_freq == 0 and detailed_logging:
-            log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3}[{4:3d}/{5}] ' \
+            log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} [{4:3d}/{5}] ' \
                   '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
                   '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count+1, max_rounds,
                                                                              epoch_count+1, max_epoch, i, len(train_loader),

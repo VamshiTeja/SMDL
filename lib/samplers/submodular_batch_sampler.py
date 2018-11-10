@@ -42,8 +42,9 @@ class SubmodularBatchSampler(Sampler):
                     yield batch
                     batch = []
         else:
-            batch = self.submodular_sampler.get_subset()
-            yield batch
+            for i in range(len(self.sampler) // self.batch_size):
+                batch = self.submodular_sampler.get_subset()
+                yield batch
 
         if len(batch) > 0 and not self.drop_last:
             yield batch
