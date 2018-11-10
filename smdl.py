@@ -2,7 +2,6 @@ import argparse, time, os, logging, pprint
 
 import torch
 import torchvision.transforms as transforms
-from torch.autograd import Variable
 
 from models import *
 from datasets import cifar
@@ -59,11 +58,10 @@ def submodular_training(gpus):
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
             if cfg.use_submobular_batch_selection:
                 t_stamp = time.time()
-                #sampler = SubModSampler(model,train_dataset,cfg.batch_size)
                 sampler = SubmodularSampler(model, train_dataset, cfg.batch_size)
-                batch_sampler = BatchSampler(sampler, cfg.batch_size, drop_last=True)
+                # batch_sampler = BatchSampler(sampler, cfg.batch_size, drop_last=True)
                 log('Sampling data-points finished in {0} seconds.'.format(time.time() - t_stamp))
-                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size = cfg.batch_size,
+                train_loader = torch.utils.data.DataLoader(train_dataset, sampler=sampler, batch_size=cfg.batch_size,
                                                            num_workers=10)
 
             train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
@@ -100,10 +98,8 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
 
     for i, (input, target) in enumerate(train_loader):
         input, target = input.cuda(), target.cuda()
-        #print type(target)
-        output, _ = model(Variable(input))
-        #print type(output)
-        loss = criterion(output, Variable(target))
+        output, _ = model(input)
+        loss = criterion(output,target)
 
         acc = compute_accuracy(output, target)[0]
         losses.update(loss.data.item(), input.size(0))
@@ -134,7 +130,7 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
-        output,_ = model(Variable(input))
+        output,_ = model(input)
         acc = compute_accuracy(output, target)[0]
         top1.update(acc.item(), input.size(0))
 
@@ -163,8 +159,6 @@ def adjust_lr(epoch, optimizer, base_lr):
         lr = base_lr * 0.001
     elif epoch < 80:
         lr = base_lr * 0.0001
-    elif epoch < 90:
-        lr = base_lr * 0.00001
     else:
         lr = base_lr * 0.00001
     for param_grp in optimizer.param_groups:
@@ -183,8 +177,10 @@ def weights_init(m):
         if m.bias is not None:
             m.bias.data.fill_(0.0)
 
+
 def save_model(model, location):
     torch.save(model.state_dict(), location)
+
 
 def main():
     parser = argparse.ArgumentParser(description="SMDL: SubModular Dataloader")
@@ -224,6 +220,8 @@ def main():
 
     if cfg.seed != 0:
         np.random.seed(cfg.seed)
+        torch.backends.cudnn.deterministic = True
+        torch.manual_seed(cfg.seed)
 
     submodular_training(gpus)
 

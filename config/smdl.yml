@@ -12,13 +12,13 @@ dataset:
     total_num_classes: 100
 
 # Training Configurations
-epochs: 30
+epochs: 40
 
-batch_size: 2
+batch_size: 128
 batch_size_test: 100
 
 learning_rate: 0.1
 momentum: 0.9
 weight_decay: 0.0001
 
-use_submobular_batch_selection: True
+use_submobular_batch_selection: False

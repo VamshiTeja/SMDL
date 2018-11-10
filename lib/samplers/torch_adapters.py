@@ -15,10 +15,11 @@ class SubmodularSampler(Sampler):
 
     def __iter__(self):
         return iter(self.sm_sampler.get_subset())
-        #return iter(range(len(self.data_source)))       # Just a sequential sampler for smoking.
+        # return iter(range(len(self.data_source)))       # Just a sequential sampler for smoking.
 
     def __len__(self):
         len(self.data_source)
+
 
 class BatchSampler (Sampler):
 
@@ -30,7 +31,7 @@ class BatchSampler (Sampler):
     def __iter__(self):
         batch = []
         for _, idx in enumerate (iter (self.sampler)):
-            batch = idx
+            batch = idx         # TODO: This is wrong! Shouldnt we append it to batch? (JKJ)
             yield batch
 
         if len (batch) > 0 and not self.drop_last:

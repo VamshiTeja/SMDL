@@ -131,9 +131,9 @@ class ResNet(nn.Module):
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         penultimate = x
-        x = self.fc(x)
+        logits = self.fc(penultimate)
 
-        return x, penultimate
+        return logits, penultimate
 
 
 def resnet20(**kwargs):
