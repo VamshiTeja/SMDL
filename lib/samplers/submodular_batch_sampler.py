@@ -1,4 +1,4 @@
-from torch.utils.data.sampler import Sampler, SequentialSampler
+from torch.utils.data.sampler import Sampler, SequentialSampler, RandomSampler
 from torch._six import int_classes as _int_classes
 
 from submodular import SubModSampler
@@ -12,7 +12,7 @@ class SubmodularBatchSampler(Sampler):
 
     def __init__(self, model, data_source, batch_size, sampler=None, drop_last=False):
         if sampler is None:
-            sampler = SequentialSampler(data_source)
+            sampler = RandomSampler(data_source)
 
         if not isinstance(sampler, Sampler):
             raise ValueError("sampler should be an instance of "
@@ -29,15 +29,22 @@ class SubmodularBatchSampler(Sampler):
         self.sampler = sampler
         self.batch_size = batch_size
         self.drop_last = drop_last
+        self.override_submodular_sampling = False
         self.submodular_sampler = SubModSampler(model, data_source, self.batch_size)
+        # TODO: Handle Replacement Strategy
 
     def __iter__(self):
         batch = []
-        for idx in self.sampler:
-            batch.append(idx)
-            if len(batch) == self.batch_size:
-                yield batch
-                batch = []
+        if self.override_submodular_sampling:
+            for idx in self.sampler:
+                batch.append(idx)
+                if len(batch) == self.batch_size:
+                    yield batch
+                    batch = []
+        else:
+            batch = self.submodular_sampler.get_subset()
+            yield batch
+
         if len(batch) > 0 and not self.drop_last:
             yield batch
 
