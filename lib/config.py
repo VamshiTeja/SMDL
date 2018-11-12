@@ -28,6 +28,7 @@ root.timestamp = 'placeholder'  # Will be updated at runtime
 root.output_dir = 'placeholder'
 
 root.use_submobular_batch_selection = True
+root.num_of_partitions = 10
 
 # Dataset Details
 root.dataset = edict()
