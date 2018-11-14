@@ -20,22 +20,26 @@ class SubModSampler(Sampler):
     def get_subset(self):
 
         set_size = len(self.index_set)
-        num_of_partitions = cfg.num_of_partitions
-        size_of_each_part = set_size / num_of_partitions
-        partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
-        pool = ThreadPool(processes=len(partitions))
-        pool_handlers = []
-        for partition in partitions:
-            handler = pool.apply_async(get_subset_indices, args=(partition, self.penultimate_activations, self.final_activations,
-                                            self.batch_size))
-            pool_handlers.append(handler)
-        pool.close()
-        pool.join()
+        if set_size >= set_size*self.batch_size:
+            num_of_partitions = cfg.num_of_partitions
+            size_of_each_part = set_size / num_of_partitions
+            partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
-        intermediate_indices = []
-        for handler in pool_handlers:
-            intermediate_indices.extend(handler.get())
+            pool = ThreadPool(processes=len(partitions))
+            pool_handlers = []
+            for partition in partitions:
+                handler = pool.apply_async(get_subset_indices, args=(partition, self.penultimate_activations, self.final_activations,
+                                                self.batch_size))
+                pool_handlers.append(handler)
+            pool.close()
+            pool.join()
+
+            intermediate_indices = []
+            for handler in pool_handlers:
+                intermediate_indices.extend(handler.get())
+        else:
+            intermediate_indices = self.index_set
 
         log(len(intermediate_indices))
         log(intermediate_indices)
@@ -50,13 +54,14 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set, penultimate_activations, final_activations, subset_size, alpha_1=1, alpha_2=1, alpha_3=1):
+def get_subset_indices(index_set_input, penultimate_activations, final_activations, subset_size, alpha_1=1, alpha_2=1, alpha_3=1):
 
-    index_set = copy.deepcopy(index_set)
+    index_set = copy.deepcopy(index_set_input)
     subset_indices = []     # Subset of indices. Keeping track to improve computational performance.
 
     class_mean = np.mean(penultimate_activations, axis=0)
 
+    subset_size = min(subset_size, len(index_set))
     for i in range(0, subset_size):
         scores = []
         now = time.time()

@@ -1,6 +1,6 @@
 # General Configutaions
 run_label: 'distibuted_smdl'
-gpu_ids: '2'
+gpu_ids: '3'
 seed: 99                            # '0' means no manual seeding
 
 # Incremental Learning Configurations

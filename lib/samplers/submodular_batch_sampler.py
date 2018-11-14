@@ -2,6 +2,7 @@ from torch.utils.data.sampler import Sampler, SequentialSampler, RandomSampler
 from torch._six import int_classes as _int_classes
 
 from submodular import SubModSampler
+from lib.utils import log
 
 class SubmodularBatchSampler(Sampler):
     """
@@ -43,6 +44,7 @@ class SubmodularBatchSampler(Sampler):
                     batch = []
         else:
             for i in range(len(self.sampler) // self.batch_size):
+                log('Fetching {0} of {1}.'.format(i, len(self.sampler) // self.batch_size))
                 batch = self.submodular_sampler.get_subset()
                 yield batch
 
