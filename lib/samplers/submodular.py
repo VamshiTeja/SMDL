@@ -13,7 +13,7 @@ from lib.utils import log
 
 
 class SubModSampler(Sampler):
-    def __init__(self, model, dataset, batch_size, r_size=1024):
+    def __init__(self, model, dataset, batch_size, r_size=4096):
         super(SubModSampler, self).__init__(model, dataset)
         self.batch_size = batch_size
         self.index_set = range(0, len(self.dataset))    # It contains the indices of each image of the set.
@@ -57,9 +57,11 @@ class SubModSampler(Sampler):
 
 
 def get_subset_indices(index_set_input, penultimate_activations, final_activations, subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
-
-    #index_set = np.random.choice(index_set_input,r_size,replace=True)
-    index_set = copy.deepcopy(index_set_input)
+    if(r_size<=len(index_set_input)):
+        index_set = np.random.choice(index_set_input,r_size,replace=False)
+    else:
+        index_set = copy.deepcopy(index_set_input)
+    #index_set = copy.deepcopy(index_set_input)
     subset_indices = []     # Subset of indices. Keeping track to improve computational performance.
 
     class_mean = np.mean(penultimate_activations, axis=0)
