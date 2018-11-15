@@ -3,6 +3,7 @@ import time
 import copy
 from multiprocessing.pool import ThreadPool
 from operator import itemgetter
+from scipy.spatial.distance import cdist
 
 import torch
 import torch.nn.functional as F
@@ -13,7 +14,7 @@ from lib.utils import log
 
 
 class SubModSampler(Sampler):
-    def __init__(self, model, dataset, batch_size, r_size=4096):
+    def __init__(self, model, dataset, batch_size, r_size=2048):
         super(SubModSampler, self).__init__(model, dataset)
         self.batch_size = batch_size
         self.index_set = range(0, len(self.dataset))    # It contains the indices of each image of the set.
@@ -57,7 +58,7 @@ class SubModSampler(Sampler):
 
 
 def get_subset_indices(index_set_input, penultimate_activations, final_activations, subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
-    if(r_size<=len(index_set_input)):
+    if(r_size<len(index_set_input)):
         index_set = np.random.choice(index_set_input,r_size,replace=False)
     else:
         index_set = copy.deepcopy(index_set_input)
@@ -73,20 +74,23 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
 
         # Compute d_score for the whole subset. Then add the d_score of just the
         # new item to compute the total d_score.
-        #d_score = compute_d_score(list(subset_indices))
 
         # Same logic for u_score
-        # u_score = compute_u_score(list(subset_indices))
 
         # Same logic for md_score
+
         md_score = np.sum(compute_md_score(penultimate_activations, list(subset_indices), class_mean))
-
         md_scores = md_score+compute_md_score(penultimate_activations, list(index_set), class_mean)
-        #u_score = u_score + compute_u_score(final_activations, list([index_set))
-        #d_score = d_score + compute_d_score(penultimate_activations, list([index_set))
 
-        #r_score = compute_r_score(penultimate_activations, list(temp_subset_indices))
-        scores = md_scores
+        u_score = np.sum(compute_u_score(final_activations, list(subset_indices)))
+        u_scores = u_score + compute_u_score(final_activations, list(index_set))
+
+        #d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
+        #d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
+
+        #r_scores = compute_r_score(penultimate_activations, list(subset_indices))
+
+        scores = md_scores + u_scores
 
         '''
         for iter, item in enumerate(index_set):
@@ -120,6 +124,17 @@ def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
     :param alpha:
     :return: d_score
     """
+
+    if(len(subset_indices)==0):
+        return 0
+    elif(len(subset_indices)==1):
+        return 0
+    else:
+        p_acts = itemgetter(*subset_indices)(penultimate_activations)
+        pdist = cdist(p_acts,penultimate_activations)
+        return np.sum(pdist,axis=1)
+
+    '''
     d_score = 0
     for index in subset_indices:
         p_act = penultimate_activations[index]
@@ -127,7 +142,7 @@ def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
         score = np.sum(np.linalg.norm(all_acts - p_act, axis=1))
         d_score += alpha * score
 
-    return d_score
+    return d_score'''
 
 
 def compute_u_score(final_activations, subset_indices, alpha=1.):
@@ -138,6 +153,17 @@ def compute_u_score(final_activations, subset_indices, alpha=1.):
     :param alpha:
     :return: u_score
     """
+    if(len(subset_indices)==0):
+        return 0
+    elif(len(subset_indices)==1):
+        return 0
+    else:
+        f_acts = torch.tensor(itemgetter(*subset_indices)(final_activations))
+        p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
+        H = -p_log_p.numpy()
+        u_score  = np.sum(H,axis=1)
+        return  u_score
+    '''
     u_score = 0
     for index in subset_indices:
         f_acts = torch.tensor(final_activations[index])
@@ -145,6 +171,7 @@ def compute_u_score(final_activations, subset_indices, alpha=1.):
         score = (-1.0 * p_log_p.sum()).numpy()
         u_score += alpha * score
     return u_score
+    '''
 
 
 def compute_r_score(penultimate_activations, subset_indices, alpha=0.2):
@@ -155,6 +182,19 @@ def compute_r_score(penultimate_activations, subset_indices, alpha=0.2):
     :param alpha:
     :return:
     """
+    #TODO: Make pdistajces efficient
+    if(len(subset_indices)==0):
+        return 0
+    if(len(subset_indices)==1):
+        return 0
+    else:
+        subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
+        pdist = np.sort(cdist(penultimate_activations,subset_p_acts),axis=1)
+        r_score = pdist[:,1]
+        print r_score
+        return  r_score
+
+    '''
     r_score = 0
     for index in subset_indices:
         p_act = penultimate_activations[index]
@@ -164,6 +204,7 @@ def compute_r_score(penultimate_activations, subset_indices, alpha=0.2):
             score = np.min(dist[dist != 0])
             r_score += alpha * score
     return r_score
+    '''
 
 
 def compute_md_score(penultimate_activations, subset_indices, class_mean, alpha=2.):

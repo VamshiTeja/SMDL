@@ -31,7 +31,8 @@ class SubmodularBatchSampler(Sampler):
         self.batch_size = batch_size
         self.drop_last = drop_last
         self.override_submodular_sampling = False
-        self.submodular_sampler = SubModSampler(model, data_source, self.batch_size)
+        self.r_size = 1024
+        self.submodular_sampler = SubModSampler(model, data_source, self.batch_size,self.r_size)
         # TODO: Handle Replacement Strategy
 
     def __iter__(self):
