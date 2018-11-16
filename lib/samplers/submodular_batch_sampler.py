@@ -6,6 +6,7 @@ from submodular import SubModSampler
 from lib.utils import log
 from lib.config import cfg
 
+
 class SubmodularBatchSampler(Sampler):
     """
     Returns back a minibatch, which is sampled such that the SubModular Objective is maximised.

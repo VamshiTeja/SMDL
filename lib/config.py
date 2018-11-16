@@ -5,7 +5,7 @@ root = edict()
 cfg = root
 
 root.run_label = 'smile'
-root.gpu_ids = '7'
+root.gpu_ids = '0'
 
 root.seed = 99
 
@@ -14,6 +14,7 @@ root.class_per_episode = 100
 root.use_all_exemplars = False
 root.sampling_strategy = 'random'   # Can be either: 'random', 'submodular'
 root.load_class_list_from_file = False
+
 
 root.epochs = 2
 

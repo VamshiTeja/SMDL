@@ -10,6 +10,7 @@ from lib.config import cfg, cfg_from_file
 from lib.samplers.submodular_batch_sampler import  SubmodularBatchSampler
 
 
+
 def submodular_training(gpus):
     train_start_time = time.time()
     num_classes = cfg.dataset.total_num_classes

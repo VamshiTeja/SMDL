@@ -20,6 +20,11 @@ class SubModSampler(Sampler):
         self.index_set = range(0, len(self.dataset))    # It contains the indices of each image of the set.
         self.ltl_log_ep = ltl_log_ep
 
+        f_acts = torch.tensor(self.final_activations)
+        p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
+        H = -p_log_p.numpy()
+        self.H = np.sum(H,axis=1)                     #compute entropy of all samples for every epoch
+
     def get_subset(self):
 
         set_size = len(self.index_set)
@@ -27,15 +32,15 @@ class SubModSampler(Sampler):
 
         if set_size >= num_of_partitions*self.batch_size:
             size_of_each_part = set_size / num_of_partitions
-            r_size = size_of_each_part / self.batch_size * self.ltl_log_ep
-
+            r_size = (size_of_each_part*self.ltl_log_ep )/self.batch_size
+            print (r_size)
             partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
             pool = ThreadPool(processes=len(partitions))
             pool_handlers = []
             for partition in partitions:
                 handler = pool.apply_async(get_subset_indices, args=(partition, self.penultimate_activations, self.final_activations,
-                                                self.batch_size, r_size))
+                                                self.H, self.batch_size, r_size))
                 pool_handlers.append(handler)
             pool.close()
             pool.join()
@@ -51,7 +56,7 @@ class SubModSampler(Sampler):
         r_size = len(intermediate_indices) / self.batch_size * self.ltl_log_ep
         log('Size of random sample: {}'.format(r_size))
 
-        subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.final_activations,
+        subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.final_activations, self.H,
                                             self.batch_size, r_size)
 
         for item in subset_indices:     # Subset selection without replacement.
@@ -61,7 +66,7 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set_input, penultimate_activations, final_activations, subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
+def get_subset_indices(index_set_input, penultimate_activations, final_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
     if(r_size<len(index_set_input)):
         index_set = np.random.choice(index_set_input,r_size,replace=False)
     else:
@@ -75,19 +80,20 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
     for i in range(0, subset_size):
 
         now = time.time()
+        #p_act_index_set = itemgetter(*list(index_set))(penultimate_activations)
 
-        md_score = np.sum(compute_md_score(penultimate_activations, list(subset_indices), class_mean))
-        md_scores = md_score+compute_md_score(penultimate_activations, list(index_set), class_mean)
+        #md_score = np.sum(compute_md_score(p_act_index_set, list(index_set), class_mean))
+        md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
 
-        u_score = np.sum(compute_u_score(final_activations, list(subset_indices)))
-        u_scores = u_score + compute_u_score(final_activations, list(index_set))
+        u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
+        u_scores = u_score + compute_u_score(entropy, list(index_set))
 
         # d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 
-        r_scores = compute_r_score(penultimate_activations, list(subset_indices),index_set)
+        #r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set))
 
-        scores = md_scores + u_scores + r_scores
+        scores = np.array(md_scores) + np.array(u_scores) #+ np.array(r_scores)
 
         '''
         for iter, item in enumerate(index_set):
@@ -121,6 +127,8 @@ def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
     :param alpha:
     :return: d_score
     """
+    if(len(subset_indices)==0):
+        return 0
     if(len(subset_indices)==1):
         return 0
     else:
@@ -139,7 +147,7 @@ def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
     return d_score'''
 
 
-def compute_u_score(final_activations, subset_indices, alpha=1.):
+def compute_u_score(entropy, subset_indices, alpha=1.):
     """
     Compute the Uncertainity Score: The point that makes the model most confused, should be preferred.
     :param final_activations:
@@ -147,13 +155,11 @@ def compute_u_score(final_activations, subset_indices, alpha=1.):
     :param alpha:
     :return: u_score
     """
-    if(len(subset_indices)==1):
-        return [0]
+
+    if(len(subset_indices)==0):
+        return 0
     else:
-        f_acts = torch.tensor(itemgetter(*subset_indices)(final_activations))
-        p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
-        H = -p_log_p.numpy()
-        u_score = np.sum(H,axis=1)
+        u_score = alpha*entropy[subset_indices]
         return u_score
     '''
     u_score = 0
@@ -174,13 +180,16 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     :param alpha:
     :return:
     """
-    if(len(subset_indices)==1):
-        return [0]
+    #TODO: sequence too large error, couldnt understand;
+    if(len(subset_indices)==0):
+        return 0
+    if(len(index_set)==0):
+        return 0
     else:
-        index_set_p_act = np.ndarray(itemgetter(*index_set)(penultimate_activations))
+        index_p_acts = np.ndarray(itemgetter(*index_set)(penultimate_activations))
         subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
-        pdist = np.sort(cdist(index_set_p_act, subset_p_acts),axis=1)
-        r_score = pdist[:,0]
+        pdist = cdist(index_p_acts, subset_p_acts)
+        r_score = alpha*np.min(pdist,axis=1)
         return r_score
 
     '''
@@ -196,20 +205,20 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     '''
 
 
-def compute_md_score(penultimate_activations, subset_indices, class_mean, alpha=2.):
+def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
     """
     Computes Mean Divergence score: The new datapoint should be close to the class mean
     :param penultimate_activations:
     :param subset_indices:
     :param class_mean:
     :param alpha:
-    :return: list of scores for each subset item
+    :return: list of scores for each index item
     """
-    if(len(subset_indices)==1):
-        return np.sqrt(np.sum(np.square(penultimate_activations[subset_indices[0]]-class_mean)))
+    if(len(index_set)==1):
+        return np.linalg.norm(penultimate_activations[index_set[0]]-class_mean)
     else:
-        pen_act = np.array(itemgetter(*subset_indices)(penultimate_activations))-np.array(class_mean)
-        md_score = alpha*np.sqrt(np.sum(np.square(pen_act),axis=1))
+        pen_act = np.array(itemgetter(*index_set)(penultimate_activations))-np.array(class_mean)
+        md_score = alpha*np.linalg.norm(pen_act,axis=1)
         return md_score
 
     '''md_score = 0

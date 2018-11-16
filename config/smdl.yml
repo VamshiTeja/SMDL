@@ -1,6 +1,6 @@
 # General Configutaions
 run_label: 'smdl'
-gpu_ids: '2'
+gpu_ids: '1'
 seed: 99                            # '0' means no manual seeding
 
 # Learning Configurations
@@ -13,6 +13,7 @@ dataset:
 
 # Training Configurations
 epochs: 40
+
 
 batch_size: 50
 batch_size_test: 100
