@@ -1,6 +1,6 @@
 # General Configutaions
 run_label: 'smdl'
-gpu_ids: '3'
+gpu_ids: '2'
 seed: 99                            # '0' means no manual seeding
 
 # Learning Configurations
@@ -14,7 +14,7 @@ dataset:
 # Training Configurations
 epochs: 40
 
-batch_size: 200
+batch_size: 50
 batch_size_test: 100
 
 learning_rate: 0.1
@@ -23,3 +23,5 @@ weight_decay: 0.0001
 
 use_submobular_batch_selection: True
 num_of_partitions: 10           # Partitions for distributed submodular selection
+
+ltl_log_ep: 5                  # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
