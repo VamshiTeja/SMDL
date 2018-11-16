@@ -1,5 +1,6 @@
 from torch.utils.data.sampler import Sampler, SequentialSampler, RandomSampler
 from torch._six import int_classes as _int_classes
+import time
 
 from submodular import SubModSampler
 from lib.utils import log
@@ -32,7 +33,7 @@ class SubmodularBatchSampler(Sampler):
         self.drop_last = drop_last
         self.override_submodular_sampling = False
         self.r_size = 1024
-        self.submodular_sampler = SubModSampler(model, data_source, self.batch_size,self.r_size)
+        self.submodular_sampler = SubModSampler(model, data_source, self.batch_size, self.r_size)
         # TODO: Handle Replacement Strategy
 
     def __iter__(self):
@@ -45,8 +46,9 @@ class SubmodularBatchSampler(Sampler):
                     batch = []
         else:
             for i in range(len(self.sampler) // self.batch_size):
-                log('Fetching {0} of {1}.'.format(i, len(self.sampler) // self.batch_size))
+                t_stamp = time.time()
                 batch = self.submodular_sampler.get_subset()
+                log('Fetched {0} of {1} in {2} seconds.'.format(i, len(self.sampler) // self.batch_size, time.time()-t_stamp))
                 yield batch
 
         if len(batch) > 0 and not self.drop_last:

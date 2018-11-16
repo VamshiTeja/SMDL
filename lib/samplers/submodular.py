@@ -44,8 +44,7 @@ class SubModSampler(Sampler):
         else:
             intermediate_indices = self.index_set
 
-        log(len(intermediate_indices))
-        log(intermediate_indices)
+        log('Selected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
 
         subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.final_activations,
                                             self.batch_size, self.r_size)
@@ -53,7 +52,7 @@ class SubModSampler(Sampler):
         for item in subset_indices:     # Subset selection without replacement.
             self.index_set.remove(item)
 
-        log('The selected indices: {}'.format(subset_indices))
+        log('The selected {0} indices (second level): {1}'.format(len(subset_indices), subset_indices))
         return subset_indices
 
 

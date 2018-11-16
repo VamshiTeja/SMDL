@@ -1,9 +1,9 @@
 # General Configutaions
-run_label: 'distibuted_smdl'
-gpu_ids: '1'
+run_label: 'smdl'
+gpu_ids: '3'
 seed: 99                            # '0' means no manual seeding
 
-# Incremental Learning Configurations
+# Learning Configurations
 repeat_rounds: 1
 
 # Dataset Configurations
