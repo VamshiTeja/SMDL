@@ -23,7 +23,7 @@ class SubModSampler(Sampler):
         f_acts = torch.tensor(self.final_activations)
         p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
         H = -p_log_p.numpy()
-        self.H = np.sum(H,axis=1)                     #compute entropy of all samples for every epoch
+        self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
 
     def get_subset(self):
 
@@ -32,8 +32,7 @@ class SubModSampler(Sampler):
 
         if set_size >= num_of_partitions*self.batch_size:
             size_of_each_part = set_size / num_of_partitions
-            r_size = (size_of_each_part*self.ltl_log_ep )/self.batch_size
-            print (r_size)
+            r_size = (size_of_each_part*self.ltl_log_ep)/self.batch_size
             partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
             pool = ThreadPool(processes=len(partitions))
@@ -51,7 +50,7 @@ class SubModSampler(Sampler):
         else:
             intermediate_indices = self.index_set
 
-        log('\n Selected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
+        log('\nSelected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
 
         r_size = len(intermediate_indices) / self.batch_size * self.ltl_log_ep
         log('Size of random sample: {}'.format(r_size))
@@ -80,41 +79,24 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
     for i in range(0, subset_size):
 
         now = time.time()
-        #p_act_index_set = itemgetter(*list(index_set))(penultimate_activations)
-
-        #md_score = np.sum(compute_md_score(p_act_index_set, list(index_set), class_mean))
-        md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
-
-        u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
-        u_scores = u_score + compute_u_score(entropy, list(index_set))
 
         # d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 
-        #r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set))
+        u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
+        u_scores = u_score + compute_u_score(entropy, list(index_set))
 
-        scores = np.array(md_scores) + np.array(u_scores) #+ np.array(r_scores)
+        r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set))
 
-        '''
-        for iter, item in enumerate(index_set):
-            temp_subset_indices = list(subset_indices)
-            temp_subset_indices.append(index_set[iter])
+        md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
 
-            #d_score += compute_d_score(penultimate_activations, list([index_set[iter]]))
-            # u_score += compute_u_score(final_activations, list([index_set[iter]]))
-            md_score += compute_md_score(penultimate_activations, (list([index_set[iter]])), class_mean)
-            # r_score = compute_r_score(penultimate_activations, list(temp_subset_indices))
-
-            #score = d_score + u_score + r_score + md_score
-            score = md_score
-            scores.append(score)
-        '''
+        scores = np.array(u_scores) + np.array(r_scores) + np.array(md_scores)
 
         best_item_index = np.argmax(scores)
         subset_indices.append(index_set[best_item_index])
         index_set = np.delete(index_set, best_item_index, axis=0)
 
-        #log('Processed: {0}/{1} exemplars. Time taken is {2} sec.'.format(i, subset_size, time.time()-now))
+        # log('Processed: {0}/{1} exemplars. Time taken is {2} sec.'.format(i, subset_size, time.time()-now))
 
     return subset_indices
 
@@ -127,24 +109,12 @@ def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
     :param alpha:
     :return: d_score
     """
-    if(len(subset_indices)==0):
-        return 0
-    if(len(subset_indices)==1):
+    if len(subset_indices) <= 1:
         return 0
     else:
         p_acts = itemgetter(*subset_indices)(penultimate_activations)
-        pdist = cdist(p_acts,penultimate_activations)
-        return np.sum(pdist,axis=1)
-
-    '''
-    d_score = 0
-    for index in subset_indices:
-        p_act = penultimate_activations[index]
-        all_acts = penultimate_activations
-        score = np.sum(np.linalg.norm(all_acts - p_act, axis=1))
-        d_score += alpha * score
-
-    return d_score'''
+        pdist = cdist(p_acts, penultimate_activations)
+        return np.sum(pdist, axis=1)
 
 
 def compute_u_score(entropy, subset_indices, alpha=1.):
@@ -156,20 +126,11 @@ def compute_u_score(entropy, subset_indices, alpha=1.):
     :return: u_score
     """
 
-    if(len(subset_indices)==0):
+    if len(subset_indices) == 0:
         return 0
     else:
         u_score = alpha*entropy[subset_indices]
         return u_score
-    '''
-    u_score = 0
-    for index in subset_indices:
-        f_acts = torch.tensor(final_activations[index])
-        p_log_p = F.softmax(f_acts, dim=0) * F.log_softmax(f_acts, dim=0)
-        score = (-1.0 * p_log_p.sum()).numpy()
-        u_score += alpha * score
-    return u_score
-    '''
 
 
 def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.2):
@@ -180,50 +141,63 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     :param alpha:
     :return:
     """
-    #TODO: sequence too large error, couldnt understand;
-    if(len(subset_indices)==0):
-        return 0
-    if(len(index_set)==0):
-        return 0
-    else:
-        index_p_acts = np.ndarray(itemgetter(*index_set)(penultimate_activations))
-        subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
-        pdist = cdist(index_p_acts, subset_p_acts)
-        r_score = alpha*np.min(pdist,axis=1)
-        return r_score
+    # #TODO: sequence too large error, couldnt understand;
+    # if len(subset_indices) == 0:
+    #     return 0
+    # elif len(index_set) == 0:
+    #     return 0
+    # else:
+    #     index_p_acts = np.ndarray(itemgetter(*index_set)(penultimate_activations))
+    #     subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
+    #     pdist = cdist(index_p_acts, subset_p_acts)
+    #     r_score = alpha * np.min(pdist, axis=1)
+    #     return r_score
 
-    '''
+    # if len(subset_indices) == 0:
+    #     return 0
+    # elif len(index_set) == 0:
+    #     return 0
+    # else:
+    #     subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
+    #     pdist = cdist(subset_p_acts, subset_p_acts)
+    #     r_score = alpha * np.min(pdist, axis=1)
+    #     return r_score
+
     r_score = 0
+    if len(subset_indices) > 1:
+        subset_penultimate_acts = itemgetter(*subset_indices)(penultimate_activations)
     for index in subset_indices:
         p_act = penultimate_activations[index]
         if len(subset_indices) > 1:
-            subset_penultimate_acts = [penultimate_activations[i] for i in subset_indices]
             dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
             score = np.min(dist[dist != 0])
             r_score += alpha * score
     return r_score
-    '''
+
+    # r_score = 0
+    # for index in subset_indices:
+    #     p_act = penultimate_activations[index]
+    #     if len(subset_indices) > 1:
+    #         subset_penultimate_acts = [penultimate_activations[i] for i in subset_indices]
+    #         dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
+    #         score = np.min(dist[dist != 0])
+    #         r_score += alpha * score
+    # return r_score
+
 
 
 def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
     """
     Computes Mean Divergence score: The new datapoint should be close to the class mean
     :param penultimate_activations:
-    :param subset_indices:
+    :param index_set:
     :param class_mean:
     :param alpha:
     :return: list of scores for each index item
     """
-    if(len(index_set)==1):
+    if len(index_set) == 1:
         return np.linalg.norm(penultimate_activations[index_set[0]]-class_mean)
     else:
-        pen_act = np.array(itemgetter(*index_set)(penultimate_activations))-np.array(class_mean)
-        md_score = alpha*np.linalg.norm(pen_act,axis=1)
+        pen_act = np.array(itemgetter(*index_set)(penultimate_activations)) - np.array(class_mean)
+        md_score = alpha * np.linalg.norm(pen_act, axis=1)
         return md_score
-
-    '''md_score = 0
-    for index in subset_indices:
-        p_act = penultimate_activations[index]
-        score = np.linalg.norm(class_mean-p_act, axis=0)
-        md_score += alpha * score
-    return md_score'''

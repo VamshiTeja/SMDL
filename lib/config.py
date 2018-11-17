@@ -15,6 +15,7 @@ root.use_all_exemplars = False
 root.sampling_strategy = 'random'   # Can be either: 'random', 'submodular'
 root.load_class_list_from_file = False
 
+root.model = 'ResNet32'
 
 root.epochs = 2
 

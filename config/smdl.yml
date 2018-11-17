@@ -1,19 +1,21 @@
 # General Configutaions
-run_label: 'smdl'
-gpu_ids: '1'
-seed: 99                            # '0' means no manual seeding
+run_label: 'smdl_cifar_100'
+gpu_ids: '3'
+seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
+# Neural Network Architecture
+model: ResNet32                 # Possible values: {ResNet20, ResNet32}
+
 # Dataset Configurations
 dataset:
-    name: 'CIFAR'
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100]
     total_num_classes: 100
 
 # Training Configurations
 epochs: 40
-
 
 batch_size: 50
 batch_size_test: 100
@@ -25,4 +27,4 @@ weight_decay: 0.0001
 use_submobular_batch_selection: True
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
-ltl_log_ep: 5                  # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
+ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
