@@ -25,7 +25,7 @@ class SubModSampler(Sampler):
         H = -p_log_p.numpy()
         self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
 
-    def get_subset(self):
+    def get_subset(self, detailed_logging=False):
 
         set_size = len(self.index_set)
         num_of_partitions = cfg.num_of_partitions
@@ -50,10 +50,11 @@ class SubModSampler(Sampler):
         else:
             intermediate_indices = self.index_set
 
-        log('\nSelected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
-
         r_size = len(intermediate_indices) / self.batch_size * self.ltl_log_ep
-        log('Size of random sample: {}'.format(r_size))
+
+        if detailed_logging:
+            log('\nSelected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
+            log('Size of random sample: {}'.format(r_size))
 
         subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.final_activations, self.H,
                                             self.batch_size, r_size)
@@ -61,7 +62,8 @@ class SubModSampler(Sampler):
         for item in subset_indices:     # Subset selection without replacement.
             self.index_set.remove(item)
 
-        log('The selected {0} indices (second level): {1}'.format(len(subset_indices), subset_indices))
+        if detailed_logging:
+            log('The selected {0} indices (second level): {1}'.format(len(subset_indices), subset_indices))
         return subset_indices
 
 
