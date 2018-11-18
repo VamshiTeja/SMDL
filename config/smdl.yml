@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'random_MNIST'
+run_label: 'random_FashionMNIST'
 gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
@@ -11,7 +11,7 @@ model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet
 
 # Dataset Configurations
 dataset:
-    name: 'MNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'FashionMNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Training Configurations

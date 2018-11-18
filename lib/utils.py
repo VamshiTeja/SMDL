@@ -39,20 +39,20 @@ def setup_dataset():
             test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms)
     elif cfg.dataset.name == 'MNIST':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-        train_dataset = datasets.MNIST(root='./datasets/', train=True, download=True, transform=transform)
-        test_dataset = datasets.MNIST(root='./datasets/', train=False, download=True, transform=transform)
+        train_dataset = datasets.MNIST(root='./datasets/MNIST', train=True, download=True, transform=transform)
+        test_dataset = datasets.MNIST(root='./datasets/MNIST', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'FashionMNIST':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-        train_dataset = datasets.FashionMNIST(root='./datasets/', train=True, download=True, transform=transform)
-        test_dataset = datasets.FashionMNIST(root='./datasets/', train=False, download=True, transform=transform)
+        train_dataset = datasets.FashionMNIST(root='./datasets/FashionMNIST', train=True, download=True, transform=transform)
+        test_dataset = datasets.FashionMNIST(root='./datasets/FashionMNIST', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'EMNIST':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-        train_dataset = datasets.EMNIST(root='./datasets/', train=True, download=True, transform=transform)
-        test_dataset = datasets.EMNIST(root='./datasets/', train=False, download=True, transform=transform)
+        train_dataset = datasets.EMNIST(root='./datasets/EMNIST', train=True, download=True, transform=transform)
+        test_dataset = datasets.EMNIST(root='./datasets/EMNIST', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'SVHN':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        train_dataset = datasets.SVHN(root='./datasets/', split='train', download=True, transform=transform, target_transform=target_transform)
-        test_dataset = datasets.SVHN(root='./datasets/', split='test', download=True, transform=transform, target_transform=target_transform)
+        train_dataset = datasets.SVHN(root='./datasets/SVHN', split='train', download=True, transform=transform, target_transform=target_transform)
+        test_dataset = datasets.SVHN(root='./datasets/SVHN', split='test', download=True, transform=transform, target_transform=target_transform)
     else:
         raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.dataset.name))
     return train_dataset, test_dataset
