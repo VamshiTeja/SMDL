@@ -29,7 +29,8 @@ root.weight_decay = 1e-4
 root.timestamp = 'placeholder'  # Will be updated at runtime
 root.output_dir = 'placeholder'
 
-root.use_submobular_batch_selection = True
+root.use_custom_batch_selection = True
+root.override_submodular_sampling = False
 root.num_of_partitions = 10
 
 # Dataset Details

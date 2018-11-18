@@ -69,7 +69,7 @@ class SubModSampler(Sampler):
 
 def get_subset_indices(index_set_input, penultimate_activations, final_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
     if(r_size<len(index_set_input)):
-        index_set = np.random.choice(index_set_input,r_size,replace=False)
+        index_set = np.random.choice(index_set_input, r_size, replace=False)
     else:
         index_set = copy.deepcopy(index_set_input)
 

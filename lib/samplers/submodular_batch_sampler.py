@@ -33,7 +33,7 @@ class SubmodularBatchSampler(Sampler):
         self.sampler = sampler
         self.batch_size = batch_size
         self.drop_last = drop_last
-        self.override_submodular_sampling = False
+        self.override_submodular_sampling = cfg.override_submodular_sampling
         self.submodular_sampler = SubModSampler(model, data_source, self.batch_size, cfg.ltl_log_ep)
         # TODO: Handle Replacement Strategy
 

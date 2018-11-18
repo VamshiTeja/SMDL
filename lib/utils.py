@@ -1,6 +1,10 @@
 import matplotlib
 matplotlib.use('Agg')
 
+import torchvision.transforms as transforms
+from torchvision import datasets
+
+from datasets import cifar
 import matplotlib.pyplot as plt
 import numpy as np
 import logging, sys
@@ -8,6 +12,58 @@ import cPickle as pickle
 
 from lib.config import cfg
 
+
+def setup_dataset():
+    num_classes = cfg.dataset.total_num_classes
+    if cfg.dataset.name == 'CIFAR':
+        if num_classes == 10:
+            # https://github.com/Armour/pytorch-nn-practice/blob/master/utils/meanstd.py
+            norm = transforms.Normalize(mean=[0.491, 0.482, 0.447], std=[0.247, 0.243, 0.261])
+            train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
+                                                   transforms.RandomHorizontalFlip(),
+                                                   transforms.ToTensor(), norm
+                                                   ])
+            test_transforms = transforms.Compose([transforms.ToTensor(), norm])
+            train_dataset = cifar.CIFAR10(root='./datasets/', train=True, download=True,
+                                          transform=train_transforms)
+            test_dataset = cifar.CIFAR10(root='./datasets/', train=False, transform=test_transforms)
+        elif num_classes == 100:
+            norm = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
+            train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
+                                                   transforms.RandomHorizontalFlip(),
+                                                   transforms.ToTensor(), norm
+                                                   ])
+            test_transforms = transforms.Compose([transforms.ToTensor(), norm])
+            train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True,
+                                           transform=train_transforms)
+            test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms)
+    elif cfg.dataset.name == 'MNIST':
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        train_dataset = datasets.MNIST(root='./datasets/', train=True, download=True, transform=transform)
+        test_dataset = datasets.MNIST(root='./datasets/', train=False, download=True, transform=transform)
+    elif cfg.dataset.name == 'FashionMNIST':
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        train_dataset = datasets.FashionMNIST(root='./datasets/', train=True, download=True, transform=transform)
+        test_dataset = datasets.FashionMNIST(root='./datasets/', train=False, download=True, transform=transform)
+    elif cfg.dataset.name == 'EMNIST':
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        train_dataset = datasets.EMNIST(root='./datasets/', train=True, download=True, transform=transform)
+        test_dataset = datasets.EMNIST(root='./datasets/', train=False, download=True, transform=transform)
+    elif cfg.dataset.name == 'SVHN':
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        train_dataset = datasets.SVHN(root='./datasets/', split='train', download=True, transform=transform, target_transform=target_transform)
+        test_dataset = datasets.SVHN(root='./datasets/', split='test', download=True, transform=transform, target_transform=target_transform)
+    else:
+        raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.dataset.name))
+    return train_dataset, test_dataset
+
+def target_transform(target):
+    """
+    Helper for SVHN.
+    :param target:
+    :return:
+    """
+    return int(target[0]) - 1
 
 class Metrics:
     def __init__(self):

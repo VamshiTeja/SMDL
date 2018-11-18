@@ -1,10 +1,8 @@
 import argparse, time, os, logging, pprint
 
 import torch
-import torchvision.transforms as transforms
 
 from models import *
-from datasets import cifar
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
 from lib.samplers.submodular_batch_sampler import SubmodularBatchSampler
@@ -19,7 +17,10 @@ def submodular_training(gpus):
 
         # Initialize the model
         if cfg.model == 'ResNet20':
-            model = resnet20(num_classes=num_classes)
+            if cfg.dataset.name in ('MNIST', 'FashionMNIST', 'EMNIST'):
+                model = resnet20(num_classes=num_classes, single_input_channel=True)
+            else:
+                model = resnet20(num_classes=num_classes)
         elif cfg.model == 'ResNet32':
             model = resnet32(num_classes=num_classes)
         else:
@@ -35,32 +36,9 @@ def submodular_training(gpus):
         log(model)
 
         # Loading the Dataset
-        if cfg.dataset.name == 'CIFAR':
-            if num_classes == 10:
-                # https://github.com/Armour/pytorch-nn-practice/blob/master/utils/meanstd.py
-                norm = transforms.Normalize(mean=[0.491, 0.482, 0.447], std=[0.247, 0.243, 0.261])
-                train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
-                                                       transforms.RandomHorizontalFlip(),
-                                                       transforms.ToTensor(), norm
-                                                       ])
-                test_transforms = transforms.Compose([transforms.ToTensor(), norm])
-                train_dataset = cifar.CIFAR10(root='./datasets/', train=True, download=True,
-                                               transform=train_transforms)
-                test_dataset = cifar.CIFAR10(root='./datasets/', train=False, transform=test_transforms)
-            elif num_classes == 100:
-                norm = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
-                train_transforms = transforms.Compose([transforms.RandomCrop(32, padding=4),
-                                                       transforms.RandomHorizontalFlip(),
-                                                       transforms.ToTensor(), norm
-                                                       ])
-                test_transforms = transforms.Compose([transforms.ToTensor(), norm])
-                train_dataset = cifar.CIFAR100(root='./datasets/', train=True, download=True,
-                                               transform=train_transforms)
-                test_dataset = cifar.CIFAR100(root='./datasets/', train=False, transform=test_transforms)
-        else:
-            raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.model))
+        train_dataset, test_dataset = setup_dataset()
 
-        if not cfg.use_submobular_batch_selection:
+        if not cfg.use_custom_batch_selector:
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
                                                        num_workers=1)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
@@ -77,7 +55,7 @@ def submodular_training(gpus):
             start_time = time.time()
 
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
-            if cfg.use_submobular_batch_selection:
+            if cfg.use_custom_batch_selector:
                 submodular_batch_sampler = SubmodularBatchSampler(model, train_dataset, cfg.batch_size)
                 train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
                                                            num_workers=1)
