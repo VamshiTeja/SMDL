@@ -83,10 +83,11 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=100, single_input_channel=False):
+    def __init__(self, block, layers, num_classes=100, mnist_family=False):
         super(ResNet, self).__init__()
         self.inplanes = 16
-        if single_input_channel:
+        self.mnist_family = mnist_family
+        if mnist_family:
             self.conv1 = nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1, bias=False)
         else:
             self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
@@ -131,12 +132,18 @@ class ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
 
-        x = self.avgpool(x)
+        if not self.mnist_family:
+            x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         penultimate = x
         logits = self.fc(penultimate)
 
         return logits, penultimate
+
+
+def resnet18(**kwargs):
+    model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
+    return model
 
 
 def resnet20(**kwargs):

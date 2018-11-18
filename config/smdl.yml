@@ -1,13 +1,13 @@
 # General Configutaions
 run_label: 'random_MNIST'
-gpu_ids: '2'
+gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {ResNet20, ResNet32}
+model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:

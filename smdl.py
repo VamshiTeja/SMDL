@@ -16,11 +16,12 @@ def submodular_training(gpus):
     for round_count in range(cfg.repeat_rounds):
 
         # Initialize the model
-        if cfg.model == 'ResNet20':
-            if cfg.dataset.name in ('MNIST', 'FashionMNIST', 'EMNIST'):
-                model = resnet20(num_classes=num_classes, single_input_channel=True)
-            else:
-                model = resnet20(num_classes=num_classes)
+        if cfg.model == 'SimpleNet':
+            model = SimpleNet()
+        elif cfg.model == 'ResNet18':
+            model = resnet20(num_classes=num_classes)
+        elif cfg.model == 'ResNet20':
+            model = resnet20(num_classes=num_classes)
         elif cfg.model == 'ResNet32':
             model = resnet32(num_classes=num_classes)
         else:
