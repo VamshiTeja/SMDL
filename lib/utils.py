@@ -51,19 +51,12 @@ def setup_dataset():
         test_dataset = datasets.EMNIST(root='./datasets/EMNIST', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'SVHN':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        train_dataset = datasets.SVHN(root='./datasets/SVHN', split='train', download=True, transform=transform, target_transform=target_transform)
-        test_dataset = datasets.SVHN(root='./datasets/SVHN', split='test', download=True, transform=transform, target_transform=target_transform)
+        train_dataset = datasets.SVHN(root='./datasets/SVHN', split='train', download=True, transform=transform)
+        test_dataset = datasets.SVHN(root='./datasets/SVHN', split='test', download=True, transform=transform)
     else:
         raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.dataset.name))
     return train_dataset, test_dataset
 
-def target_transform(target):
-    """
-    Helper for SVHN.
-    :param target:
-    :return:
-    """
-    return int(target[0]) - 1
 
 class Metrics:
     def __init__(self):
