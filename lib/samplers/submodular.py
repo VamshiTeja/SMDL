@@ -79,9 +79,7 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
 
     subset_size = min(subset_size, len(index_set))
     for i in range(0, subset_size):
-
         now = time.time()
-
         # d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 
@@ -143,49 +141,31 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     :param alpha:
     :return:
     """
-    # #TODO: sequence too large error, couldnt understand;
-    # if len(subset_indices) == 0:
-    #     return 0
-    # elif len(index_set) == 0:
-    #     return 0
-    # else:
-    #     index_p_acts = np.ndarray(itemgetter(*index_set)(penultimate_activations))
-    #     subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
-    #     pdist = cdist(index_p_acts, subset_p_acts)
-    #     r_score = alpha * np.min(pdist, axis=1)
-    #     return r_score
-
-    # if len(subset_indices) == 0:
-    #     return 0
-    # elif len(index_set) == 0:
-    #     return 0
-    # else:
-    #     subset_p_acts = np.ndarray(itemgetter(*subset_indices)(penultimate_activations))
-    #     pdist = cdist(subset_p_acts, subset_p_acts)
-    #     r_score = alpha * np.min(pdist, axis=1)
-    #     return r_score
-
-    r_score = 0
-    if len(subset_indices) > 1:
-        subset_penultimate_acts = itemgetter(*subset_indices)(penultimate_activations)
-    for index in subset_indices:
-        p_act = penultimate_activations[index]
-        if len(subset_indices) > 1:
-            dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
-            score = np.min(dist[dist != 0])
-            r_score += alpha * score
-    return r_score
+    if len(subset_indices) == 0:
+        return 0
+    elif len(index_set) == 0:
+        return 0
+    elif(len(subset_indices)==1):
+        return np.linalg.norm(itemgetter(*index_set)(penultimate_activations)-subset_indices[0])
+    elif(len(index_set)==1):
+        return np.min(np.linalg.norm(penultimate_activations[index_set[0]]-(itemgetter(*subset_indices)(penultimate_activations))))
+    else:
+        index_p_acts = np.array(itemgetter(*index_set)(penultimate_activations))
+        subset_p_acts = np.array((itemgetter(*subset_indices)(penultimate_activations)))
+        pdist = cdist(index_p_acts, subset_p_acts)
+        r_score = alpha * np.min(pdist, axis=1)
+        return r_score
 
     # r_score = 0
+    # if len(subset_indices) > 1:
+    #     subset_penultimate_acts = itemgetter(*subset_indices)(penultimate_activations)
     # for index in subset_indices:
     #     p_act = penultimate_activations[index]
     #     if len(subset_indices) > 1:
-    #         subset_penultimate_acts = [penultimate_activations[i] for i in subset_indices]
     #         dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
     #         score = np.min(dist[dist != 0])
     #         r_score += alpha * score
     # return r_score
-
 
 
 def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
