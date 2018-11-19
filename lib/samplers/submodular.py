@@ -68,7 +68,8 @@ class SubModSampler(Sampler):
 
 
 def get_subset_indices(index_set_input, penultimate_activations, final_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
-    if(r_size<len(index_set_input)):
+
+    if r_size < len(index_set_input):
         index_set = np.random.choice(index_set_input, r_size, replace=False)
     else:
         index_set = copy.deepcopy(index_set_input)
@@ -145,10 +146,10 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
         return 0
     elif len(index_set) == 0:
         return 0
-    elif(len(subset_indices)==1):
+    elif len(subset_indices) == 1:
         return [np.linalg.norm(np.array(itemgetter(*index_set)(penultimate_activations))-np.array(subset_indices[0]))]
-    elif(len(index_set)==1):
-       	return [np.min(np.linalg.norm(np.array(penultimate_activations[index_set[0]])-np.array((itemgetter(*subset_indices)(penultimate_activations)))))]
+    elif len(index_set) == 1:
+        return [np.min(np.linalg.norm(np.array(penultimate_activations[index_set[0]])-np.array((itemgetter(*subset_indices)(penultimate_activations)))))]
     else:
         index_p_acts = np.array(itemgetter(*index_set)(penultimate_activations))
         subset_p_acts = np.array((itemgetter(*subset_indices)(penultimate_activations)))

@@ -16,29 +16,16 @@ def submodular_training(gpus):
     for round_count in range(cfg.repeat_rounds):
 
         # Initialize the model
-        if cfg.model == 'SimpleNet':
-            model = SimpleNet()
-        elif cfg.model == 'ResNet18':
-            model = resnet20(num_classes=num_classes)
-        elif cfg.model == 'ResNet20':
-            model = resnet20(num_classes=num_classes)
-        elif cfg.model == 'ResNet32':
-            model = resnet32(num_classes=num_classes)
-        else:
-            raise ValueError('Unsupported model passed in the configuration file: {}'.format(cfg.model))
-
+        model = get_model()
         model.apply(weights_init)
         model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
         optimizer = torch.optim.SGD(model.parameters(), cfg.learning_rate, momentum=cfg.momentum,
                                     weight_decay=cfg.weight_decay)
-
         criterion = torch.nn.CrossEntropyLoss().cuda()
-
         log(model)
 
         # Loading the Dataset
         train_dataset, test_dataset = setup_dataset()
-
         if not cfg.use_custom_batch_selector:
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
                                                        num_workers=1)
@@ -47,8 +34,7 @@ def submodular_training(gpus):
 
         train_accs = []
         test_accs = []
-        test_acc_per_round = []
-
+        losses = []
         # Repeat for each epoch
         for epoch_count in range(cfg.epochs):
             adjust_lr(epoch_count, optimizer, cfg.learning_rate)
@@ -61,13 +47,14 @@ def submodular_training(gpus):
                 train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
                                                            num_workers=1)
 
-            train_acc = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
+            train_acc, loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
                               round_count, cfg.repeat_rounds)
             test_acc = test(test_loader, model, epoch_count, cfg.epochs,
                             round_count, cfg.repeat_rounds)
 
             train_accs.append(train_acc)
             test_accs.append(test_acc)
+            losses.append(loss)
             log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
         # Saving model and metrics
@@ -77,12 +64,10 @@ def submodular_training(gpus):
         save_model(model, output_dir + '/' + filename)
         log('Model saved to ' + output_dir + '/' + filename)
 
-        test_acc_per_round.append(test_accs)
-        accuracies.append(test_acc_per_round)
-        save_accuracies(accuracies, cfg.output_dir + '/accuracies/'+cfg.run_label+'_round_' + str(round_count))
+        save_accuracies(test_accs, cfg.output_dir + '/accuracies/'+cfg.run_label+'_test_acc_round_' + str(round_count))
+        save_accuracies(train_accs, cfg.output_dir + '/accuracies/'+cfg.run_label+'_train_acc_round_' + str(round_count))
+        save_accuracies(losses, cfg.output_dir + '/accuracies/'+cfg.run_label+'_loss_round_' + str(round_count))
 
-    plot_accuracies(accuracies, num_classes)
-    save_accuracies(accuracies, cfg.output_dir + '/accuracies/' + cfg.run_label)
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
 
@@ -118,7 +103,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
           '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
                                                                                 epoch_count + 1, max_epoch,
                                                                                 loss=losses, accuracy=top1))
-    return top1.avg
+    return top1.avg, losses.avg
 
 
 def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, logging_freq=10, detailed_logging=False):

@@ -4,6 +4,7 @@ matplotlib.use('Agg')
 import torchvision.transforms as transforms
 from torchvision import datasets
 
+from models import *
 from datasets import cifar
 import matplotlib.pyplot as plt
 import numpy as np
@@ -56,6 +57,21 @@ def setup_dataset():
     else:
         raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.dataset.name))
     return train_dataset, test_dataset
+
+
+def get_model():
+    num_classes = cfg.dataset.total_num_classes
+    if cfg.model == 'SimpleNet':
+        model = SimpleNet()
+    elif cfg.model == 'ResNet18':
+        model = resnet18(num_classes=num_classes)
+    elif cfg.model == 'ResNet20':
+        model = resnet20(num_classes=num_classes)
+    elif cfg.model == 'ResNet32':
+        model = resnet32(num_classes=num_classes)
+    else:
+        raise ValueError('Unsupported model passed in the configuration file: {}'.format(cfg.model))
+    return model
 
 
 class Metrics:
