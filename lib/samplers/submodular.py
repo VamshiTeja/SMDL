@@ -146,9 +146,9 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     elif len(index_set) == 0:
         return 0
     elif(len(subset_indices)==1):
-        return np.linalg.norm(itemgetter(*index_set)(penultimate_activations)-subset_indices[0])
+        return [np.linalg.norm(np.array(itemgetter(*index_set)(penultimate_activations))-np.array(subset_indices[0]))]
     elif(len(index_set)==1):
-        return np.min(np.linalg.norm(penultimate_activations[index_set[0]]-(itemgetter(*subset_indices)(penultimate_activations))))
+       	return [np.min(np.linalg.norm(np.array(penultimate_activations[index_set[0]])-np.array((itemgetter(*subset_indices)(penultimate_activations)))))]
     else:
         index_p_acts = np.array(itemgetter(*index_set)(penultimate_activations))
         subset_p_acts = np.array((itemgetter(*subset_indices)(penultimate_activations)))
