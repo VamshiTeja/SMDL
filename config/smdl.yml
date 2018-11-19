@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'SMDL_CIFAR100_ResNet32'
-gpu_ids: '0'
+run_label: 'SMDL_FashionMNIST_SimpleNet'
+gpu_ids: '7'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet32                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 100
+    name: 'FashionMNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    total_num_classes: 10
 
 # Training Configurations
 epochs: 40
