@@ -60,7 +60,7 @@ def submodular_training(gpus):
         # Saving model and metrics
         plot_per_epoch_accuracies(train_accs, test_accs, round_count)
         output_dir = cfg.output_dir + '/models'
-        filename = 'round_' + str(round_count + 1) + '.pth'
+        filename = 'round_' + str(round_count + 1) + 'epoch_' + str(cfg.epochs) + '.pth'
         save_model(model, output_dir + '/' + filename)
         log('Model saved to ' + output_dir + '/' + filename)
 
