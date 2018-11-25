@@ -1,6 +1,6 @@
 # General Configutaions
-run_label: 'Random_CIFAR_10_ResNet20_with_warmup'
-gpu_ids: '2'
+run_label: 'SMDL_CIFAR_10_ResNet20_with_warmup'
+gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
@@ -29,7 +29,7 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
