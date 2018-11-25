@@ -2,7 +2,6 @@ import argparse, time, os, logging, pprint
 
 import torch
 
-from models import *
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
 from lib.samplers.submodular_batch_sampler import SubmodularBatchSampler
@@ -19,10 +18,16 @@ def submodular_training(gpus):
         model = get_model()
         model.apply(weights_init)
         model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
+        log(model)
+
+        if cfg.pretrained_model is not '':
+            state_dict = torch.load(cfg.pretrained_model)
+            model.load_state_dict(state_dict)
+            log('Loaded model from {0}'.format(cfg.pretrained_model))
+
         optimizer = torch.optim.SGD(model.parameters(), cfg.learning_rate, momentum=cfg.momentum,
                                     weight_decay=cfg.weight_decay)
         criterion = torch.nn.CrossEntropyLoss().cuda()
-        log(model)
 
         # Loading the Dataset
         train_dataset, test_dataset = setup_dataset()
@@ -60,13 +65,13 @@ def submodular_training(gpus):
         # Saving model and metrics
         plot_per_epoch_accuracies(train_accs, test_accs, round_count)
         output_dir = cfg.output_dir + '/models'
-        filename = 'round_' + str(round_count + 1) + 'epoch_' + str(cfg.epochs) + '.pth'
+        filename = 'round_' + str(round_count + 1) + '_epoch_' + str(cfg.epochs) + '.pth'
         save_model(model, output_dir + '/' + filename)
         log('Model saved to ' + output_dir + '/' + filename)
 
-        save_accuracies(test_accs, cfg.output_dir + '/accuracies/'+cfg.run_label+'_test_acc_round_' + str(round_count))
-        save_accuracies(train_accs, cfg.output_dir + '/accuracies/'+cfg.run_label+'_train_acc_round_' + str(round_count))
-        save_accuracies(losses, cfg.output_dir + '/accuracies/'+cfg.run_label+'_loss_round_' + str(round_count))
+        save_accuracies(test_accs, cfg.output_dir + '/accuracies/'+'test_acc_round_' + str(round_count))
+        save_accuracies(train_accs, cfg.output_dir + '/accuracies/'+'train_acc_round_' + str(round_count))
+        save_accuracies(losses, cfg.output_dir + '/accuracies/'+'loss_round_' + str(round_count))
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 

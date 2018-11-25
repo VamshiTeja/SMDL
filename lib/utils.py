@@ -108,6 +108,8 @@ def plot_per_epoch_accuracies(train_accs, test_accs, round_count):
         x = np.arange(1, len(train_accs)+1)
         plt.plot(x, train_accs, 'r', label='Train Accuracy')
         plt.plot(x, test_accs, 'g', label='Test Accuracy')
+        plt.yticks(np.arange(0, 110, step=10))
+        plt.grid(True, linestyle='--', axis='y')
         plt.legend()
         plt.savefig(cfg.output_dir + '/plots/round_' + str(round_count) + "_train_test_accuracy.png")
         plt.close()

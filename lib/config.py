@@ -16,6 +16,7 @@ root.sampling_strategy = 'random'   # Can be either: 'random', 'submodular'
 root.load_class_list_from_file = False
 
 root.model = 'ResNet32'
+root.pretrained_model = ''
 
 root.epochs = 2
 

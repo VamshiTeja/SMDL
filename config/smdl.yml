@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'Warm_up_model_Random_CIFAR_10_ResNet20_'
+run_label: 'Random_CIFAR_10_ResNet20_with_warmup'
 gpu_ids: '2'
 seed: 99                        # '0' means no manual seeding
 
@@ -14,8 +14,12 @@ dataset:
     name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
+# Preload model for Warm-Up
+# Loads the specified model. Ignored if set to ''.
+pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
+
 # Training Configurations
-epochs: 10
+epochs: 3
 
 batch_size: 50
 batch_size_test: 100
