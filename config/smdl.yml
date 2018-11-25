@@ -19,7 +19,7 @@ dataset:
 pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
-epochs: 3
+epochs: 40
 
 batch_size: 50
 batch_size_test: 100
