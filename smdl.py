@@ -69,9 +69,9 @@ def submodular_training(gpus):
         save_model(model, output_dir + '/' + filename)
         log('Model saved to ' + output_dir + '/' + filename)
 
-        save_accuracies(test_accs, cfg.output_dir + '/accuracies/'+'test_acc_round_' + str(round_count))
-        save_accuracies(train_accs, cfg.output_dir + '/accuracies/'+'train_acc_round_' + str(round_count))
-        save_accuracies(losses, cfg.output_dir + '/accuracies/'+'loss_round_' + str(round_count))
+        save_accuracies(test_accs, cfg.output_dir + '/accuracies/' + 'test_acc_round_' + str(round_count))
+        save_accuracies(train_accs, cfg.output_dir + '/accuracies/' + 'train_acc_round_' + str(round_count))
+        save_accuracies(losses, cfg.output_dir + '/accuracies/' + 'loss_round_' + str(round_count))
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
