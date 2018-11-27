@@ -22,7 +22,7 @@ pretrained_model: ''
 # Training Configurations
 epochs: 40
 
-batch_size: 500
+batch_size: 50
 batch_size_test: 100
 
 learning_rate: 0.1
