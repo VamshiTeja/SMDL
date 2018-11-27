@@ -49,31 +49,40 @@ def _plot_indiv_accuracies(accuracies, color='blue', label=''):
 if __name__ == '__main__':
 
     test_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/test_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/Random_acc_between_epochs_1127_181612/accuracies/test_acc_between_iteration_epoch_1_accuracy.pkl',
                           'Random Selection', 'blue'],
                       [
-                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/test_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/SMDL_acc_between_epochs_1127_154547/accuracies/test_acc_between_iteration_epoch_1_accuracy.pkl',
                           'Submodular Selection', 'green']
                       ]
-    plot_accuracies(test_data, title='CIFAR 10 (with warm-up) Test Accuracy')
+    plot_accuracies(test_data, title='CIFAR 10 Epoch 1 Test Accuracy')
 
-    train_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(train_data, title='CIFAR 10 (with warm-up) Train Accuracy')
-
-    loss_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/loss_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/loss_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(loss_data, title='CIFAR 10 (with warm-up) Loss', plot_type='Loss')
+    # test_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='CIFAR 10 (with warm-up) Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='CIFAR 10 (with warm-up) Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='CIFAR 10 (with warm-up) Loss', plot_type='Loss')
 
     # CIFAR - 10 TEMPLATE
     # -------------------

@@ -111,7 +111,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                 test_acc_between_epochs.append(test_acc)
 
         plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
-        save_accuracies(plot_per_epoch_accuracy, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
+        save_accuracies(test_acc_between_epochs, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
                         str(epoch_count+1))
     except OSError:
         log('Gracefully handling {}'.format(OSError))
