@@ -114,7 +114,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
         save_accuracies(plot_per_epoch_accuracy, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
                         str(epoch_count+1))
     except OSError:
-        print 'Gracefully handling {}'.format(OSError)
+        log('Gracefully handling {}'.format(OSError))
 
     log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
           '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
