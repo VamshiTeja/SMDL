@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'SMDL_CIFAR_10_ResNet20_with_warmup'
+run_label: 'Normalized_SMDL'
 gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
@@ -16,7 +16,8 @@ dataset:
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
-pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
+pretrained_model: ''
+#pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
 epochs: 40

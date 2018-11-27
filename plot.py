@@ -37,7 +37,7 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy'):
         # plt.yticks(np.arange(0, 2, step=0.5))
         plt.ylabel('Loss')
 
-    plt.savefig(save_location + title.replace(' ', '_') + '.png')
+    plt.savefig(save_location + title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.png')
     plt.close()
 
 
@@ -49,31 +49,31 @@ def _plot_indiv_accuracies(accuracies, color='blue', label=''):
 if __name__ == '__main__':
 
     test_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_FashionMNIST_SimpleNet_1119_150311/accuracies/Random_FashionMNIST_SimpleNet_test_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/test_acc_round_0_accuracy.pkl',
                           'Random Selection', 'blue'],
                       [
-                          '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_FashionMNIST_SimpleNet_1119_150139/accuracies/SMDL_FashionMNIST_SimpleNet_test_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/test_acc_round_0_accuracy.pkl',
                           'Submodular Selection', 'green']
                       ]
-    plot_accuracies(test_data, title='Fashion MNIST Test Accuracy')
+    plot_accuracies(test_data, title='CIFAR 10 (with warm-up) Test Accuracy')
 
     train_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_FashionMNIST_SimpleNet_1119_150311/accuracies/Random_FashionMNIST_SimpleNet_train_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/train_acc_round_0_accuracy.pkl',
                           'Random Selection', 'blue'],
                       [
-                          '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_FashionMNIST_SimpleNet_1119_150139/accuracies/SMDL_FashionMNIST_SimpleNet_train_acc_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/train_acc_round_0_accuracy.pkl',
                           'Submodular Selection', 'green']
                       ]
-    plot_accuracies(train_data, title='Fashion MNIST Train Accuracy')
+    plot_accuracies(train_data, title='CIFAR 10 (with warm-up) Train Accuracy')
 
     loss_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_FashionMNIST_SimpleNet_1119_150311/accuracies/Random_FashionMNIST_SimpleNet_loss_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/loss_round_0_accuracy.pkl',
                           'Random Selection', 'blue'],
                       [
-                          '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_FashionMNIST_SimpleNet_1119_150139/accuracies/SMDL_FashionMNIST_SimpleNet_loss_round_0_accuracy.pkl',
+                          '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/loss_round_0_accuracy.pkl',
                           'Submodular Selection', 'green']
                       ]
-    plot_accuracies(loss_data, title='Fashion MNIST Loss', plot_type='Loss')
+    plot_accuracies(loss_data, title='CIFAR 10 (with warm-up) Loss', plot_type='Loss')
 
     # CIFAR - 10 TEMPLATE
     # -------------------

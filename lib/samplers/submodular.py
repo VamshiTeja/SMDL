@@ -4,6 +4,8 @@ import copy
 from multiprocessing.pool import ThreadPool
 from operator import itemgetter
 from scipy.spatial.distance import cdist
+from torch.nn.functional import normalize
+from torch import Tensor
 
 import torch
 import torch.nn.functional as F
@@ -84,14 +86,14 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
         # d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 
-        u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
-        u_scores = u_score + compute_u_score(entropy, list(index_set))
+        # u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
+        u_scores = compute_u_score(entropy, list(index_set))
 
         r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set))
 
         md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
 
-        scores = np.array(u_scores) + np.array(r_scores) + np.array(md_scores)
+        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores))
 
         best_item_index = np.argmax(scores)
         subset_indices.append(index_set[best_item_index])
@@ -101,6 +103,12 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
 
     return subset_indices
 
+def normalise(A):
+    std = np.std(A)
+    if std==0:
+        std = 1
+    A = (A-np.mean(A))/std
+    return A
 
 def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
     """
@@ -183,4 +191,4 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
     else:
         pen_act = np.array(itemgetter(*index_set)(penultimate_activations)) - np.array(class_mean)
         md_score = alpha * np.linalg.norm(pen_act, axis=1)
-        return md_score
+        return -md_score
