@@ -118,6 +118,19 @@ def plot_per_epoch_accuracies(train_accs, test_accs, round_count):
         log(error, log_level=logging.ERROR)
 
 
+def plot_per_epoch_accuracy(accs, round_count, label='Test Accuracy'):
+    try:
+        x = np.arange(1, len(accs)+1)
+        plt.plot(x, accs, 'r', label=label)
+        plt.yticks(np.arange(0, 110, step=10))
+        plt.grid(True, linestyle='--', axis='y')
+        plt.legend()
+        plt.savefig(cfg.output_dir + '/plots/epoch_' + str(round_count) + "_train_test_accuracy.png")
+        plt.close()
+    except Exception as error:
+        log('Exception occurred while plotting the accuracies. Ignoring.', log_level=logging.ERROR)
+        log(error, log_level=logging.ERROR)
+
 def plot_per_episode_accuracies(test_accs, round_count, num_classes):
     try:
         x = np.arange(0, num_classes+1)

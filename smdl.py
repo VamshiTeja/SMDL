@@ -53,7 +53,7 @@ def submodular_training(gpus):
                                                            num_workers=1)
 
             train_acc, loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
-                              round_count, cfg.repeat_rounds)
+                              round_count, cfg.repeat_rounds, test_loader=test_loader)
             test_acc = test(test_loader, model, epoch_count, cfg.epochs,
                             round_count, cfg.repeat_rounds)
 
@@ -77,13 +77,15 @@ def submodular_training(gpus):
 
 
 def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
-          round_count, max_rounds, logging_freq=10, detailed_logging=True):
+          round_count, max_rounds, logging_freq=10, detailed_logging=True, test_freq=10, test_inbetween_epoch=True,
+          test_loader=None):
     losses = Metrics()
     top1 = Metrics()
 
-    model.train()
-
+    test_acc_between_epochs = []
     for i, (input, target) in enumerate(train_loader):
+        model.train()       # We may test in-between
+
         input, target = input.cuda(), target.cuda()
         output, _ = model(input)
         loss = criterion(output,target)
@@ -102,6 +104,14 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                   '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count+1, max_rounds,
                                                                              epoch_count+1, max_epoch, i, len(train_loader),
                                                                              loss=losses, accuracy=top1))
+        if test_inbetween_epoch and i % test_freq == 0:
+            test_acc = test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
+                            max_iteration=len(train_loader))
+            test_acc_between_epochs.append(test_acc)
+
+    plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
+    save_accuracies(plot_per_epoch_accuracy, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
+                    str(epoch_count+1))
 
     log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
           '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
@@ -111,7 +121,8 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
     return top1.avg, losses.avg
 
 
-def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, logging_freq=10, detailed_logging=False):
+def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, logging_freq=10, detailed_logging=False,
+         iteration=None, max_iteration=None):
     top1 = Metrics()
     model.eval()
 
@@ -127,10 +138,16 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
                                                                                       epoch_count + 1, max_epoch, i,
                                                                                       len(test_loader), accuracy=top1))
 
-    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
-        '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
-                                                                              epoch_count + 1, max_epoch,
-                                                                              accuracy=top1))
+    if iteration is None:
+        log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
+            '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
+                                                                                  epoch_count + 1, max_epoch,
+                                                                                  accuracy=top1))
+    else:
+        log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} Iteration {4}/{5}' \
+            '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
+                                                                                 epoch_count + 1, max_epoch, iteration,
+                                                                                 max_iteration, accuracy=top1))
 
     return top1.avg
 
