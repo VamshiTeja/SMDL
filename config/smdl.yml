@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'Random_acc_between_epochs'
-gpu_ids: '0'
+run_label: 'cifar100_resnet32_random'
+gpu_ids: '7'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet32                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
     name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 10
+    total_num_classes: 100
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.

@@ -9,7 +9,7 @@ else:
     import pickle
 
 
-def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy'):
+def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_label='Epochs'):
     """
     This helper function can be used to plot(visualize) the accuracies saved using lib.utils.save_accuracies()
     :return: None
@@ -24,7 +24,7 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy'):
     plt.legend()
     if title is not None:
         plt.title(title)
-    plt.xlabel('Epochs')
+    plt.xlabel(x_axis_label)
 
     plt.grid(True, linestyle='--', axis='y')
 
@@ -48,14 +48,18 @@ def _plot_indiv_accuracies(accuracies, color='blue', label=''):
 
 if __name__ == '__main__':
 
-    test_data = [[
-                          '/home/joseph/workspace/SMDL/output/Random_acc_between_epochs_1127_181612/accuracies/test_acc_between_iteration_epoch_1_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/joseph/workspace/SMDL/output/SMDL_acc_between_epochs_1127_154547/accuracies/test_acc_between_iteration_epoch_1_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(test_data, title='CIFAR 10 Epoch 1 Test Accuracy')
+    for i in range(1, 41):
+        try:
+            test_data = [[
+                                  '/home/joseph/workspace/SMDL/output/Random_acc_between_epochs_1127_182940/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+                                  'Random Selection', 'blue'],
+                              [
+                                  '/home/joseph/workspace/SMDL/output/SMDL_acc_between_epochs_1127_183033/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+                                  'Submodular Selection', 'green']
+                              ]
+            plot_accuracies(test_data, title='CIFAR 10 Epoch ' + str(i) + ' Test Accuracy', x_axis_label='# of iterations (x10)')
+        except Exception as error:
+            print ('Exception occured for index {}, {}'.format(i, error))
 
     # test_data = [[
     #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/test_acc_round_0_accuracy.pkl',
