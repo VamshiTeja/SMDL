@@ -6,6 +6,7 @@ from submodular import SubModSampler
 from lib.utils import log
 from lib.config import cfg
 
+import numpy as np
 
 class SubmodularBatchSampler(Sampler):
     """
@@ -36,6 +37,7 @@ class SubmodularBatchSampler(Sampler):
         self.override_submodular_sampling = cfg.override_submodular_sampling
         self.submodular_sampler = SubModSampler(model, data_source, self.batch_size, cfg.ltl_log_ep)
         # TODO: Handle Replacement Strategy
+        self.sample_with_replacement = cfg.sample_with_replacement
 
     def __iter__(self):
         batch = []
@@ -45,8 +47,15 @@ class SubmodularBatchSampler(Sampler):
                 if len(batch) == self.batch_size:
                     yield batch
                     batch = []
+        elif(self.sample_with_replacement):
+            t_stamp = time.time()
+            batch = self.submodular_sampler.get_subset()
+            log('Fetched {0} of {1} in {2} seconds.'.format(i, len(self.sampler) // self.batch_size,
+                                                            time.time() - t_stamp))
+            yield batch
         else:
-            for i in range(len(self.sampler) // self.batch_size):
+            r = np.random.randn()
+            for i in range(int(len(self.sampler)*r/self.batch_size)):
                 t_stamp = time.time()
                 batch = self.submodular_sampler.get_subset()
                 log('Fetched {0} of {1} in {2} seconds.'.format(i, len(self.sampler) // self.batch_size, time.time()-t_stamp))

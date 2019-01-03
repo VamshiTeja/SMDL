@@ -40,7 +40,6 @@ def submodular_training(gpus):
         train_accs = []
         test_accs = []
         losses = []
-
         # Repeat for each epoch
         for epoch_count in range(cfg.epochs):
             adjust_lr(epoch_count, optimizer, cfg.learning_rate)
@@ -154,54 +153,6 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
                                                                                  max_iteration, accuracy=top1))
 
     return top1.avg
-
-def train_iterations(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
-          round_count, max_rounds, logging_freq=10, detailed_logging=True, test_freq=10, test_inbetween_epoch=True,
-          test_loader=None, ):
-    losses = Metrics()
-    top1 = Metrics()
-
-    test_acc_between_epochs = []
-    try:
-        for i, (input, target) in enumerate(train_loader):
-            model.train()       # We may test in-between
-
-            input, target = input.cuda(), target.cuda()
-            output, _ = model(input)
-            loss = criterion(output,target)
-
-            acc = compute_accuracy(output, target)[0]
-            losses.update(loss.data.item(), input.size(0))
-            top1.update(acc.item(), input.size(0))
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-            if i % logging_freq == 0 and detailed_logging:
-                log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} [{4:3d}/{5}] ' \
-                      '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
-                      '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count+1, max_rounds,
-                                                                                 epoch_count+1, max_epoch, i, len(train_loader),
-                                                                                 loss=losses, accuracy=top1))
-            if test_inbetween_epoch and i % test_freq == 0:
-                test_acc = test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
-                                max_iteration=len(train_loader))
-                test_acc_between_epochs.append(test_acc)
-
-        plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
-        save_accuracies(test_acc_between_epochs, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
-                        str(epoch_count+1))
-    except OSError:
-        log('Gracefully handling {}'.format(OSError))
-
-    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
-          '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
-          '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
-                                                                                epoch_count + 1, max_epoch,
-                                                                                loss=losses, accuracy=top1))
-    return top1.avg, losses.avg
-
 
 
 def adjust_lr(epoch, optimizer, base_lr):
