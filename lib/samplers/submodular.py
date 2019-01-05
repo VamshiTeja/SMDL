@@ -28,6 +28,7 @@ class SubModSampler(Sampler):
         self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
         self.dist = [1./len(self.dataset)]*len(self.dataset)
 
+
     def get_subset(self, detailed_logging=False):
 
         set_size = len(self.index_set)
@@ -50,8 +51,9 @@ class SubModSampler(Sampler):
             intermediate_indices = []
             self.dist = []
             for handler in pool_handlers:
-                intermediate_indices.extend(handler.get()[0])
-                self.dist.append(handler.get()[1])
+                res = handler.get()
+                intermediate_indices.extend(res[0])
+                self.dist.append(res[1])
         else:
             intermediate_indices = self.index_set
 
@@ -113,7 +115,8 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
 
         # log('Processed: {0}/{1} exemplars. Time taken is {2} sec.'.format(i, subset_size, time.time()-now))
 
-    return subset_indices, dist[index_set_input]
+    #return [subset_indices, dist[index_set_input]]
+    return subset_indices
 
 def normalise(A):
     std = np.std(A)
