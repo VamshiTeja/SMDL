@@ -30,11 +30,8 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
-
-num_iterations: 100000
-sample_with_replacement: False
