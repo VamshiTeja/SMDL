@@ -1,17 +1,17 @@
 # General Configutaions
 run_label: 'f_mnist_simplenet_random'
-gpu_ids: '1'
+gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet18                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'FashionMNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up

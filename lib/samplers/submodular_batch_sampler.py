@@ -2,7 +2,7 @@ from torch.utils.data.sampler import Sampler, SequentialSampler, RandomSampler
 from torch._six import int_classes as _int_classes
 import time
 
-from submodular import SubModSampler
+from submodular_new import SubModSampler
 from lib.utils import log
 from lib.config import cfg
 

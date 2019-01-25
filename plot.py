@@ -51,96 +51,125 @@ if __name__ == '__main__':
     for i in range(1, 41):
         try:
             test_data = [[
-                                  '/home/joseph/workspace/SMDL/output/Random_acc_between_epochs_1127_182940/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+                                  '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_random_full_0119_214225/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
                                   'Random Selection', 'blue'],
                               [
-                                  '/home/joseph/workspace/SMDL/output/SMDL_acc_between_epochs_1127_183033/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+                                  '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_submod_random_0122_154235/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
                                   'Submodular Selection', 'green']
                               ]
-            plot_accuracies(test_data, title='CIFAR 10 Epoch ' + str(i) + ' Test Accuracy', x_axis_label='# of iterations (x10)')
+            plot_accuracies(test_data, title='CIFAR-100 Epoch ' + str(i) + ' Test Accuracy', x_axis_label='# of iterations (x10)')
         except Exception as error:
             print ('Exception occured for index {}, {}'.format(i, error))
 
+    # CIFAR 10
     # test_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/test_acc_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_random_0119_214517/accuracies/test_acc_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
-    # plot_accuracies(test_data, title='CIFAR 10 (with warm-up) Test Accuracy')
+    # plot_accuracies(test_data, title='CIFAR 10 (Early Random Stopping) Test Accuracy')
     #
     # train_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/train_acc_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_random_0119_214517/accuracies/train_acc_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(train_data, title='CIFAR 10 (with warm-up) Train Accuracy')
     #
     # loss_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR_10_ResNet20_with_warmup_1125_203228/accuracies/loss_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/loss_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR_10_ResNet20_with_warmup_1125_203442/accuracies/loss_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_random_0119_214517/accuracies/loss_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(loss_data, title='CIFAR 10 (with warm-up) Loss', plot_type='Loss')
 
-    # CIFAR - 10 TEMPLATE
-    # -------------------
-    # test_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR10_ResNet20_1119_145735/accuracies/Random_CIFAR10_ResNet20_test_acc_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR10_ResNet20_1119_145915/accuracies/SMDL_CIFAR10_ResNet20_test_acc_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(test_data, title='CIFAR 10 Test Accuracy')
-    #
-    # train_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR10_ResNet20_1119_145735/accuracies/Random_CIFAR10_ResNet20_train_acc_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR10_ResNet20_1119_145915/accuracies/SMDL_CIFAR10_ResNet20_train_acc_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(train_data, title='CIFAR 10 Train Accuracy')
-    #
-    # loss_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_CIFAR10_ResNet20_1119_145735/accuracies/Random_CIFAR10_ResNet20_loss_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/joseph/workspace/SMDL/output/SMDL_CIFAR10_ResNet20_1119_145915/accuracies/SMDL_CIFAR10_ResNet20_loss_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(loss_data, title='CIFAR 10 Loss', plot_type='Loss')
+    # CIFAR - 100
+    #-------------------
+    test_data = [[
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_random_full_0119_214225/accuracies/test_acc_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_submod_random_0122_154235/accuracies/test_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(test_data, title='CIFAR 100 Test Accuracy')
+
+    train_data = [[
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_random_full_0119_214225/accuracies/train_acc_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_submod_random_0122_154235/accuracies/train_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(train_data, title='CIFAR 100 Train Accuracy')
+
+    loss_data = [[
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_random_full_0119_214225/accuracies/loss_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/home/vamshi/PycharmProjects/SMDL/output/cifar100_resnet32_submod_random_0122_154235/accuracies/loss_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(loss_data, title='CIFAR 100 Loss', plot_type='Loss')
 
     # SVHN
     # test_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_SVHN_ResNet20_1119_150132/accuracies/Random_SVHN_ResNet20_test_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_SVHN_ResNet20_1119_150345/accuracies/SMDL_SVHN_ResNet20_test_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submod_random_0119_215652/accuracies/test_acc_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(test_data, title='SVHN Test Accuracy')
     #
     # train_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_SVHN_ResNet20_1119_150132/accuracies/Random_SVHN_ResNet20_train_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/train_acc_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_SVHN_ResNet20_1119_150345/accuracies/SMDL_SVHN_ResNet20_train_acc_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submod_random_0119_215652/accuracies/train_acc_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(train_data, title='SVHN Train Accuracy')
     #
     # loss_data = [[
-    #                       '/home/joseph/workspace/SMDL/output/Random_SVHN_ResNet20_1119_150132/accuracies/Random_SVHN_ResNet20_loss_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/loss_round_0_accuracy.pkl',
     #                       'Random Selection', 'blue'],
     #                   [
-    #                       '/home/joseph/workspace/SMDL/output/output_dgx/SMDL_SVHN_ResNet20_1119_150345/accuracies/SMDL_SVHN_ResNet20_loss_round_0_accuracy.pkl',
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submod_random_0119_215652/accuracies/loss_round_0_accuracy.pkl',
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(loss_data, title='SVHN Loss', plot_type='Loss')
+
+    # F-MNIST
+    # test_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_random_full_0119_220306/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_submod_random_0119_220037/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='F-MNIST Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_random_full_0119_220306/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_submod_random_0119_220037/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='F-MNIST Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_random_full_0119_220306/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/fmnist_simplenet_submod_random_0119_220037/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='F-MNIST Loss', plot_type='Loss')
