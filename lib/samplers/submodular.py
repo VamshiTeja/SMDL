@@ -27,6 +27,13 @@ class SubModSampler(Sampler):
         H = -p_log_p.numpy()
         self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
 
+        penultimate_activations = torch.tensor(self.penultimate_activations)
+        relu = torch.nn.ReLU(inplace=True)
+        penultimate_activations = relu(penultimate_activations).numpy()
+
+        col_sums = penultimate_activations.sum(axis=0)
+        self.normalised_penultimate_activations = penultimate_activations / col_sums[np.newaxis, :]
+
     def get_subset(self, detailed_logging=False):
 
         set_size = len(self.index_set)
@@ -40,7 +47,7 @@ class SubModSampler(Sampler):
             pool = ThreadPool(processes=len(partitions))
             pool_handlers = []
             for partition in partitions:
-                handler = pool.apply_async(get_subset_indices, args=(partition, self.penultimate_activations, self.final_activations,
+                handler = pool.apply_async(get_subset_indices, args=(partition, self.penultimate_activations, self.normalised_penultimate_activations,
                                                 self.H, self.batch_size, r_size))
                 pool_handlers.append(handler)
             pool.close()
@@ -58,7 +65,7 @@ class SubModSampler(Sampler):
             log('\nSelected {0} items from {1} partitions: {2} items.'.format(self.batch_size, num_of_partitions, len(intermediate_indices)))
             log('Size of random sample: {}'.format(r_size))
 
-        subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.final_activations, self.H,
+        subset_indices = get_subset_indices(intermediate_indices, self.penultimate_activations, self.normalised_penultimate_activations, self.H,
                                             self.batch_size, r_size)
 
         for item in subset_indices:     # Subset selection without replacement.
@@ -69,7 +76,7 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set_input, penultimate_activations, final_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
+def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
 
     if r_size < len(index_set_input):
         index_set = np.random.choice(index_set_input, r_size, replace=False)
@@ -93,7 +100,9 @@ def get_subset_indices(index_set_input, penultimate_activations, final_activatio
 
         md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
 
-        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores))
+        coverage_scores = compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set)
+
+        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores)) + normalise(coverage_scores)
 
         best_item_index = np.argmax(scores)
         subset_indices.append(index_set[best_item_index])
@@ -192,3 +201,20 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
         pen_act = np.array(itemgetter(*index_set)(penultimate_activations)) - np.array(class_mean)
         md_score = alpha * np.linalg.norm(pen_act, axis=1)
         return -md_score
+
+def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set):
+    """
+    :param penultimate_activations:
+    :param subset_indices:
+    :param index_set:
+    :return: g(mu(S))
+    """
+    if(len(subset_indices)==0):
+        return 0
+    else:
+        penultimate_activations_index_set =  normalised_penultimate_activations[index_set]
+        subset_indices_scores = np.sum(normalised_penultimate_activations[subset_indices],axis=0)
+        sum_subset_index_set = subset_indices_scores + penultimate_activations_index_set
+        score_feature_wise = np.sqrt(sum_subset_index_set)
+        scores = np.sum(score_feature_wise,axis=1)
+        return scores
