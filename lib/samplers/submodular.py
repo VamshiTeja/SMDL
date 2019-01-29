@@ -27,12 +27,14 @@ class SubModSampler(Sampler):
         H = -p_log_p.numpy()
         self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
 
-        penultimate_activations = torch.tensor(self.penultimate_activations)
-        relu = torch.nn.ReLU(inplace=True)
-        penultimate_activations = relu(penultimate_activations).numpy()
+        # penultimate_activations = torch.tensor(self.penultimate_activations)
+        # relu = torch.nn.ReLU(inplace=True)
+        # penultimate_activations = relu(penultimate_activations).numpy()
+        #
+        # col_sums = penultimate_activations.sum(axis=0)
+        # self.normalised_penultimate_activations = penultimate_activations / col_sums[np.newaxis, :]
 
-        col_sums = penultimate_activations.sum(axis=0)
-        self.normalised_penultimate_activations = penultimate_activations / col_sums[np.newaxis, :]
+        self.normalised_penultimate_activations = f_acts.numpy()
 
     def get_subset(self, detailed_logging=False):
 
@@ -76,7 +78,7 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=1, alpha_2=1, alpha_3=1):
+def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=0.3, alpha_2=0.1, alpha_3=0.1, alpha_4=0.5):
 
     if r_size < len(index_set_input):
         index_set = np.random.choice(index_set_input, r_size, replace=False)
@@ -94,13 +96,13 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 
         # u_score = np.sum(compute_u_score(entropy, list(subset_indices)))
-        u_scores = compute_u_score(entropy, list(index_set))
+        u_scores = compute_u_score(entropy, list(index_set), alpha=alpha_1)
 
-        r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set))
+        r_scores = compute_r_score(penultimate_activations, list(subset_indices), list(index_set), alpha=alpha_2)
 
-        md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean)
+        md_scores = compute_md_score(penultimate_activations, list(index_set), class_mean, alpha=alpha_3)
 
-        coverage_scores = compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set)
+        coverage_scores = compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=alpha_4)
 
         scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores)) + normalise(coverage_scores)
 
@@ -186,7 +188,7 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     # return r_score
 
 
-def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
+def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2):
     """
     Computes Mean Divergence score: The new datapoint should be close to the class mean
     :param penultimate_activations:
@@ -202,7 +204,7 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=2.):
         md_score = alpha * np.linalg.norm(pen_act, axis=1)
         return -md_score
 
-def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set):
+def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=0.5):
     """
     :param penultimate_activations:
     :param subset_indices:
@@ -217,4 +219,4 @@ def compute_coverage_score(normalised_penultimate_activations, subset_indices, i
         sum_subset_index_set = subset_indices_scores + penultimate_activations_index_set
         score_feature_wise = np.sqrt(sum_subset_index_set)
         scores = np.sum(score_feature_wise,axis=1)
-        return scores
+        return alpha*scores
