@@ -78,7 +78,7 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=0.3, alpha_2=0.1, alpha_3=0.1, alpha_4=0.5):
+def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=0.5, alpha_2=0.2, alpha_3=0.0, alpha_4=0.3):
 
     if r_size < len(index_set_input):
         index_set = np.random.choice(index_set_input, r_size, replace=False)
