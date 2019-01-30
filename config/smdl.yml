@@ -11,7 +11,7 @@ model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet2
 
 # Dataset Configurations
 dataset:
-    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up

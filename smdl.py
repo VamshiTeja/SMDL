@@ -205,18 +205,19 @@ def train_iterations(train_loader, model, criterion, optimizer, epoch_count, max
 
 
 def adjust_lr(epoch, optimizer, base_lr):
-    if epoch < 20:
-        lr = base_lr
-    elif epoch < 40:
-        lr = base_lr * 0.1
-    elif epoch < 50:
-        lr = base_lr * 0.01
-    elif epoch < 60:
-        lr = base_lr * 0.001
-    elif epoch < 80:
-        lr = base_lr * 0.0001
-    else:
-        lr = base_lr * 0.00001
+    # if epoch < 20:
+    #     lr = base_lr
+    # elif epoch < 40:
+    #     lr = base_lr * 0.1
+    # elif epoch < 50:
+    #     lr = base_lr * 0.01
+    # elif epoch < 60:
+    #     lr = base_lr * 0.001
+    # elif epoch < 80:
+    #     lr = base_lr * 0.0001
+    # else:
+    #     lr = base_lr * 0.00001
+    lr = base_lr
     for param_grp in optimizer.param_groups:
         param_grp['lr'] = lr
 

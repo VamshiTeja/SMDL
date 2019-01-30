@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import copy
+import scipy
 from multiprocessing.pool import ThreadPool
 from operator import itemgetter
 from scipy.spatial.distance import cdist
@@ -26,15 +27,19 @@ class SubModSampler(Sampler):
         p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
         H = -p_log_p.numpy()
         self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
+        self.penultimate_activations = np.array(self.penultimate_activations)
 
-        # penultimate_activations = torch.tensor(self.penultimate_activations)
-        # relu = torch.nn.ReLU(inplace=True)
-        # penultimate_activations = relu(penultimate_activations).numpy()
-        #
+        penultimate_activations = torch.tensor(self.penultimate_activations)
+        relu = torch.nn.ReLU(inplace=True)
+        penultimate_activations = relu(penultimate_activations)
+
+        softmax = torch.nn.Softmax()
+        self.normalised_penultimate_activations = softmax(penultimate_activations).numpy()
+
         # col_sums = penultimate_activations.sum(axis=0)
         # self.normalised_penultimate_activations = penultimate_activations / col_sums[np.newaxis, :]
 
-        self.normalised_penultimate_activations = f_acts.numpy()
+        # self.normalised_penultimate_activations = f_acts.numpy()
 
     def get_subset(self, detailed_logging=False):
 
@@ -121,20 +126,20 @@ def normalise(A):
     A = (A-np.mean(A))/std
     return A
 
-def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
-    """
-    Computes the Diversity Score: The new point should be distant from all the elements in the subset.
-    :param penultimate_activations:
-    :param subset_indices:
-    :param alpha:
-    :return: d_score
-    """
-    if len(subset_indices) <= 1:
-        return 0
-    else:
-        p_acts = itemgetter(*subset_indices)(penultimate_activations)
-        pdist = cdist(p_acts, penultimate_activations)
-        return np.sum(pdist, axis=1)
+# def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
+#     """
+#     Computes the Diversity Score: The new point should be distant from all the elements in the subset.
+#     :param penultimate_activations:
+#     :param subset_indices:
+#     :param alpha:
+#     :return: d_score
+#     """
+#     if len(subset_indices) <= 1:
+#         return 0
+#     else:
+#         p_acts = itemgetter(*subset_indices)(penultimate_activations)
+#         pdist = cdist(p_acts, penultimate_activations, metric='cosine')
+#         return np.sum(pdist, axis=1)
 
 
 def compute_u_score(entropy, subset_indices, alpha=1.):
@@ -153,7 +158,7 @@ def compute_u_score(entropy, subset_indices, alpha=1.):
         return u_score
 
 
-def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.2):
+def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.2, distance_metric='cosine'):
     """
     Computes Redundancy Score: The point should be distant from all the other elements in the subset.
     :param penultimate_activations:
@@ -165,14 +170,15 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
         return 0
     elif len(index_set) == 0:
         return 0
-    elif len(subset_indices) == 1:
-        return [np.linalg.norm(np.array(itemgetter(*index_set)(penultimate_activations))-np.array(subset_indices[0]))]
-    elif len(index_set) == 1:
-        return [np.min(np.linalg.norm(np.array(penultimate_activations[index_set[0]])-np.array((itemgetter(*subset_indices)(penultimate_activations)))))]
+    # elif len(subset_indices) == 1:
+    #     if(distance_metric=='euclidean'):
+    #         return [np.linalg.norm(penultimate_activations[np.array(index_set)]-np.array(penultimate_activations[subset_indices[0]]))]
+    #     elif(distance_metric=='cosine'):
+    #         return [alpha * cdist(penultimate_activations[np.array(index_set)], np.expand_dims(penultimate_activations[subset_indices[0]],axis=0), metric=distance_metric)]
     else:
-        index_p_acts = np.array(itemgetter(*index_set)(penultimate_activations))
-        subset_p_acts = np.array((itemgetter(*subset_indices)(penultimate_activations)))
-        pdist = cdist(index_p_acts, subset_p_acts)
+        index_p_acts = penultimate_activations[np.array(index_set)]
+        subset_p_acts = penultimate_activations[np.array(subset_indices)]
+        pdist = cdist(index_p_acts, subset_p_acts, metric=distance_metric)
         r_score = alpha * np.min(pdist, axis=1)
         return r_score
 
@@ -188,7 +194,7 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     # return r_score
 
 
-def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2):
+def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, distance_metric="cosine"):
     """
     Computes Mean Divergence score: The new datapoint should be close to the class mean
     :param penultimate_activations:
@@ -197,12 +203,18 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2):
     :param alpha:
     :return: list of scores for each index item
     """
-    if len(index_set) == 1:
-        return np.linalg.norm(penultimate_activations[index_set[0]]-class_mean)
-    else:
-        pen_act = np.array(itemgetter(*index_set)(penultimate_activations)) - np.array(class_mean)
-        md_score = alpha * np.linalg.norm(pen_act, axis=1)
+    if(distance_metric=="euclidean"):
+        if len(index_set) == 1:
+            return [np.linalg.norm(penultimate_activations[index_set[0]]-class_mean)]
+        else:
+            pen_act = penultimate_activations[np.array(index_set)] - np.array(class_mean)
+            md_score = alpha * np.linalg.norm(pen_act, axis=1)
+            return -md_score
+    elif(distance_metric=="cosine"):
+        pen_act = penultimate_activations[np.array(index_set)]
+        md_score = alpha *cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
         return -md_score
+
 
 def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=0.5):
     """
