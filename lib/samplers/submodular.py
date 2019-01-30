@@ -7,7 +7,7 @@ from operator import itemgetter
 from scipy.spatial.distance import cdist
 from torch.nn.functional import normalize
 from torch import Tensor
-
+import random
 import torch
 import torch.nn.functional as F
 
@@ -49,6 +49,7 @@ class SubModSampler(Sampler):
         if set_size >= num_of_partitions*self.batch_size:
             size_of_each_part = set_size / num_of_partitions
             r_size = (size_of_each_part*self.ltl_log_ep)/self.batch_size
+            random.shuffle(self.index_set)
             partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
             pool = ThreadPool(processes=len(partitions))
@@ -83,7 +84,7 @@ class SubModSampler(Sampler):
         return subset_indices
 
 
-def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=0.5, alpha_2=0.2, alpha_3=0.0, alpha_4=0.3):
+def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=cfg.alpha_1, alpha_2=cfg.alpha_2, alpha_3=cfg.alpha_3, alpha_4=cfg.alpha_4):
 
     if r_size < len(index_set_input):
         index_set = np.random.choice(index_set_input, r_size, replace=False)
@@ -109,7 +110,7 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
 
         coverage_scores = compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=alpha_4)
 
-        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores)) + normalise(coverage_scores)
+        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.squeeze(md_scores,1)) + normalise(np.array(coverage_scores))
 
         best_item_index = np.argmax(scores)
         subset_indices.append(index_set[best_item_index])
@@ -120,11 +121,7 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
     return subset_indices
 
 def normalise(A):
-    std = np.std(A)
-    if std==0:
-        std = 1
-    A = (A-np.mean(A))/std
-    return A
+    return A/np.sum(A)
 
 # def compute_d_score(penultimate_activations, subset_indices, alpha=1.):
 #     """
@@ -202,7 +199,7 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, 
         return -md_score
     elif(distance_metric=="cosine"):
         pen_act = penultimate_activations[np.array(index_set)]
-        md_score = alpha *cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
+        md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
         return -md_score
 
 

@@ -35,3 +35,8 @@ override_submodular_sampling: False  # If True: random sampling Else, submodular
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
+
+alpha_1: 0.3
+alpha_2: 0.3
+alpha_3: 0.3
+alpha_4: 0.1
