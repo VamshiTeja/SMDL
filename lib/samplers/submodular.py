@@ -142,7 +142,7 @@ def normalise(A):
 #         return np.sum(pdist, axis=1)
 
 
-def compute_u_score(entropy, subset_indices, alpha=1.):
+def compute_u_score(entropy, index_set, alpha=1.):
     """
     Compute the Uncertainity Score: The point that makes the model most confused, should be preferred.
     :param final_activations:
@@ -151,10 +151,10 @@ def compute_u_score(entropy, subset_indices, alpha=1.):
     :return: u_score
     """
 
-    if len(subset_indices) == 0:
+    if len(index_set) == 0:
         return 0
     else:
-        u_score = alpha*entropy[subset_indices]
+        u_score = alpha*entropy[index_set]
         return u_score
 
 
@@ -168,13 +168,6 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     """
     if len(subset_indices) == 0:
         return 0
-    elif len(index_set) == 0:
-        return 0
-    # elif len(subset_indices) == 1:
-    #     if(distance_metric=='euclidean'):
-    #         return [np.linalg.norm(penultimate_activations[np.array(index_set)]-np.array(penultimate_activations[subset_indices[0]]))]
-    #     elif(distance_metric=='cosine'):
-    #         return [alpha * cdist(penultimate_activations[np.array(index_set)], np.expand_dims(penultimate_activations[subset_indices[0]],axis=0), metric=distance_metric)]
     else:
         index_p_acts = penultimate_activations[np.array(index_set)]
         subset_p_acts = penultimate_activations[np.array(subset_indices)]
@@ -204,12 +197,9 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, 
     :return: list of scores for each index item
     """
     if(distance_metric=="euclidean"):
-        if len(index_set) == 1:
-            return [np.linalg.norm(penultimate_activations[index_set[0]]-class_mean)]
-        else:
-            pen_act = penultimate_activations[np.array(index_set)] - np.array(class_mean)
-            md_score = alpha * np.linalg.norm(pen_act, axis=1)
-            return -md_score
+        pen_act = penultimate_activations[np.array(index_set)] - np.array(class_mean)
+        md_score = alpha * np.linalg.norm(pen_act, axis=1)
+        return -md_score
     elif(distance_metric=="cosine"):
         pen_act = penultimate_activations[np.array(index_set)]
         md_score = alpha *cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
@@ -224,7 +214,10 @@ def compute_coverage_score(normalised_penultimate_activations, subset_indices, i
     :return: g(mu(S))
     """
     if(len(subset_indices)==0):
-        return 0
+        penultimate_activations_index_set = normalised_penultimate_activations[index_set]
+        score_feature_wise = np.sqrt(penultimate_activations_index_set)
+        scores = np.sum(score_feature_wise, axis=1)
+        return alpha*scores
     else:
         penultimate_activations_index_set =  normalised_penultimate_activations[index_set]
         subset_indices_scores = np.sum(normalised_penultimate_activations[subset_indices],axis=0)
