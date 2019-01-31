@@ -47,6 +47,7 @@ root.alpha_1 = 0.3
 root.alpha_2 = 0.3
 root.alpha_3 = 0.3
 root.alpha_4 = 0.1
+root.distance_metric = 'euclidean'
 
 
 def _merge_a_into_b(a, b):

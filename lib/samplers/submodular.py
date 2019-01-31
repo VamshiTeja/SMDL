@@ -110,7 +110,7 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
 
         coverage_scores = compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=alpha_4)
 
-        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.squeeze(md_scores,1)) + normalise(np.array(coverage_scores))
+        scores = normalise(np.array(u_scores)) + normalise(np.array(r_scores)) + normalise(np.array(md_scores)) + normalise(np.array(coverage_scores))
 
         best_item_index = np.argmax(scores)
         subset_indices.append(index_set[best_item_index])
@@ -155,7 +155,7 @@ def compute_u_score(entropy, index_set, alpha=1.):
         return u_score
 
 
-def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.2, distance_metric='cosine'):
+def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.2, distance_metric=cfg.distance_metric):
     """
     Computes Redundancy Score: The point should be distant from all the other elements in the subset.
     :param penultimate_activations:
@@ -184,7 +184,7 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     # return r_score
 
 
-def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, distance_metric="cosine"):
+def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, distance_metric=cfg.distance_metric):
     """
     Computes Mean Divergence score: The new datapoint should be close to the class mean
     :param penultimate_activations:
@@ -193,14 +193,10 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, 
     :param alpha:
     :return: list of scores for each index item
     """
-    if(distance_metric=="euclidean"):
-        pen_act = penultimate_activations[np.array(index_set)] - np.array(class_mean)
-        md_score = alpha * np.linalg.norm(pen_act, axis=1)
-        return -md_score
-    elif(distance_metric=="cosine"):
-        pen_act = penultimate_activations[np.array(index_set)]
-        md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
-        return -md_score
+    pen_act = penultimate_activations[np.array(index_set)]
+    md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
+    md_score = np.squeeze(md_score, 1)
+    return -md_score
 
 
 def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=0.5):

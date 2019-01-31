@@ -36,7 +36,9 @@ num_of_partitions: 10           # Partitions for distributed submodular selectio
 
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
 
-alpha_1: 0.3            # u_score
-alpha_2: 0.3            # r_score
-alpha_3: 0.3            # md_score
-alpha_4: 0.1            # coverage_score
+alpha_1: 0.2            # u_score
+alpha_2: 0.1            # r_score
+alpha_3: 0.5            # md_score
+alpha_4: 0.2            # coverage_score
+
+distance_metric: "correlation"   #['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra', 'manhatten'] Please refer scipy.spatial_dist.cdist for more details

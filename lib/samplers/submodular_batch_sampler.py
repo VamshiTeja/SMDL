@@ -47,7 +47,8 @@ class SubmodularBatchSampler(Sampler):
                     yield batch
                     batch = []
         else:
-            r = np.random.random()
+            #r = np.random.random()
+            r=1
             print("Number of Iterations in this epoch are %d"%int(len(self.sampler)*r/self.batch_size))
             for i in range(int(len(self.sampler)*r/self.batch_size)):
                 t_stamp = time.time()
