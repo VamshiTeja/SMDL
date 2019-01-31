@@ -41,4 +41,4 @@ alpha_2: 0.1            # r_score
 alpha_3: 0.5            # md_score
 alpha_4: 0.2            # coverage_score
 
-distance_metric: "correlation"   #['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra', 'manhatten'] Please refer scipy.spatial_dist.cdist for more details
+distance_metric: "gaussian"   #['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra', 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details

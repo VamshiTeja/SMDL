@@ -168,20 +168,15 @@ def compute_r_score(penultimate_activations, subset_indices, index_set, alpha=0.
     else:
         index_p_acts = penultimate_activations[np.array(index_set)]
         subset_p_acts = penultimate_activations[np.array(subset_indices)]
-        pdist = cdist(index_p_acts, subset_p_acts, metric=distance_metric)
-        r_score = alpha * np.min(pdist, axis=1)
-        return r_score
-
-    # r_score = 0
-    # if len(subset_indices) > 1:
-    #     subset_penultimate_acts = itemgetter(*subset_indices)(penultimate_activations)
-    # for index in subset_indices:
-    #     p_act = penultimate_activations[index]
-    #     if len(subset_indices) > 1:
-    #         dist = np.linalg.norm(subset_penultimate_acts - p_act, axis=1)
-    #         score = np.min(dist[dist != 0])
-    #         r_score += alpha * score
-    # return r_score
+        if(distance_metric=='gaussian'):
+            pdist = cdist(index_p_acts, subset_p_acts, metric='sqeuclidean')
+            r_score = scipy.exp(-pdist / (0.5) ** 2)
+            r_score = alpha * np.min(r_score, axis=1)
+            return r_score
+        else:
+            pdist = cdist(index_p_acts, subset_p_acts, metric=distance_metric)
+            r_score = alpha * np.min(pdist, axis=1)
+            return r_score
 
 
 def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, distance_metric=cfg.distance_metric):
@@ -193,10 +188,17 @@ def compute_md_score(penultimate_activations, index_set, class_mean, alpha=0.2, 
     :param alpha:
     :return: list of scores for each index item
     """
-    pen_act = penultimate_activations[np.array(index_set)]
-    md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
-    md_score = np.squeeze(md_score, 1)
-    return -md_score
+
+    if(distance_metric=='gaussian'):
+        pen_act = penultimate_activations[np.array(index_set)]
+        md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric='sqeuclidean')
+        md_score = scipy.exp(-md_score / (0.5) ** 2)
+        return md_score
+    else:
+        pen_act = penultimate_activations[np.array(index_set)]
+        md_score = alpha * cdist(pen_act, np.array([np.array(class_mean)]), metric=distance_metric)
+        md_score = np.squeeze(md_score, 1)
+        return -md_score
 
 
 def compute_coverage_score(normalised_penultimate_activations, subset_indices, index_set, alpha=0.5):
