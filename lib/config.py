@@ -40,6 +40,7 @@ root.dataset.name = 'CIFAR'
 root.dataset.total_num_classes = 100
 root.dataset.memory_budget = 2000
 
+root.use_ltlg = True
 root.ltl_log_ep = 5                  # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
 root.num_iterations = 1000000
 root.sample_with_replacement = True
@@ -49,6 +50,7 @@ root.alpha_3 = 0.3
 root.alpha_4 = 0.1
 root.distance_metric = 'euclidean'
 
+root.refresh_iterate = 100000       # Skip refreshing the model. The same model will be used for a epoch.
 
 def _merge_a_into_b(a, b):
     """

@@ -9,9 +9,7 @@ from lib.samplers.submodular_batch_sampler import SubmodularBatchSampler
 
 def submodular_training(gpus):
     train_start_time = time.time()
-    num_classes = cfg.dataset.total_num_classes
 
-    accuracies = []
     for round_count in range(cfg.repeat_rounds):
 
         # Initialize the model
@@ -32,29 +30,32 @@ def submodular_training(gpus):
         # Loading the Dataset
         train_dataset, test_dataset = setup_dataset()
         if not cfg.use_custom_batch_selector:
-            train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True,
-                                                       num_workers=1)
+            train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=False,
+                                                       num_workers=10)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=cfg.batch_size_test, shuffle=False,
-                                                  num_workers=1)
+                                                  num_workers=10)
 
         train_accs = []
         test_accs = []
         losses = []
+        output_dir = cfg.output_dir + '/models'
 
         # Repeat for each epoch
         for epoch_count in range(cfg.epochs):
-            adjust_lr(epoch_count, optimizer, cfg.learning_rate)
+            # adjust_lr(epoch_count, optimizer, cfg.learning_rate)
 
             start_time = time.time()
 
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
+            submodular_batch_sampler = None
             if cfg.use_custom_batch_selector:
                 submodular_batch_sampler = SubmodularBatchSampler(model, train_dataset, cfg.batch_size)
                 train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
-                                                           num_workers=1)
+                                                           num_workers=0)
 
             train_acc, loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
-                              round_count, cfg.repeat_rounds, test_loader=test_loader)
+                              round_count, cfg.repeat_rounds, test_loader=test_loader,
+                                    submodular_batch_sampler=submodular_batch_sampler)
             test_acc = test(test_loader, model, epoch_count, cfg.epochs,
                             round_count, cfg.repeat_rounds)
 
@@ -63,12 +64,13 @@ def submodular_training(gpus):
             losses.append(loss)
             log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
-        # Saving model and metrics
+            # Saving model
+            filename = 'round_' + str(round_count + 1) + '_epoch_' + str(cfg.epochs) + '.pth'
+            save_model(model, output_dir + '/' + filename)
+            log('Model saved to ' + output_dir + '/' + filename)
+
+        # Saving metrics
         plot_per_epoch_accuracies(train_accs, test_accs, round_count)
-        output_dir = cfg.output_dir + '/models'
-        filename = 'round_' + str(round_count + 1) + '_epoch_' + str(cfg.epochs) + '.pth'
-        save_model(model, output_dir + '/' + filename)
-        log('Model saved to ' + output_dir + '/' + filename)
 
         save_accuracies(test_accs, cfg.output_dir + '/accuracies/' + 'test_acc_round_' + str(round_count))
         save_accuracies(train_accs, cfg.output_dir + '/accuracies/' + 'train_acc_round_' + str(round_count))
@@ -79,7 +81,7 @@ def submodular_training(gpus):
 
 def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
           round_count, max_rounds, logging_freq=10, detailed_logging=True, test_freq=10, test_inbetween_epoch=True,
-          test_loader=None):
+          test_loader=None, submodular_batch_sampler=None):
     losses = Metrics()
     top1 = Metrics()
 
@@ -99,6 +101,10 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+            # Update activations, used in evaluating the submodular score, with the current values.
+            if i % cfg.refresh_iterate == 0:
+                submodular_batch_sampler.submodular_sampler.update_activations(model)
 
             if i % logging_freq == 0 and detailed_logging:
                 log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} [{4:3d}/{5}] ' \
@@ -155,69 +161,20 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
 
     return top1.avg
 
-def train_iterations(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
-          round_count, max_rounds, logging_freq=10, detailed_logging=True, test_freq=10, test_inbetween_epoch=True,
-          test_loader=None, ):
-    losses = Metrics()
-    top1 = Metrics()
-
-    test_acc_between_epochs = []
-    try:
-        for i, (input, target) in enumerate(train_loader):
-            model.train()       # We may test in-between
-
-            input, target = input.cuda(), target.cuda()
-            output, _ = model(input)
-            loss = criterion(output,target)
-
-            acc = compute_accuracy(output, target)[0]
-            losses.update(loss.data.item(), input.size(0))
-            top1.update(acc.item(), input.size(0))
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-            if i % logging_freq == 0 and detailed_logging:
-                log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} [{4:3d}/{5}] ' \
-                      '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
-                      '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count+1, max_rounds,
-                                                                                 epoch_count+1, max_epoch, i, len(train_loader),
-                                                                                 loss=losses, accuracy=top1))
-            if test_inbetween_epoch and i % test_freq == 0:
-                test_acc = test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
-                                max_iteration=len(train_loader))
-                test_acc_between_epochs.append(test_acc)
-
-        plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
-        save_accuracies(test_acc_between_epochs, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
-                        str(epoch_count+1))
-    except OSError:
-        log('Gracefully handling {}'.format(OSError))
-
-    log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
-          '\t Loss: {loss.val:.4f}({loss.avg:.4f}) ' \
-          '\t Training_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
-                                                                                epoch_count + 1, max_epoch,
-                                                                                loss=losses, accuracy=top1))
-    return top1.avg, losses.avg
-
-
 
 def adjust_lr(epoch, optimizer, base_lr):
-    # if epoch < 20:
-    #     lr = base_lr
-    # elif epoch < 40:
-    #     lr = base_lr * 0.1
-    # elif epoch < 50:
-    #     lr = base_lr * 0.01
-    # elif epoch < 60:
-    #     lr = base_lr * 0.001
-    # elif epoch < 80:
-    #     lr = base_lr * 0.0001
-    # else:
-    #     lr = base_lr * 0.00001
-    lr = base_lr
+    if epoch < 20:
+        lr = base_lr
+    elif epoch < 40:
+        lr = base_lr * 0.1
+    elif epoch < 50:
+        lr = base_lr * 0.01
+    elif epoch < 60:
+        lr = base_lr * 0.001
+    elif epoch < 80:
+        lr = base_lr * 0.0001
+    else:
+        lr = base_lr * 0.00001
     for param_grp in optimizer.param_groups:
         param_grp['lr'] = lr
 
@@ -281,7 +238,6 @@ def main():
         torch.manual_seed(cfg.seed)
 
     submodular_training(gpus)
-
 
 
 if __name__ == "__main__":

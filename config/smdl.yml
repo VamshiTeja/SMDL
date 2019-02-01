@@ -11,7 +11,7 @@ model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet2
 
 # Dataset Configurations
 dataset:
-    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
@@ -34,6 +34,7 @@ override_submodular_sampling: False  # If True: random sampling Else, submodular
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
+use_ltlg: True
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
 
 alpha_1: 0.2            # u_score
@@ -41,4 +42,8 @@ alpha_2: 0.1            # r_score
 alpha_3: 0.5            # md_score
 alpha_4: 0.2            # coverage_score
 
-distance_metric: "gaussian"   #['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra', 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details
+distance_metric: "euclidean"   # ['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra',
+                               # 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details
+
+refresh_iterate: 10      # The model that is used for Submodular objective computation would be refreshed
+                        # at each 'refresh_iterate' within an epoch.

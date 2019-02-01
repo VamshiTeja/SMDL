@@ -8,9 +8,10 @@ class Sampler(object):
         self.dataset = dataset
         self.final_activations = []
         self.penultimate_activations = []
-        self._get_activations(model)
+        self.set_activations_from_model(model)
 
-    def _get_activations(self, model):
+    def set_activations_from_model(self, model):
+        model.eval()
         loader = torch.utils.data.DataLoader(self.dataset, batch_size=500, shuffle=False, sampler=None,
                                              batch_sampler=None, num_workers=10)
         for img in loader:

@@ -22,13 +22,24 @@ class SubModSampler(Sampler):
         self.batch_size = batch_size
         self.index_set = range(0, len(self.dataset))    # It contains the indices of each image of the set.
         self.ltl_log_ep = ltl_log_ep
+        self.initialize_with_activations()
 
+    def update_activations(self, model):
+        log('Updating activations with the current model...')
+        self.final_activations = []
+        self.penultimate_activations = []
+        self.set_activations_from_model(model)
+        self.initialize_with_activations()
+
+    def initialize_with_activations(self):
+        # Setup entropy
         f_acts = torch.tensor(self.final_activations)
         p_log_p = F.softmax(f_acts, dim=1) * F.log_softmax(f_acts, dim=1)
         H = -p_log_p.numpy()
-        self.H = np.sum(H,axis=1)                       # Compute entropy of all samples for an epoch.
-        self.penultimate_activations = np.array(self.penultimate_activations)
+        self.H = np.sum(H, axis=1)  # Compute entropy of all samples for an epoch.
 
+        # Setup penultimate activations
+        self.penultimate_activations = np.array(self.penultimate_activations)
         penultimate_activations = torch.tensor(self.penultimate_activations)
         relu = torch.nn.ReLU(inplace=True)
         penultimate_activations = relu(penultimate_activations)
@@ -38,7 +49,6 @@ class SubModSampler(Sampler):
 
         # col_sums = penultimate_activations.sum(axis=0)
         # self.normalised_penultimate_activations = penultimate_activations / col_sums[np.newaxis, :]
-
         # self.normalised_penultimate_activations = f_acts.numpy()
 
     def get_subset(self, detailed_logging=False):
@@ -48,7 +58,7 @@ class SubModSampler(Sampler):
 
         if set_size >= num_of_partitions*self.batch_size:
             size_of_each_part = set_size / num_of_partitions
-            r_size = (size_of_each_part*self.ltl_log_ep)/self.batch_size
+            r_size = (size_of_each_part * self.ltl_log_ep) / self.batch_size
             random.shuffle(self.index_set)
             partitions = [self.index_set[k:k+size_of_each_part] for k in range(0, set_size, size_of_each_part)]
 
@@ -86,7 +96,7 @@ class SubModSampler(Sampler):
 
 def get_subset_indices(index_set_input, penultimate_activations, normalised_penultimate_activations, entropy,  subset_size, r_size, alpha_1=cfg.alpha_1, alpha_2=cfg.alpha_2, alpha_3=cfg.alpha_3, alpha_4=cfg.alpha_4):
 
-    if r_size < len(index_set_input):
+    if r_size < len(index_set_input) and cfg.use_ltlg:
         index_set = np.random.choice(index_set_input, r_size, replace=False)
     else:
         index_set = copy.deepcopy(index_set_input)
@@ -119,6 +129,7 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
         # log('Processed: {0}/{1} exemplars. Time taken is {2} sec.'.format(i, subset_size, time.time()-now))
 
     return subset_indices
+
 
 def normalise(A):
     return A/np.sum(A)

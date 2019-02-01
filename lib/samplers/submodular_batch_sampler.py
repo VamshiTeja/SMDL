@@ -8,11 +8,12 @@ from lib.config import cfg
 
 import numpy as np
 
+
 class SubmodularBatchSampler(Sampler):
     """
     Returns back a minibatch, which is sampled such that the SubModular Objective is maximised.
 
-    (adapted from: https://github.com/pytorch/pytorch/blob/master/torch/utils/data/sampler.py#L126)
+    (adapted from: https://github.com/pytorch/pytorch/blob/master/torch/utils/data/sampler.py)
     """
 
     def __init__(self, model, data_source, batch_size, sampler=None, drop_last=False):
@@ -47,8 +48,8 @@ class SubmodularBatchSampler(Sampler):
                     yield batch
                     batch = []
         else:
-            #r = np.random.random()
-            r=1
+            # r = np.random.random()
+            r = 1
             print("Number of Iterations in this epoch are %d"%int(len(self.sampler)*r/self.batch_size))
             for i in range(int(len(self.sampler)*r/self.batch_size)):
                 t_stamp = time.time()
