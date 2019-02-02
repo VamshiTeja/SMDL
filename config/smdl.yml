@@ -1,6 +1,6 @@
 # General Configutaions
 run_label: 'EMNIST_SimpleNet'
-gpu_ids: '0'
+gpu_ids: '7'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations

@@ -62,7 +62,7 @@ def setup_dataset():
 def get_model():
     num_classes = cfg.dataset.total_num_classes
     if cfg.model == 'SimpleNet':
-        model = SimpleNet()
+        model = SimpleNet(num_classes=num_classes)
     elif cfg.model == 'ResNet18':
         model = resnet18(num_classes=num_classes)
     elif cfg.model == 'ResNet20':
