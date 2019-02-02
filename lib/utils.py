@@ -48,8 +48,8 @@ def setup_dataset():
         test_dataset = datasets.FashionMNIST(root='./datasets/FashionMNIST', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'EMNIST':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-        train_dataset = datasets.EMNIST(root='./datasets/EMNIST', train=True, download=True, transform=transform)
-        test_dataset = datasets.EMNIST(root='./datasets/EMNIST', train=False, download=True, transform=transform)
+        train_dataset = datasets.EMNIST(root='./datasets/EMNIST', split='byclass', train=True, download=True, transform=transform)
+        test_dataset = datasets.EMNIST(root='./datasets/EMNIST', split='byclass', train=False, download=True, transform=transform)
     elif cfg.dataset.name == 'SVHN':
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         train_dataset = datasets.SVHN(root='./datasets/SVHN', split='train', download=True, transform=transform)
