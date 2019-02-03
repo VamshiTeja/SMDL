@@ -108,6 +108,10 @@ def get_subset_indices(index_set_input, penultimate_activations, normalised_penu
     subset_size = min(subset_size, len(index_set))
     for i in range(0, subset_size):
         now = time.time()
+
+        if r_size < len(index_set) and cfg.use_ltlg:
+            index_set = np.random.choice(index_set, r_size, replace=False)
+
         # d_score = np.sum(compute_d_score(penultimate_activations,list(subset_indices)))
         # d_scores = d_score + compute_d_score(penultimate_activations, list(index_set))
 

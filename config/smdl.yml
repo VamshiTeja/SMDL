@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'EMNIST_SimpleNet'
-gpu_ids: '7'
+run_label: 'CIFAR_10_ResNet20'
+gpu_ids: '6'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'EMNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 62
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    total_num_classes: 10
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
@@ -45,5 +45,5 @@ alpha_4: 0.2            # coverage_score
 distance_metric: "euclidean"   # ['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra',
                                # 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details
 
-refresh_iterate: 10      # The model that is used for Submodular objective computation would be refreshed
+refresh_iterate: 5      # The model that is used for Submodular objective computation would be refreshed
                         # at each 'refresh_iterate' within an epoch.
