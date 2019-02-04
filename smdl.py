@@ -65,7 +65,7 @@ def submodular_training(gpus):
             log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
             # Saving model
-            filename = 'round_' + str(round_count + 1) + '_epoch_' + str(cfg.epochs) + '.pth'
+            filename = 'round_' + str(round_count + 1) + '_epoch_' + str(epoch_count) + '.pth'
             save_model(model, output_dir + '/' + filename)
             log('Model saved to ' + output_dir + '/' + filename)
 
