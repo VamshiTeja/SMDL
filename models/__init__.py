@@ -1,2 +1,2 @@
 from .resnet import *
-from .simplenet import *
+from .LeNet5 import *
