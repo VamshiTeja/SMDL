@@ -103,7 +103,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
             optimizer.step()
 
             # Update activations, used in evaluating the submodular score, with the current values.
-            if i % cfg.refresh_iterate == 0:
+            if i % cfg.refresh_iterate == 0 and not cfg.override_submodular_sampling:
                 submodular_batch_sampler.submodular_sampler.update_activations(model)
 
             if i % logging_freq == 0 and detailed_logging:
