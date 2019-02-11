@@ -1,10 +1,10 @@
 # General Configutaions
-run_label: 'final_SGD_CIFAR_100_ResNet32'
-gpu_ids: '6'
+run_label: 'final_SMDL_CIFAR_100_ResNet32'
+gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
-repeat_rounds: 5
+repeat_rounds: 1
 
 # Neural Network Architecture
 model: ResNet32                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
@@ -30,7 +30,7 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
