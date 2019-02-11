@@ -4,7 +4,7 @@ gpu_ids: '7'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
-repeat_rounds: 1
+repeat_rounds: 5
 
 # Neural Network Architecture
 model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
@@ -30,7 +30,7 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
 
