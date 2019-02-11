@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'final_SGD_SVHN_ResNet20'
+run_label: 'final_SGD_CIFAR_ResNet20'
 gpu_ids: '7'
 seed: 99                        # '0' means no manual seeding
 
@@ -11,7 +11,7 @@ model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, 
 
 # Dataset Configurations
 dataset:
-    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
