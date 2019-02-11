@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'MNIST_LeNet5'
+run_label: 'final_SVHN_ResNet20'
 gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
@@ -7,11 +7,11 @@ seed: 99                        # '0' means no manual seeding
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: LeNet5                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
+model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'MNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up

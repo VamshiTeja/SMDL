@@ -37,7 +37,9 @@ def submodular_training(gpus):
 
         train_accs = []
         test_accs = []
-        losses = []
+        train_losses = []
+        test_losses = []
+
         output_dir = cfg.output_dir + '/models'
 
         # Repeat for each epoch
@@ -53,15 +55,17 @@ def submodular_training(gpus):
                 train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
                                                            num_workers=0)
 
-            train_acc, loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
+            train_acc, train_loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
                               round_count, cfg.repeat_rounds, test_loader=test_loader,
                                     submodular_batch_sampler=submodular_batch_sampler)
-            test_acc = test(test_loader, model, epoch_count, cfg.epochs,
+            test_acc, test_loss = test(test_loader, model, criterion, epoch_count, cfg.epochs,
                             round_count, cfg.repeat_rounds)
 
             train_accs.append(train_acc)
             test_accs.append(test_acc)
-            losses.append(loss)
+            train_losses.append(train_loss)
+            test_losses.append(test_loss)
+
             log('Time per epoch: {0:.4f}s \n'.format(time.time() - start_time))
 
             # Saving model
@@ -74,7 +78,8 @@ def submodular_training(gpus):
 
         save_accuracies(test_accs, cfg.output_dir + '/accuracies/' + 'test_acc_round_' + str(round_count))
         save_accuracies(train_accs, cfg.output_dir + '/accuracies/' + 'train_acc_round_' + str(round_count))
-        save_accuracies(losses, cfg.output_dir + '/accuracies/' + 'loss_round_' + str(round_count))
+        save_accuracies(train_losses, cfg.output_dir + '/accuracies/' + 'train_loss_round_' + str(round_count))
+        save_accuracies(test_losses, cfg.output_dir + '/accuracies/' + 'test_loss_round_' + str(round_count))
 
     log('Training complete. Total time: {0:.4f} mins.'.format((time.time() - train_start_time)/60))
 
@@ -113,7 +118,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                                                                                  epoch_count+1, max_epoch, i, len(train_loader),
                                                                                  loss=losses, accuracy=top1))
             if test_inbetween_epoch and i % test_freq == 0:
-                test_acc = test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
+                test_acc = test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
                                 max_iteration=len(train_loader))
                 test_acc_between_epochs.append(test_acc)
 
@@ -131,16 +136,21 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
     return top1.avg, losses.avg
 
 
-def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, logging_freq=10, detailed_logging=False,
+def test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max_rounds, logging_freq=10, detailed_logging=False,
          iteration=None, max_iteration=None):
     top1 = Metrics()
+    losses = Metrics()
+
     model.eval()
 
     for i, (input, target) in enumerate(test_loader):
         input, target = input.cuda(), target.cuda()
         output,_ = model(input)
+        loss = criterion(output, target)
+
         acc = compute_accuracy(output, target)[0]
         top1.update(acc.item(), input.size(0))
+        losses.update(loss.data.item(), input.size(0))
 
         if i % logging_freq == 0 and detailed_logging:
             log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3}[{4:3d}/{5}] ' \
@@ -159,7 +169,7 @@ def test(test_loader, model, epoch_count, max_epoch, round_count, max_rounds, lo
                                                                                  epoch_count + 1, max_epoch, iteration,
                                                                                  max_iteration, accuracy=top1))
 
-    return top1.avg
+    return top1.avg, losses.avg
 
 
 def adjust_lr(epoch, optimizer, base_lr):
