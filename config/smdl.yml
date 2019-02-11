@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'final_SGD_CIFAR_ResNet20'
-gpu_ids: '7'
+run_label: 'final_SGD_CIFAR_100_ResNet32'
+gpu_ids: '6'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 5
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
+model: ResNet32                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
     name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 10
+    total_num_classes: 100
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
