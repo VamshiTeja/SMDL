@@ -91,6 +91,7 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
     top1 = Metrics()
 
     test_acc_between_epochs = []
+    test_loss_between_epochs = []
     try:
         for i, (input, target) in enumerate(train_loader):
             model.train()       # We may test in-between
@@ -118,13 +119,18 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                                                                                  epoch_count+1, max_epoch, i, len(train_loader),
                                                                                  loss=losses, accuracy=top1))
             if test_inbetween_epoch and i % test_freq == 0:
-                test_acc = test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
+                test_acc, test_loss = test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max_rounds, iteration=i,
                                 max_iteration=len(train_loader))
                 test_acc_between_epochs.append(test_acc)
+                test_loss_between_epochs.append(test_loss)
 
         plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
-        save_accuracies(test_acc_between_epochs, cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_epoch_' +
+        save_accuracies(test_acc_between_epochs,
+                        cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_' + str(round_count) + '_epoch_' +
                         str(epoch_count+1))
+        save_accuracies(test_acc_between_epochs,
+                        cfg.output_dir + '/accuracies/' + 'test_loss_between_iteration_' + str(round_count) + '_epoch_' +
+                        str(epoch_count + 1))
     except OSError:
         log('Gracefully handling {}'.format(OSError))
 
