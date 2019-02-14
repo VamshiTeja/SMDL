@@ -48,46 +48,56 @@ def _plot_indiv_accuracies(accuracies, color='blue', label=''):
 
 if __name__ == '__main__':
     #
-    for i in range(1, 41):
-        try:
-            test_data = [[
-                                  '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
-                                  'Random Selection', 'blue'],
-                              [
-                                  '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
-                                  'Submodular Selection', 'green']
-                              ]
-            plot_accuracies(test_data, title='SVHN Epoch ' + str(i) + ' Test Accuracy', x_axis_label='# of iterations (x10)')
-        except Exception as error:
-            print ('Exception occured for index {}, {}'.format(i, error))
+    # for i in range(1, 41):
+    #     try:
+    #         test_data = [[
+    #                               '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+    #                               'Random Selection', 'blue'],
+    #                           [
+    #                               '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_between_iteration_epoch_' + str(i) + '_accuracy.pkl',
+    #                               'Submodular Selection', 'green']
+    #                           ]
+    #         plot_accuracies(test_data, title='SVHN Epoch ' + str(i) + ' Test Accuracy', x_axis_label='# of iterations (x10)')
+    #     except Exception as error:
+    #         print ('Exception occured for index {}, {}'.format(i, error))
 
     # CIFAR 10
-    # test_data = [[
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/test_acc_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_comb_0128_211805/accuracies/test_acc_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(test_data, title='CIFAR 10 (Early Random Stopping) Test Accuracy')
-    #
-    # train_data = [[
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/train_acc_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_comb_0128_211805/accuracies/train_acc_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(train_data, title='CIFAR 10 (with warm-up) Train Accuracy')
-    #
-    # loss_data = [[
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_random_full_0119_214639/accuracies/loss_round_0_accuracy.pkl',
-    #                       'Random Selection', 'blue'],
-    #                   [
-    #                       '/home/vamshi/PycharmProjects/SMDL/output/cifar10_resnet20_submod_comb_0128_211805/accuracies/loss_round_0_accuracy.pkl',
-    #                       'Submodular Selection', 'green']
-    #                   ]
-    # plot_accuracies(loss_data, title='CIFAR 10 (with warm-up) Loss', plot_type='Loss')
+    #----------------
+    test_data = [[
+                          '/home/joseph/omml/SMDL/output/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_acc_round_0_accuracy.pkl',
+                          'SGD', 'blue'],
+                      [
+                          '/home/joseph/omml/sandbox/final_SMDL_CIFAR_10_ResNet20_0211_154331/test_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(test_data, title='CIFAR 10 Test Accuracy')
+
+    train_data = [[
+                          '/home/joseph/omml/SMDL/output/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_round_0_accuracy.pkl',
+                          'SGD', 'blue'],
+                      [
+                          '/home/joseph/omml/sandbox/final_SMDL_CIFAR_10_ResNet20_0211_154331/train_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(train_data, title='CIFAR 10 Train Accuracy')
+
+    loss_data = [[
+                          '/home/joseph/omml/SMDL/output/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_loss_round_0_accuracy.pkl',
+                          'SGD', 'blue'],
+                      [
+                          '/home/joseph/omml/sandbox/final_SMDL_CIFAR_10_ResNet20_0211_154331/test_loss_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(loss_data, title='CIFAR 10 Test Loss', plot_type='Loss')
+
+    loss_data = [[
+                          '/home/joseph/omml/SMDL/output/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_loss_round_0_accuracy.pkl',
+                          'SGD', 'blue'],
+                      [
+                          '/home/joseph/omml/sandbox/final_SMDL_CIFAR_10_ResNet20_0211_154331/train_loss_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(loss_data, title='CIFAR 10 Train Loss', plot_type='Loss')
 
     # CIFAR - 100
     #-------------------
