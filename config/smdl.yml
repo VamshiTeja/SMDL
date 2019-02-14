@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'final_SMDL_SVHN_ResNet20'
-gpu_ids: '2'
+run_label: 'fix_SMDL_CIFAR_100_ResNet32'
+gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
+model: ResNet32                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 10
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    total_num_classes: 100
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.

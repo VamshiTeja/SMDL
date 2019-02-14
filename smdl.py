@@ -164,6 +164,9 @@ def test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max
                                                                                       epoch_count + 1, max_epoch, i,
                                                                                       len(test_loader), accuracy=top1))
 
+        if i == 80: # CIFAR-100 Fix
+            break
+
     if iteration is None:
         log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
             '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
