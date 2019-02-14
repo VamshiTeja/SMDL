@@ -129,32 +129,32 @@ if __name__ == '__main__':
     # plot_accuracies(loss_data, title='CIFAR 100 Loss', plot_type='Loss')
 
     # SVHN
-    test_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(test_data, title='SVHN Test Accuracy')
-
-    train_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(train_data, title='SVHN Train Accuracy')
-
-    loss_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/loss_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/loss_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(loss_data, title='SVHN Loss', plot_type='Loss')
+    # test_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='SVHN Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='SVHN Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='SVHN Loss', plot_type='Loss')
 
     # F-MNIST
     # test_data = [[
