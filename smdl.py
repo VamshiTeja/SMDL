@@ -124,6 +124,9 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                 test_acc_between_epochs.append(test_acc)
                 test_loss_between_epochs.append(test_loss)
 
+            if i == 80:  # CIFAR-100 Fix
+                break
+
         plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
         save_accuracies(test_acc_between_epochs,
                         cfg.output_dir + '/accuracies/' + 'test_acc_between_iteration_' + str(round_count) + '_epoch_' +
@@ -163,9 +166,6 @@ def test(test_loader, model, criterion, epoch_count, max_epoch, round_count, max
                 '\t Testing_Accuracy: {accuracy.val:.4f}({accuracy.avg:.4f})'.format(round_count + 1, max_rounds,
                                                                                       epoch_count + 1, max_epoch, i,
                                                                                       len(test_loader), accuracy=top1))
-
-        if i == 80: # CIFAR-100 Fix
-            break
 
     if iteration is None:
         log('Round: {0:3d}/{1}\t  Epoch {2:3d}/{3} ' \
