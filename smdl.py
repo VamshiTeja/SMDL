@@ -5,7 +5,7 @@ import torch
 from lib.utils import *
 from lib.config import cfg, cfg_from_file
 from lib.samplers.submodular_batch_sampler import SubmodularBatchSampler
-
+from lib.samplers.loss_batch_sampler import LossBatchSampler
 
 def submodular_training(gpus):
     train_start_time = time.time()
@@ -51,13 +51,17 @@ def submodular_training(gpus):
             # Should find the ordering of the samples using SubModularity at the beginning of each epoch.
             submodular_batch_sampler = None
             if cfg.use_custom_batch_selector:
-                submodular_batch_sampler = SubmodularBatchSampler(model, train_dataset, cfg.batch_size)
-                train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=submodular_batch_sampler,
+                if(cfg.sampler=='submodular'):
+                    batch_sampler = SubmodularBatchSampler(model, train_dataset, cfg.batch_size)
+                elif(cfg.sampler =='loss'):
+                    batch_sampler = LossBatchSampler(model, train_dataset, cfg.batch_size)
+
+                train_loader = torch.utils.data.DataLoader(train_dataset, batch_sampler=batch_sampler,
                                                            num_workers=0)
 
             train_acc, train_loss = train(train_loader, model, criterion, optimizer, epoch_count, cfg.epochs,
                               round_count, cfg.repeat_rounds, test_loader=test_loader,
-                                    submodular_batch_sampler=submodular_batch_sampler)
+                                    submodular_batch_sampler=batch_sampler)
             test_acc, test_loss = test(test_loader, model, criterion, epoch_count, cfg.epochs,
                             round_count, cfg.repeat_rounds)
 

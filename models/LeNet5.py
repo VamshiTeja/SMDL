@@ -27,7 +27,10 @@ from collections import OrderedDict
 
 
 class LeNet5(torch.nn.Module):
-
+    '''
+        Taken from
+        https: // github.com / bollakarthikeya / LeNet - 5 - PyTorch / blob / master / lenet5_gpu.py
+    '''
     def __init__(self):
         super(LeNet5, self).__init__()
         self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=6, kernel_size=5, stride=1, padding=2, bias=True)

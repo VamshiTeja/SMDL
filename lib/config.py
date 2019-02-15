@@ -51,7 +51,7 @@ root.alpha_4 = 0.1
 root.distance_metric = 'euclidean'
 
 root.refresh_iterate = 100000       # Skip refreshing the model. The same model will be used for a epoch.
-
+root.sampler = 'submodular'
 def _merge_a_into_b(a, b):
     """
     Merge config dictionary a into config dictionary b, clobbering the
