@@ -1,17 +1,17 @@
 # General Configutaions
 run_label: 'final_SMDL_SVHN_ResNet20'
-gpu_ids: '0'
+gpu_ids: '2'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: LeNet5                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
+model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'MNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
@@ -48,5 +48,5 @@ alpha_4: 0.2            # coverage_score
 distance_metric: "euclidean"   # ['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra',
                                # 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details
 
-refresh_iterate: 1      # The model that is used for Submodular objective computation would be refreshed
+refresh_iterate: 5      # The model that is used for Submodular objective computation would be refreshed
                         # at each 'refresh_iterate' within an epoch.
