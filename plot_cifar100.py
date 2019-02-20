@@ -138,7 +138,7 @@ if __name__ == '__main__':
                           'Submodular Minibatch Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh10_0212_123549/accuracies/test_acc_round_0_accuracy.pkl',
-                        'Submodular Minibatch Refresh Rate-10', 'cyan'],
+                        'Submodular Minibatch Refresh Rate-10', 'orange'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_acc_round_0_accuracy.pkl',
                         'Submodular Minibatch Refresh Rate-25', 'm'],
@@ -157,7 +157,7 @@ if __name__ == '__main__':
                           'Submodular Minibatch Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh10_0212_123549/accuracies/train_acc_round_0_accuracy.pkl',
-                        'Submodular Minibatch Refresh Rate-10', 'cyan'],
+                        'Submodular Minibatch Refresh Rate-10', 'orange'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/train_acc_round_0_accuracy.pkl',
                         'Submodular Minibatch Refresh Rate-25', 'm'],
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                           'Submodular Minibatch Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh10_0212_123549/accuracies/test_loss_round_0_accuracy.pkl',
-                        'Submodular Minibatch Refresh Rate-10', 'cyan'],
+                        'Submodular Minibatch Refresh Rate-10', 'orange'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_loss_round_0_accuracy.pkl',
                         'Submodular Minibatch Refresh Rate-25', 'm'],
@@ -195,7 +195,7 @@ if __name__ == '__main__':
             'Submodular Minibatch Refresh Rate-5', 'green'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh10_0212_123549/accuracies/test_loss_round_0_accuracy.pkl',
-            'Submodular Minibatch Refresh Rate-10', 'cyan'],
+            'Submodular Minibatch Refresh Rate-10', 'orange'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_loss_round_0_accuracy.pkl',
             'Submodular Minibatch Refresh Rate-25', 'm'],
