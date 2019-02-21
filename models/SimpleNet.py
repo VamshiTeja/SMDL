@@ -68,9 +68,10 @@ class SimpleNet(torch.nn.Module):
         # self.conv2 = torch.nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5, stride=1, padding=0, bias=True)
         # self.max_pool_2 = torch.nn.MaxPool2d(kernel_size=2)
         # Fully connected layer
-        self.fc1 = torch.nn.Linear(768, 120)
-        self.fc2 = torch.nn.Linear(120, 84)
-        self.fc3 = torch.nn.Linear(84, 10)
+        self.fc1 = torch.nn.Linear(784, 512)
+        self.fc2 = torch.nn.Linear(512, 128)
+        self.fc3 = torch.nn.Linear(128, 32)
+        self.fc4 = torch.nn.Linear(32,10)
 
     def forward(self, x):
         # x = torch.nn.functional.relu(self.conv1(x))
@@ -79,10 +80,11 @@ class SimpleNet(torch.nn.Module):
         # x = self.max_pool_2(x)
         # read through https://stackoverflow.com/a/42482819/7551231
         # print x
-        x = x.view( 768, -1)
+        #x = x.view( 768, -1)
         x = torch.nn.functional.relu(self.fc1(x))
         x = torch.nn.functional.relu(self.fc2(x))
+        x = torch.nn.functional.relu(self.fc3(x))
         penultimate = x
-        x = self.fc3(x)
+        x = self.fc4(x)
 
         return x, penultimate
