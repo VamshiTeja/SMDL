@@ -1,17 +1,17 @@
 # General Configutaions
-run_label: 'final_SMDL_SVHN_ResNet20'
-gpu_ids: '2'
+run_label: 'final_SMDL_MNIST_SimpleNet_lr0.01'
+gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {LeNet5, ResNet18, ResNet20, ResNet32}
+model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'MNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
@@ -25,14 +25,14 @@ epochs: 100
 batch_size: 50
 batch_size_test: 100
 
-learning_rate: 0.1
+learning_rate: 0.01
 momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
 override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
 
-sampler: 'loss'             # ['loss', 'submodular']SubModular or loss based samplers
+sampler: 'submodular'             # ['loss', 'submodular']SubModular or loss based samplers
 
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
