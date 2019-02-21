@@ -80,7 +80,8 @@ class SimpleNet(torch.nn.Module):
         # x = self.max_pool_2(x)
         # read through https://stackoverflow.com/a/42482819/7551231
         # print x
-        #x = x.view( 768, -1)
+        x = x.view(-1, 784)
+        #print(x)
         x = torch.nn.functional.relu(self.fc1(x))
         x = torch.nn.functional.relu(self.fc2(x))
         x = torch.nn.functional.relu(self.fc3(x))
