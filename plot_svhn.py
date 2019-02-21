@@ -47,9 +47,11 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     if plot_type == 'Accuracy':
         plt.yticks(np.arange(0, 110, step=10))
         plt.ylabel('Error')
+        plt.ylim([0,40])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         plt.ylabel('Loss')
+        plt.ylim([0,1])
 
     plt.savefig(save_location +"/"+ title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.eps', format='eps')
     plt.close()

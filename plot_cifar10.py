@@ -48,9 +48,11 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     if plot_type == 'Accuracy':
         plt.yticks(np.arange(0, 110, step=10))
         plt.ylabel('Error')
+        plt.ylim([0,60])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         plt.ylabel('Loss')
+        plt.ylim([0,1.6])
 
     plt.savefig(save_location + title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.eps', format='eps')
     plt.close()
@@ -88,6 +90,11 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_acc_mean_accuracy.pkl',
             'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_acc_upper_limit_accuracy.pkl',
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_acc_lower_limit_accuracy.pkl'],
+
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/test_acc_round_0_accuracy.pkl',
+            'LOSS', 'black'],
+
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/test_acc_round_0_accuracy.pkl',
             'Submodular Minibatch', 'green'],
@@ -104,6 +111,10 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_mean_accuracy.pkl',
             'SGD(averaged)', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_upper_limit_accuracy.pkl',
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_lower_limit_accuracy.pkl'],
+
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/train_acc_round_0_accuracy.pkl',
+            'LOSS', 'black'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/train_acc_round_0_accuracy.pkl',
             'Submodular Minibatch', 'green'],
@@ -119,6 +130,10 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_loss_mean_accuracy.pkl',
             'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_loss_upper_limit_accuracy.pkl',
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_loss_lower_limit_accuracy.pkl'],
+
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/train_loss_round_0_accuracy.pkl',
+            'LOSS', 'black'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/train_loss_round_0_accuracy.pkl',
             'Submodular Minibatch', 'green'],
@@ -133,6 +148,10 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_loss_mean_accuracy.pkl',
             'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_loss_upper_limit_accuracy.pkl',
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/test_loss_lower_limit_accuracy.pkl'],
+
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/test_loss_round_0_accuracy.pkl',
+            'LOSS', 'black'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/test_loss_round_0_accuracy.pkl',
             'Submodular Minibatch', 'green'],
@@ -178,7 +197,7 @@ if __name__ == '__main__':
                     #       'Loss', 'red'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_mean_accuracy.pkl',
-                        'SGD(averaged)', 'blue',
+                        'SGD', 'blue',
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_upper_limit_accuracy.pkl',
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_CIFAR_ResNet20_0211_152357/accuracies/train_acc_lower_limit_accuracy.pkl'],
                       # [
@@ -189,7 +208,7 @@ if __name__ == '__main__':
                         'Submodular Minibatch Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_Refresh10_0212_103211/accuracies/train_acc_round_0_accuracy.pkl',
-                        'Submodular Minibatch Refresh Rate-10', 'cyan'],
+                        'Submodular Minibatch Refresh Rate-10', 'orange'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_Refresh25_0212_103645/accuracies/train_acc_round_0_accuracy.pkl',
                         'Submodular Minibatch Refresh Rate-25', 'm'],
