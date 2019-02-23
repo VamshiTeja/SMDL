@@ -14,6 +14,7 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     This helper function can be used to plot(visualize) the accuracies saved using lib.utils.save_accuracies()
     :return: None
     """
+    plt.tick_params(direction='out', length=6, width=2)
 
     if(save_location==None):
         save_location = './final_plots/cifar10/'
