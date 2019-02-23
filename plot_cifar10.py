@@ -36,10 +36,11 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
                 upper_limit = 100-upper_limit
             plt.fill_between(x, lower_limit, upper_limit, color='lightskyblue', alpha=0.000002)
 
-    plt.legend()
+    size =15
+    plt.legend(fontsize=size)
     # if title is not None:
     #     plt.title(title)
-    plt.xlabel(x_axis_label)
+    plt.xlabel(x_axis_label, fontsize=size)
 
     plt.grid(True, linestyle='--', axis='y')
 
@@ -48,16 +49,16 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     if plot_type == 'Accuracy':
         plt.yticks(np.arange(0, 110, step=10))
         if(mode=='Test'):
-            plt.ylabel('Test Error')
+            plt.ylabel('Test Error', fontsize=size)
         elif(mode=='Train'):
-            plt.ylabel('Train Error')
+            plt.ylabel('Train Error', fontsize=size)
         plt.ylim([0,60])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         if (mode == 'Test'):
-            plt.ylabel('Test Loss')
+            plt.ylabel('Test Loss', fontsize=size)
         elif (mode == 'Train'):
-            plt.ylabel('Train Loss')
+            plt.ylabel('Train Loss', fontsize=size)
 
         plt.ylim([0,1.6])
 
@@ -100,7 +101,7 @@ if __name__ == '__main__':
 
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/test_acc_round_0_accuracy.pkl',
-            'LOSS', 'violet'],
+            'LOSS', 'darkviolet'],
 
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/test_acc_round_0_accuracy.pkl',
@@ -121,7 +122,7 @@ if __name__ == '__main__':
 
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/train_acc_round_0_accuracy.pkl',
-            'LOSS', 'magenta'],
+            'LOSS', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/train_acc_round_0_accuracy.pkl',
             'SMDL', 'green'],
@@ -140,7 +141,7 @@ if __name__ == '__main__':
 
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/train_loss_round_0_accuracy.pkl',
-            'LOSS', 'violet'],
+            'LOSS', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/train_loss_round_0_accuracy.pkl',
             'SMDL', 'green'],
@@ -158,7 +159,7 @@ if __name__ == '__main__':
 
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_CIFAR10_ResNet20_0215_193022/accuracies/test_loss_round_0_accuracy.pkl',
-            'LOSS', 'violet'],
+            'LOSS', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/accuracies/test_loss_round_0_accuracy.pkl',
             'SMDL', 'green'],

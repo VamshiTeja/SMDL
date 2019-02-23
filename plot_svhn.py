@@ -98,10 +98,11 @@ def plot_ablations_accuracies(data, title='Accuracy Plot', plot_type='Accuracy',
         else:
             _plot_indiv_accuracies(acc, color=info[2], label=info[1], plot_type=plot_type)
 
-    plt.legend()
+    size = 15
+    plt.legend(fontsize=size)
     # if title is not None:
     #     plt.title(title)
-    plt.xlabel(x_axis_label)
+    plt.xlabel(x_axis_label,fontsize=size)
 
     plt.grid(True, linestyle='--', axis='y')
 
@@ -109,18 +110,18 @@ def plot_ablations_accuracies(data, title='Accuracy Plot', plot_type='Accuracy',
     if plot_type == 'Accuracy':
         plt.yticks(np.arange(0, 15, step=2))
         if(mode=='Test'):
-            plt.ylabel('Test Error')
+            plt.ylabel('Test Error',fontsize=size)
         elif(mode=='Train'):
-            plt.ylabel('Train Error')
+            plt.ylabel('Train Error',fontsize=size)
 
         plt.ylim([0,15])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         if (mode == 'Test'):
-            plt.ylabel('Test Loss')
+            plt.ylabel('Test Loss',fontsize=size)
         elif (mode == 'Train'):
-            plt.ylabel('Train Loss')
-        plt.ylim([0.0,0.5])
+            plt.ylabel('Train Loss',fontsize=size)
+        plt.ylim([0.0, 0.5])
 
     plt.savefig(save_location +"/"+ title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.eps', format='eps')
     plt.close()
@@ -151,6 +152,9 @@ if __name__ == '__main__':
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_mean_accuracy.pkl',
                           'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_upper_limit_accuracy.pkl',
                             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_lower_limit_accuracy.pkl'],
+                [
+                    '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_SVHN_ResNet20_0215_192444/accuracies/test_acc_round_0_accuracy.pkl',
+                    'LOSS', 'darkviolet'],
                       [
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_acc_round_0_accuracy.pkl',
                           'SMDL', 'green']
@@ -161,6 +165,10 @@ if __name__ == '__main__':
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_round_0_accuracy.pkl',
                           'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_upper_limit_accuracy.pkl',
         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_lower_limit_accuracy.pkl' ],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_SVHN_ResNet20_0215_192444/accuracies/train_acc_round_0_accuracy.pkl',
+            'LOSS', 'darkviolet'],
+
                       [
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/train_acc_round_0_accuracy.pkl',
                           'SMDL', 'green']
@@ -171,6 +179,9 @@ if __name__ == '__main__':
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_loss_mean_accuracy.pkl',
                           'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_loss_upper_limit_accuracy.pkl',
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_loss_lower_limit_accuracy.pkl'],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_SVHN_ResNet20_0215_192444/accuracies/train_loss_round_0_accuracy.pkl',
+            'LOSS', 'darkviolet'],
                       [
                           '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/train_loss_round_0_accuracy.pkl',
                           'SMDL', 'green']
@@ -182,6 +193,9 @@ if __name__ == '__main__':
         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_mean_accuracy.pkl',
         'SGD', 'blue', '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_upper_limit_accuracy.pkl',
         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_lower_limit_accuracy.pkl'],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_LOSS_SVHN_ResNet20_0215_192444/accuracies/test_loss_round_0_accuracy.pkl',
+            'LOSS', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_loss_round_0_accuracy.pkl',
             'SMDL', 'green']
@@ -593,16 +607,16 @@ if __name__ == '__main__':
         #                     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_euclidean_0131_103658/accuracies/test_acc_round_0_accuracy.pkl',
-            'euclidean', 'green'],
+            'euclidean', 'navy'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_gaussian_0131_102949/accuracies/test_acc_round_0_accuracy.pkl',
-            'gaussian', 'orange'],
+            'gaussian', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_cosine_0131_103759/accuracies/test_acc_round_0_accuracy.pkl',
-            'cosine', 'm'],
+            'cosine', 'blue'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_correlation_0131_101252/accuracies/test_acc_round_0_accuracy.pkl',
-            'correlation', 'black']
+            'correlation', 'green']
     ]
     plot_accuracies(test_data, title='SVHN Test Error (Distance Metrics)',save_location='./final_plots/svhn/distance_metrics')
 
@@ -613,16 +627,16 @@ if __name__ == '__main__':
         # '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_euclidean_0131_103658/accuracies/train_acc_round_0_accuracy.pkl',
-            'euclidean', 'green'],
+            'euclidean', 'navy'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_gaussian_0131_102949/accuracies/train_acc_round_0_accuracy.pkl',
-            'gaussian', 'orange'],
+            'gaussian', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_cosine_0131_103759/accuracies/train_acc_round_0_accuracy.pkl',
-            'cosine', 'm'],
+            'cosine', 'blue'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_correlation_0131_101252/accuracies/train_acc_round_0_accuracy.pkl',
-            'correlation', 'black']
+            'correlation', 'green']
     ]
     plot_accuracies(train_data, title='SVHN Train Error (Distance Metrics)',save_location='./final_plots/svhn/distance_metrics')
 
@@ -633,16 +647,16 @@ if __name__ == '__main__':
         # '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_euclidean_0131_103658/accuracies/loss_round_0_accuracy.pkl',
-            'euclidean', 'green'],
+            'euclidean', 'navy'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_gaussian_0131_102949/accuracies/loss_round_0_accuracy.pkl',
-            'gaussian', 'orange'],
+            'gaussian', 'darkviolet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_cosine_0131_103759/accuracies/loss_round_0_accuracy.pkl',
-            'cosine', 'm'],
+            'cosine', 'blue'],
         [
             '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_correlation_0131_101252/accuracies/loss_round_0_accuracy.pkl',
-            'correlation', 'black'],
+            'correlation', 'green'],
     ]
     plot_accuracies(test_loss_data, title='SVHN Test Loss (Distance Metrics)', plot_type='Loss',save_location='./final_plots/svhn/distance_metrics')
 
