@@ -56,7 +56,7 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
         elif (mode == 'Train'):
             plt.ylabel('Train Error',fontsize=size)
 
-        plt.ylim([30,100])
+        plt.ylim([35,70])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         if (mode == 'Test'):

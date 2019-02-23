@@ -14,6 +14,8 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     This helper function can be used to plot(visualize) the accuracies saved using lib.utils.save_accuracies()
     :return: None
     """
+    plt.tick_params(direction='out', length=6, width=2)
+
     if(save_location==None):
         save_location = './final_plots/svhn/'
 
@@ -35,10 +37,11 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
                 upper_limit = 100-upper_limit
             plt.fill_between(x, lower_limit, upper_limit, color='lightskyblue')
 
-    plt.legend()
+    size = 15
+    plt.legend(fontsize=size)
     # if title is not None:
     #     plt.title(title)
-    plt.xlabel(x_axis_label)
+    plt.xlabel(x_axis_label,fontsize=size)
 
     plt.grid(True, linestyle='--', axis='y')
 
@@ -46,18 +49,18 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
     if plot_type == 'Accuracy':
         plt.yticks(np.arange(0, 15, step=2))
         if(mode=='Test'):
-            plt.ylabel('Test Error')
+            plt.ylabel('Test Error',fontsize=size)
         elif(mode=='Train'):
-            plt.ylabel('Train Error')
+            plt.ylabel('Train Error',fontsize=size)
 
-        plt.ylim([0,15])
+        plt.ylim([3,15])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         if (mode == 'Test'):
-            plt.ylabel('Test Loss')
+            plt.ylabel('Test Loss',fontsize=size)
         elif (mode == 'Train'):
-            plt.ylabel('Train Loss')
-        plt.ylim([0.1,0.5])
+            plt.ylabel('Train Loss',fontsize=size)
+        plt.ylim([0.1, 0.5])
 
     plt.savefig(save_location +"/"+ title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.eps', format='eps')
     plt.close()
@@ -116,14 +119,14 @@ def plot_ablations_accuracies(data, title='Accuracy Plot', plot_type='Accuracy',
         elif(mode=='Train'):
             plt.ylabel('Train Error',fontsize=size)
 
-        plt.ylim([0,15])
+        plt.ylim([3,15])
     else:
         # plt.yticks(np.arange(0, 2, step=0.5))
         if (mode == 'Test'):
             plt.ylabel('Test Loss',fontsize=size)
         elif (mode == 'Train'):
             plt.ylabel('Train Loss',fontsize=size)
-        plt.ylim([0.0, 0.5])
+        plt.ylim([0.1, 0.5])
 
     plt.savefig(save_location +"/"+ title.replace(' ', '_').replace('(', '_').replace(')', '_') + '.eps', format='eps')
     plt.close()
