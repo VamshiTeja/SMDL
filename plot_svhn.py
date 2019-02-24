@@ -9,7 +9,7 @@ else:
     import pickle
 
 
-def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_label='Epochs', save_location=None, mode='Test'):
+def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_label='Epochs', save_location=None, mode='Test', size=None):
     """
     This helper function can be used to plot(visualize) the accuracies saved using lib.utils.save_accuracies()
     :return: None
@@ -37,7 +37,8 @@ def plot_accuracies(data, title='Accuracy Plot', plot_type='Accuracy', x_axis_la
                 upper_limit = 100-upper_limit
             plt.fill_between(x, lower_limit, upper_limit, color='lightskyblue')
 
-    size = 15
+    if(size==None):
+        size = 15
     plt.legend(fontsize=size)
     # if title is not None:
     #     plt.title(title)
@@ -223,13 +224,16 @@ if __name__ == '__main__':
                           'SMDL Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh10_0212_101539/accuracies/test_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-10', 'orange'],
+                        'SMDL Refresh Rate-10', 'violet'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh25_0212_101854/accuracies/test_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-25', 'm'],
+                        'SMDL Refresh Rate-25', 'navy'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/test_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black']
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_refresh40_0221_223031/accuracies/test_acc_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'brown'],
+                    # [
+                    #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/test_acc_round_0_accuracy.pkl',
+                    #     'SMDL Refresh Rate-50', 'black']
                       ]
     plot_accuracies(test_data, title='SVHN Test Error (RF)', save_location='./final_plots/svhn/Refresh')
 
@@ -242,13 +246,16 @@ if __name__ == '__main__':
                           'SMDL Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh10_0212_101539/accuracies/train_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-10', 'orange'],
+                        'SMDL Refresh Rate-10', 'violet'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh25_0212_101854/accuracies/train_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-25', 'm'],
+                        'SMDL Refresh Rate-25', 'navy'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/train_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black']
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_refresh40_0221_223031/accuracies/train_acc_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'brown'],
+                # [
+                #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/train_acc_round_0_accuracy.pkl',
+                #     'SMDL Refresh Rate-50', 'black']
                       ]
     plot_accuracies(train_data, title='SVHN Train Accuracy (RF)', save_location='./final_plots/svhn/Refresh')
 
@@ -261,13 +268,16 @@ if __name__ == '__main__':
                           'SMDL Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh10_0212_101539/accuracies/train_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-10', 'orange'],
+                        'SMDL Refresh Rate-10', 'violet'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh25_0212_101854/accuracies/train_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-25', 'm'],
+                        'SMDL Refresh Rate-25', 'navy'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/train_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black'],
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_refresh40_0221_223031/accuracies/train_loss_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'brown'],
+            #     [
+            # '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/train_loss_round_0_accuracy.pkl',
+            # 'SMDL Refresh Rate-50', 'black'],
                       ]
     plot_accuracies(train_loss_data, title='SVHN Train Loss (RF)', plot_type='Train Loss', save_location='./final_plots/svhn/Refresh')
 
@@ -280,13 +290,17 @@ if __name__ == '__main__':
                           'SMDL Refresh Rate-5', 'green'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh10_0212_101539/accuracies/test_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-10', 'orange'],
+                        'SMDL Refresh Rate-10', 'violet'],
                     [
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh25_0212_101854/accuracies/test_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-25', 'm'],
+                        'SMDL Refresh Rate-25', 'navy'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/test_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black'],
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_refresh40_0221_223031/accuracies/test_loss_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'brown'],
+                    # [
+                    #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_Refresh50_0212_102202/accuracies/test_loss_round_0_accuracy.pkl',
+                    #     'SMDL Refresh Rate-50', 'black'],
+
                       ]
     plot_accuracies(test_loss_data, title='SVHN Test Loss (RF)', plot_type='Test Loss', save_location='./final_plots/svhn/Refresh')
 
@@ -422,8 +436,8 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.001_0220_184246/accuracies/test_acc_round_0_accuracy.pkl',
             'SGD lr-0.001', 'violet'],
         # [
-        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_mean_accuracy.pkl',
-        #     'SGD lr-0.0001', 'blue'],
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.0001_0222_010051/accuracies/test_acc_round_0_accuracy.pkl',
+        #     'SGD lr-0.0001', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_acc_round_0_accuracy.pkl',
             'SMDL lr-0.1', 'navy'],
@@ -450,8 +464,8 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.001_0220_184246/accuracies/train_acc_round_0_accuracy.pkl',
             'SGD lr-0.001', 'violet'],
         # [
-        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_round_0_accuracy.pkl',
-        #     'SGD lr-0.0001', 'blue'],
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.0001_0222_010051/accuracies/train_acc_round_0_accuracy.pkl',
+        #     'SGD lr-0.0001', 'black'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/train_acc_round_0_accuracy.pkl',
             'SMDL lr-0.1', 'navy'],
@@ -478,8 +492,8 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.001_0220_184246/accuracies/test_loss_round_0_accuracy.pkl',
             'SGD lr-0.001', 'violet'],
         # [
-        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_round_0_accuracy.pkl',
-        #     'SGD lr-0.0001', 'blue'],
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_lr0.0001_0222_010051/accuracies/test_loss_round_0_accuracy.pkl',
+        #     'SGD lr-0.0001', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_loss_round_0_accuracy.pkl',
             'SMDL lr-0.1', 'navy'],
@@ -531,16 +545,20 @@ if __name__ == '__main__':
                             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_acc_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha1_0215_194413/accuracies/test_acc_round_0_accuracy.pkl',
-            'alpha1=1', 'green'],
+            'SMDL-1', 'green'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha2_0215_194627/accuracies/test_acc_round_0_accuracy.pkl',
-            'alpha2=1', 'orange'],
+            'SMDL-2', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha3_0215_194850/accuracies/test_acc_round_0_accuracy.pkl',
-            'alpha3=1', 'm'],
+            'SMDL-3', 'violet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha4_0215_195102/accuracies/test_acc_round_0_accuracy.pkl',
-            'alpha4=1', 'black']
+            'SMDL-4', 'navy'],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_acc_round_0_accuracy.pkl',
+            'SMDL', 'red'],
+
     ]
     plot_accuracies(test_data, title='SVHN Test Error (alphas)',save_location='./final_plots/svhn/alphas')
 
@@ -550,16 +568,19 @@ if __name__ == '__main__':
         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_acc_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha1_0215_194413/accuracies/train_acc_round_0_accuracy.pkl',
-            'alpha1=1', 'green'],
+            'SMDL-1', 'green'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha2_0215_194627/accuracies/train_acc_round_0_accuracy.pkl',
-            'alpha2=1', 'orange'],
+            'SMDL-2', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha3_0215_194850/accuracies/train_acc_round_0_accuracy.pkl',
-            'alpha3=1', 'm'],
+            'SMDL-3', 'violet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha4_0215_195102/accuracies/train_acc_round_0_accuracy.pkl',
-            'alpha4=1', 'black']
+            'SMDL-4', 'navy'],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/train_acc_round_0_accuracy.pkl',
+            'SMDL', 'red'],
     ]
     plot_accuracies(train_data, title='SVHN Train Error (alphas)',save_location='./final_plots/svhn/alphas')
 
@@ -569,16 +590,19 @@ if __name__ == '__main__':
         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/test_loss_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha1_0215_194413/accuracies/test_loss_round_0_accuracy.pkl',
-            'alpha1=1', 'green'],
+            'SMDL-1', 'green'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha2_0215_194627/accuracies/test_loss_round_0_accuracy.pkl',
-            'alpha2=1', 'orange'],
+            'SMDL-2', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha3_0215_194850/accuracies/test_loss_round_0_accuracy.pkl',
-            'alpha3=1', 'm'],
+            'SMDL-3', 'violet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha4_0215_195102/accuracies/test_loss_round_0_accuracy.pkl',
-            'alpha4=1', 'black'],
+            'SMDL-4', 'navy'],
+         [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/test_loss_round_0_accuracy.pkl',
+            'SMDL', 'red'],
     ]
     plot_accuracies(test_loss_data, title='SVHN Test Loss (alphas)', plot_type='Loss',save_location='./final_plots/svhn/alphas')
 
@@ -588,16 +612,19 @@ if __name__ == '__main__':
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SGD_SVHN_ResNet20_0211_151827/accuracies/train_loss_lower_limit_accuracy.pkl'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha1_0215_194413/accuracies/train_loss_round_0_accuracy.pkl',
-            'alpha1=1', 'green'],
+            'SMDL-1', 'green'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha2_0215_194627/accuracies/train_loss_round_0_accuracy.pkl',
-            'alpha2=1', 'orange'],
+            'SMDK-2', 'brown'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha3_0215_194850/accuracies/train_loss_round_0_accuracy.pkl',
-            'alpha3=1', 'm'],
+            'SMDL-3', 'violet'],
         [
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_apha4_0215_195102/accuracies/train_loss_round_0_accuracy.pkl',
-            'alpha4=1', 'black'],
+            'SMDL-4', 'navy'],
+        [
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_SVHN_ResNet20_0211_154707/accuracies/train_loss_round_0_accuracy.pkl',
+            'SMDL', 'red'],
     ]
     plot_accuracies(train_loss_data, title='SVHN Train Loss (alphas)', plot_type='Loss', save_location='./final_plots/svhn/alphas', mode='train')
 

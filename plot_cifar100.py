@@ -167,8 +167,11 @@ if __name__ == '__main__':
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_acc_round_0_accuracy.pkl',
                         'SMDL Refresh Rate-25', 'm'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black']
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR100_ResNet32_refresh40_0221_223728/accuracies/test_acc_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'black'],
+        # [
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_acc_round_0_accuracy.pkl',
+        #     'SMDL Refresh Rate-50', 'black']
                       ]
     plot_accuracies(test_data, title='CIFAR 100 Test Error with RF Ablation', save_location='./final_plots/cifar100/Refresh/')
 
@@ -186,8 +189,11 @@ if __name__ == '__main__':
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/train_acc_round_0_accuracy.pkl',
                         'SMDL Refresh Rate-25', 'm'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/train_acc_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black']
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR100_ResNet32_refresh40_0221_223728/accuracies/train_acc_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'black'],
+        # [
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/train_acc_round_0_accuracy.pkl',
+        #     'SMDL Refresh Rate-50', 'black']
                       ]
     plot_accuracies(train_data, title='CIFAR 100 Train Error with RF Ablation', save_location='./final_plots/cifar100/Refresh/')
 
@@ -205,8 +211,11 @@ if __name__ == '__main__':
                         '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_loss_round_0_accuracy.pkl',
                         'SMDL Refresh Rate-25', 'm'],
                     [
-                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_loss_round_0_accuracy.pkl',
-                        'SMDL Refresh Rate-50', 'black']
+                        '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR100_ResNet32_refresh40_0221_223728/accuracies/test_loss_round_0_accuracy.pkl',
+                        'SMDL Refresh Rate-40', 'black'],
+        # [
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_loss_round_0_accuracy.pkl',
+        #     'SMDL Refresh Rate-50', 'black']
                       ]
     plot_accuracies(test_loss_data, title='CIFAR 100 Test Loss with RF Ablation', plot_type='Loss', save_location='./final_plots/cifar100/Refresh/')
 
@@ -224,7 +233,10 @@ if __name__ == '__main__':
             '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh25_0212_123328/accuracies/test_loss_round_0_accuracy.pkl',
             'SMDL Refresh Rate-25', 'm'],
         [
-            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_loss_round_0_accuracy.pkl',
-            'SMDL Refresh Rate-50', 'black']
+            '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR100_ResNet32_refresh40_0221_223728/accuracies/test_loss_round_0_accuracy.pkl',
+            'SMDL Refresh Rate-40', 'black'],
+        # [
+        #     '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_100_ResNet32_Refresh50_0212_123140/accuracies/test_loss_round_0_accuracy.pkl',
+        #     'SMDL Refresh Rate-50', 'black']
     ]
     plot_accuracies(train_loss_data, title='CIFAR 100 Train Loss with RF Ablation', plot_type='Loss', save_location='./final_plots/cifar100/Refresh/')
