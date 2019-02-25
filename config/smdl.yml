@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'final_SMDL_MNIST_SimpleNet_lr0.01'
+run_label: 'final_SMDL_CIFAR10_ResNet20_images'
 gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
@@ -7,25 +7,25 @@ seed: 99                        # '0' means no manual seeding
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: SimpleNet                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'MNIST'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
-pretrained_model: ''
+pretrained_model: '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/models/round_1_epoch_49.pth'
 #pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
-epochs: 100
+epochs: 3
 
 batch_size: 50
 batch_size_test: 100
 
-learning_rate: 0.01
+learning_rate: 0.1
 momentum: 0.9
 weight_decay: 0.0001
 
