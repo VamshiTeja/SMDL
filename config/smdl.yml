@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'final_SMDL_CIFAR10_ResNet20_images'
+run_label: 'final_SMDL_SVHN_ResNet20_alphas'
 gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
@@ -11,12 +11,13 @@ model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet2
 
 # Dataset Configurations
 dataset:
-    name: 'CIFAR'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
+    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
     total_num_classes: 10
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
-pretrained_model: '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/models/round_1_epoch_49.pth'
+pretrained_model: ''
+#pretrained_model: '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/models/round_1_epoch_49.pth'
 #pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
@@ -41,9 +42,9 @@ use_ltlg: True
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
 
 alpha_1: 0.2            # u_score
-alpha_2: 0.1            # r_score
-alpha_3: 0.5            # md_score
-alpha_4: 0.2            # coverage_score
+alpha_2: 0.5           # r_score
+alpha_3: 0.0            # md_score
+alpha_4: 0.0            # coverage_score
 
 distance_metric: "euclidean"   # ['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra',
                                # 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details
