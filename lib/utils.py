@@ -79,7 +79,7 @@ def setup_dataset():
         train_dataset = datasets.ImageFolder(
             traindir,
             transforms.Compose([
-                transforms.RandomResizedCrop(32),
+                transforms.RandomResizedCrop(160),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 normalize,
@@ -87,8 +87,8 @@ def setup_dataset():
         test_dataset = datasets.ImageFolder(
             valdir,
                 transforms.Compose([
-                transforms.Resize(128),
-                transforms.CenterCrop(32),
+                transforms.Resize(180),
+                transforms.CenterCrop(160),
                 transforms.ToTensor(),
                 normalize,
             ]))
@@ -107,6 +107,10 @@ def get_model():
         model = resnet20(num_classes=num_classes)
     elif cfg.model == 'ResNet32':
         model = resnet32(num_classes=num_classes)
+    elif cfg.model == 'ResNet34':
+        model = resnet34(num_classes)
+    elif cfg.model == 'ResNet18_ILSVRC':
+        model = resnet18_ILSVRC(num_classes)
     else:
         raise ValueError('Unsupported model passed in the configuration file: {}'.format(cfg.model))
     return model

@@ -1,13 +1,13 @@
 # General Configutaions
-run_label: 'imagenet_sgd_cfr'
-gpu_ids: '1'
+run_label: 'imagenet_sgd'
+gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet32                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet18_ILSVRC                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32, ResNet34(ImageNet), ResNet18_ILSVRC}
 
 # Dataset Configurations
 dataset:
@@ -33,7 +33,7 @@ weight_decay: 0.0001
 use_custom_batch_selector: True
 override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
 
-sampler: 'submodular'             # ['loss', 'submodular']SubModular or loss based samplers
+sampler: 'submodular'             # ['loss', 'submodular'] SubModular or loss based samplers
 
 
 num_of_partitions: 10           # Partitions for distributed submodular selection
