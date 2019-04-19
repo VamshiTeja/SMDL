@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import logging, sys
 import cPickle as pickle
+import os
 
 from lib.config import cfg
 
@@ -70,6 +71,27 @@ def setup_dataset():
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         train_dataset = datasets.SVHN(root='./datasets/SVHN', split='train', download=True, transform=transform)
         test_dataset = datasets.SVHN(root='./datasets/SVHN', split='test', download=True, transform=transform)
+    elif cfg.dataset.name == 'IMAGENET_CUSTOM':
+        traindir = os.path.join('./datasets/IMAGENET', 'train')
+        valdir = os.path.join('./datasets/IMAGENET', 'val')
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+        train_dataset = datasets.ImageFolder(
+            traindir,
+            transforms.Compose([
+                transforms.RandomResizedCrop(32),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                normalize,
+            ]))
+        test_dataset = datasets.ImageFolder(
+            valdir,
+                transforms.Compose([
+                transforms.Resize(128),
+                transforms.CenterCrop(32),
+                transforms.ToTensor(),
+                normalize,
+            ]))
     else:
         raise ValueError('Unsupported dataset passed in the configuration file: {}'.format(cfg.dataset.name))
     return train_dataset, test_dataset

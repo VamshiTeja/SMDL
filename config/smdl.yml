@@ -1,18 +1,18 @@
 # General Configutaions
-run_label: 'final_SMDL_SVHN_ResNet20_alphas'
-gpu_ids: '0'
+run_label: 'imagenet_sgd_cfr'
+gpu_ids: '1'
 seed: 99                        # '0' means no manual seeding
 
 # Learning Configurations
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
+model: ResNet32                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32}
 
 # Dataset Configurations
 dataset:
-    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST
-    total_num_classes: 10
+    name: 'IMAGENET_CUSTOM'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST, IMAGENET_CUSTOM
+    total_num_classes: 15
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
@@ -21,7 +21,7 @@ pretrained_model: ''
 #pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
-epochs: 3
+epochs: 100
 
 batch_size: 50
 batch_size_test: 100
@@ -31,7 +31,7 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
 
 sampler: 'submodular'             # ['loss', 'submodular']SubModular or loss based samplers
 
