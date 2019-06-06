@@ -36,5 +36,5 @@ The code is well documented and you would be able to get along. In case of troub
   booktitle={Proceedings of the Twenty-Eighth International Joint Conference on
                Artificial Intelligence, IJCAI, Macao, China.},
   year={2019},
-  organization={International Joint Conferences on Artificial Intelligence Organization}}}
+  organization={International Joint Conferences on Artificial Intelligence Organization}}
 ```
