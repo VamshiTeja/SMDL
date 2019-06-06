@@ -32,7 +32,7 @@ The code is well documented and you would be able to get along. In case of troub
 ```bash
 @inproceedings{joseph2019Submodular,
   title = {Submodular Batch Selection for Training Deep Neural Networks},
-  author={K J, Joseph and Vamshi Teja, Ra and Krishnakant, Singh and Vineeth, N Balasubramanian},
+  author={K J, Joseph and Vamshi Teja, R and Krishnakant, Singh and Vineeth, N Balasubramanian},
   booktitle={Proceedings of the Twenty-Eighth International Joint Conference on Artificial Intelligence, IJCAI, Macao, China.},
   organization={International Joint Conferences on Artificial Intelligence Organization},
   year={2019}}
