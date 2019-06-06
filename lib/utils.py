@@ -79,7 +79,7 @@ def setup_dataset():
         train_dataset = datasets.ImageFolder(
             traindir,
             transforms.Compose([
-                transforms.RandomResizedCrop(160),
+                transforms.RandomResizedCrop(112),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 normalize,
@@ -87,8 +87,8 @@ def setup_dataset():
         test_dataset = datasets.ImageFolder(
             valdir,
                 transforms.Compose([
-                transforms.Resize(180),
-                transforms.CenterCrop(160),
+                transforms.Resize(130),
+                transforms.CenterCrop(112),
                 transforms.ToTensor(),
                 normalize,
             ]))

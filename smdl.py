@@ -128,8 +128,8 @@ def train(train_loader, model, criterion, optimizer, epoch_count, max_epoch,
                 test_acc_between_epochs.append(test_acc)
                 test_loss_between_epochs.append(test_loss)
 
-            if i == 800:  # CIFAR-100 Fix
-                break
+            # if i == 800:  # CIFAR-100 Fix
+            #     break
 
         plot_per_epoch_accuracy(test_acc_between_epochs, epoch_count+1)
         save_accuracies(test_acc_between_epochs,

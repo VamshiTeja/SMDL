@@ -1,5 +1,5 @@
 # General Configutaions
-run_label: 'imagenet_sgd'
+run_label: 'run'
 gpu_ids: '0'
 seed: 99                        # '0' means no manual seeding
 
@@ -31,7 +31,7 @@ momentum: 0.9
 weight_decay: 0.0001
 
 use_custom_batch_selector: True
-override_submodular_sampling: True  # If True: random sampling Else, submodular sampling
+override_submodular_sampling: False  # If True: random sampling Else, submodular sampling
 
 sampler: 'submodular'             # ['loss', 'submodular'] SubModular or loss based samplers
 
@@ -42,9 +42,9 @@ use_ltlg: True
 ltl_log_ep: 5                   # log(1/eps) : "Lazier Than Lazy Greedy, Mirzasoleiman et al. AAAI 2015"
 
 alpha_1: 0.2            # u_score
-alpha_2: 0.5           # r_score
-alpha_3: 0.0            # md_score
-alpha_4: 0.0            # coverage_score
+alpha_2: 0.1            # r_score
+alpha_3: 0.5            # md_score
+alpha_4: 0.2            # coverage_score
 
 distance_metric: "euclidean"   # ['euclidean', 'cosine', 'correlation', 'seuclidean', 'canberra',
                                # 'manhatten', 'gaussian'] Please refer scipy.spatial_dist.cdist for more details

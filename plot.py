@@ -119,32 +119,32 @@ if __name__ == '__main__':
     # plot_accuracies(loss_data, title='CIFAR 100 Loss', plot_type='Loss')
 
     # SVHN
-    test_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(test_data, title='SVHN Test Accuracy')
-
-    train_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/train_acc_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(train_data, title='SVHN Train Accuracy')
-
-    loss_data = [[
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/loss_round_0_accuracy.pkl',
-                          'Random Selection', 'blue'],
-                      [
-                          '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/loss_round_0_accuracy.pkl',
-                          'Submodular Selection', 'green']
-                      ]
-    plot_accuracies(loss_data, title='SVHN Loss', plot_type='Loss')
+    # test_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='SVHN Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='SVHN Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_random_full_0119_214903/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/vamshi/PycharmProjects/SMDL/output/svhn_resnet20_submodcomb_latest_0131_010429/accuracies/loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='SVHN Loss', plot_type='Loss')
 
     # F-MNIST
     # test_data = [[
@@ -173,3 +173,117 @@ if __name__ == '__main__':
     #                       'Submodular Selection', 'green']
     #                   ]
     # plot_accuracies(loss_data, title='F-MNIST Loss', plot_type='Loss')
+
+
+    # ImageNet- New server
+
+    # test_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_sgd_0419_173214/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_smdl_0419_173502/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='ImageNet Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_sgd_0419_173214/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_smdl_0419_173502/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='ImageNet Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_sgd_0419_173214/accuracies/train_loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_smdl_0419_173502/accuracies/train_loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='ImageNet Train Loss', plot_type='Loss')
+    #
+    # loss_data = [[
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_sgd_0419_173214/accuracies/test_loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/home/joseph/workspace/SMDL/output/imagenet_smdl_0419_173502/accuracies/test_loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='ImageNet Test Loss', plot_type='Loss')
+
+    # ImageNet DGX
+
+    # test_data = [[
+    #                       '/home/joseph/omml/SMDL/output/imagenet_sgd_cfr_0419_124227/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/test_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(test_data, title='ImageNet Test Accuracy')
+    #
+    # train_data = [[
+    #                       '/home/joseph/omml/SMDL/output/imagenet_sgd_cfr_0419_124227/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/train_acc_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(train_data, title='ImageNet Train Accuracy')
+    #
+    # loss_data = [[
+    #                       '/home/joseph/omml/SMDL/output/imagenet_sgd_cfr_0419_124227/accuracies/train_loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/train_loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='ImageNet Train Loss', plot_type='Loss')
+    #
+    # loss_data = [[
+    #                       '/home/joseph/omml/SMDL/output/imagenet_sgd_cfr_0419_124227/accuracies/test_loss_round_0_accuracy.pkl',
+    #                       'Random Selection', 'blue'],
+    #                   [
+    #                       '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/test_loss_round_0_accuracy.pkl',
+    #                       'Submodular Selection', 'green']
+    #                   ]
+    # plot_accuracies(loss_data, title='ImageNet Test Loss', plot_type='Loss')
+
+
+    test_data = [[
+                          '/raid/joseph/workspace/SMDL/output/imagenet_sgd_0419_141859/accuracies/test_acc_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/test_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(test_data, title='ImageNet Test Accuracy')
+
+    train_data = [[
+                          '/raid/joseph/workspace/SMDL/output/imagenet_sgd_0419_141859/accuracies/train_acc_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/train_acc_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(train_data, title='ImageNet Train Accuracy')
+
+    loss_data = [[
+                          '/raid/joseph/workspace/SMDL/output/imagenet_sgd_0419_141859/accuracies/train_loss_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/train_loss_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(loss_data, title='ImageNet Train Loss', plot_type='Loss')
+
+    loss_data = [[
+                          '/raid/joseph/workspace/SMDL/output/imagenet_sgd_0419_141859/accuracies/test_loss_round_0_accuracy.pkl',
+                          'Random Selection', 'blue'],
+                      [
+                          '/raid/joseph/workspace/SMDL/output/imagenet_SMDL_0419_165953/accuracies/test_loss_round_0_accuracy.pkl',
+                          'Submodular Selection', 'green']
+                      ]
+    plot_accuracies(loss_data, title='ImageNet Test Loss', plot_type='Loss')
