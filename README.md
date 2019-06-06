@@ -2,7 +2,7 @@
 
 IJCAI 2019 
 
-Mini-batch gradient descent based methods are the de facto algorithms for training neural network ar- chitectures today. We introduce a mini-batch selec- tion strategy based on submodular function maxi- mization. Our novel submodular formulation cap- tures the informativeness of each sample and diver- sity of the whole subset. We design an efficient, greedy algorithm which can give high-quality so- lutions to this NP-hard combinatorial optimization problem. Our extensive experiments on standard datasets show that the deep models trained using the proposed batch selection strategy provide better generalization than Stochastic Gradient Descent as well as a popular baseline sampling strategy across different learning rates, batch sizes, and distance metrics.
+Mini-batch gradient descent based methods are the de facto algorithms for training neural network architectures today. We introduce a mini-batch selection strategy based on submodular function maximization. Our novel submodular formulation captures the informativeness of each sample and diversity of the whole subset. We design an efficient, greedy algorithm which can give high-quality solutions to this NP-hard combinatorial optimization problem. Our extensive experiments on standard datasets show that the deep models trained using the proposed batch selection strategy provide better generalization than Stochastic Gradient Descent as well as a popular baseline sampling strategy across different learning rates, batch sizes, and distance metrics.
 
 ### Setup
 Python: 2.7.6, PyTorch 0.4.1
