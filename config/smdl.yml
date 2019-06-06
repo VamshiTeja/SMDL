@@ -17,7 +17,6 @@ dataset:
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
 pretrained_model: ''
-#pretrained_model: '/home/vamshi/PycharmProjects/SMDL/final_Results/final_SMDL_CIFAR_10_ResNet20_0211_154331/models/round_1_epoch_49.pth'
 #pretrained_model: '/home/joseph/workspace/SMDL/output/Warm_up_model_Random_CIFAR_10_ResNet20_1125_201252/models/round_1_epoch_3.pth'
 
 # Training Configurations
