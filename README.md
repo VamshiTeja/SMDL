@@ -29,7 +29,7 @@ The code is well documented and you would be able to get along. In case of troub
 
 ### Citation
 
-```bash
+```commandline
 @inproceedings{joseph2019Submodular,
   title = {Submodular Batch Selection for Training Deep Neural Networks},
   author={K J, Joseph and Vamshi Teja, R and Krishnakant, Singh and Vineeth, N Balasubramanian},
