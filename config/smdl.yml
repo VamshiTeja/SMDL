@@ -7,12 +7,12 @@ seed: 99                        # '0' means no manual seeding
 repeat_rounds: 1
 
 # Neural Network Architecture
-model: ResNet18_ILSVRC                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32, ResNet34(ImageNet), ResNet18_ILSVRC}
+model: ResNet20                 # Possible values: {SimpleNet, ResNet18, ResNet20, ResNet32, ResNet34(ImageNet), ResNet18_ILSVRC}
 
 # Dataset Configurations
 dataset:
-    name: 'IMAGENET_CUSTOM'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST, IMAGENET_CUSTOM
-    total_num_classes: 15
+    name: 'SVHN'               # Possible values: CIFAR - [10, 100], SVHN, MNIST, FashionMNIST, EMNIST, IMAGENET_CUSTOM
+    total_num_classes: 10
 
 # Preload model for Warm-Up
 # Loads the specified model. Ignored if set to ''.
