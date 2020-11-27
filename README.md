@@ -1,4 +1,4 @@
-## Submodular Batch Selection for Training Deep Neural Networks
+## [Submodular Batch Selection for Training Deep Neural Networks](https://www.ijcai.org/Proceedings/2019/0372.pdf)
 
 IJCAI 2019 
 
